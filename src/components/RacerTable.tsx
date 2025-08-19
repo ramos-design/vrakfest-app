@@ -53,9 +53,9 @@ export const RacerTable = ({ racers, onEdit, onDelete, onAdd }: RacerTableProps)
         <div className="flex gap-2">
           <Button
             variant={categoryFilter === 'all' ? 'default' : 'outline'}
-            size="sm"
+            size="default"
             onClick={() => setCategoryFilter('all')}
-            className={categoryFilter === 'all' ? 'racing-btn-primary' : 'border-racing-yellow/20 hover:bg-racing-yellow/10'}
+            className={`px-4 py-2 ${categoryFilter === 'all' ? 'racing-btn-primary' : 'border-racing-yellow/20 hover:bg-racing-yellow/10'}`}
           >
             Vše
           </Button>
@@ -63,9 +63,9 @@ export const RacerTable = ({ racers, onEdit, onDelete, onAdd }: RacerTableProps)
             <Button
               key={category}
               variant={categoryFilter === category ? 'default' : 'outline'}
-              size="sm"
+              size="default"
               onClick={() => setCategoryFilter(category)}
-              className={categoryFilter === category ? 'racing-btn-primary' : 'border-racing-yellow/20 hover:bg-racing-yellow/10'}
+              className={`px-4 py-2 ${categoryFilter === category ? 'racing-btn-primary' : 'border-racing-yellow/20 hover:bg-racing-yellow/10'}`}
             >
               {category}
             </Button>
