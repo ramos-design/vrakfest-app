@@ -35,27 +35,34 @@ export function DashboardStats({ racerCount, activeRacerCount, tournamentProgres
     <div className="space-y-6">
       <Card className="racing-card shadow-card">
         <CardHeader>
-          <CardTitle className="text-lg font-semibold racing-gradient-text">VrakFest Racing Tournament ™</CardTitle>
+          <CardTitle className="text-lg font-semibold racing-gradient-text">VrakFest závody 2025</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <StatCard
-            title="Championships"
-            value={tournamentProgress}
-            subtitle="Championships"
+            title="Completed VrakFests"
+            value={3}
+            subtitle="VrakFestů se již jelo"
             icon={Trophy}
             color="racing-accent"
           />
           <StatCard
-            title="Active Racers"
-            value={activeRacerCount}
-            subtitle="Active Racers"
+            title="Remaining Events"
+            value={5}
+            subtitle="VrakFest událostí zbývá"
             icon={Target}
+            color="racing-accent"
+          />
+          <StatCard
+            title="Current Racers"
+            value={activeRacerCount}
+            subtitle="aktuálně přihlášených jezdců"
+            icon={Award}
             color="racing-accent"
           />
           <StatCard
             title="Total Racers"
             value={racerCount}
-            subtitle="Total Registered"
+            subtitle="celkový počet jezdců v roce"
             icon={Award}
             color="racing-accent"
           />
