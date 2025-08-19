@@ -66,6 +66,7 @@ const Index = () => {
             <DashboardActions 
               onStartTournament={handleStartTournament}
               onViewControl={handleViewControl}
+              isTournamentActive={tournament.isActive}
             />
             
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -127,6 +128,7 @@ const Index = () => {
             <DashboardActions 
               onStartTournament={handleStartTournament}
               onViewControl={handleViewControl}
+              isTournamentActive={tournament.isActive}
             />
             
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
