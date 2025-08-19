@@ -1,4 +1,10 @@
 import { Home, Users, Trophy, BarChart3, Settings, Calculator } from 'lucide-react';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
 import {
   Sidebar,
   SidebarContent,
@@ -19,6 +25,28 @@ interface AppSidebarProps {
 export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
   const { state } = useSidebar();
   const isCollapsed = state === 'collapsed';
+  const { toast } = useToast();
+  const [isEventSettingsOpen, setIsEventSettingsOpen] = useState(false);
+  const [eventSettings, setEventSettings] = useState(() => {
+    const saved = localStorage.getItem('vrakfest-event-settings');
+    return saved ? JSON.parse(saved) : {
+      eventName: 'VrakFest Racing Championship',
+      eventDate: '2024-12-31',
+      eventTime: '18:00',
+      ctaText: 'Register Now',
+      ctaLink: '#'
+    };
+  });
+
+  const handleSaveEventSettings = (e: React.FormEvent) => {
+    e.preventDefault();
+    localStorage.setItem('vrakfest-event-settings', JSON.stringify(eventSettings));
+    setIsEventSettingsOpen(false);
+    toast({
+      title: "Nastavení uloženo",
+      description: "Údaje o události byly úspěšně aktualizovány.",
+    });
+  };
 
   const menuItems = [
     { id: 'jezdci', label: 'Home', icon: Home },
@@ -52,17 +80,75 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
             <SidebarMenu className="px-2">
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.id}>
-                  <SidebarMenuButton
-                    onClick={() => onTabChange(item.id)}
-                    className={`w-full justify-start gap-3 rounded-lg px-3 py-2 transition-racing ${
-                      activeTab === item.id
-                        ? 'racing-gradient shadow-racing text-racing-black font-medium'
-                        : 'text-muted-foreground hover:bg-muted/50 hover:text-racing-white'
-                    }`}
-                  >
-                    <item.icon className="h-4 w-4" />
-                    {!isCollapsed && <span>{item.label}</span>}
-                  </SidebarMenuButton>
+                  {item.id === 'settings' ? (
+                    <Dialog open={isEventSettingsOpen} onOpenChange={setIsEventSettingsOpen}>
+                      <DialogTrigger asChild>
+                        <SidebarMenuButton
+                          className={`w-full justify-start gap-3 rounded-lg px-3 py-2 transition-racing ${
+                            activeTab === item.id
+                              ? 'racing-gradient shadow-racing text-racing-black font-medium'
+                              : 'text-muted-foreground hover:bg-muted/50 hover:text-racing-white'
+                          }`}
+                        >
+                          <item.icon className="h-4 w-4" />
+                          {!isCollapsed && <span>{item.label}</span>}
+                        </SidebarMenuButton>
+                      </DialogTrigger>
+                      <DialogContent className="racing-card">
+                        <DialogHeader>
+                          <DialogTitle className="racing-gradient-text">Nastavení události</DialogTitle>
+                        </DialogHeader>
+                        <form onSubmit={handleSaveEventSettings} className="space-y-4">
+                          <div>
+                            <Label htmlFor="eventName" className="text-racing-white">Název události</Label>
+                            <Input
+                              id="eventName"
+                              value={eventSettings.eventName}
+                              onChange={(e) => setEventSettings(prev => ({ ...prev, eventName: e.target.value }))}
+                              className="racing-input"
+                            />
+                          </div>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <Label htmlFor="eventDate" className="text-racing-white">Datum</Label>
+                              <Input
+                                id="eventDate"
+                                type="date"
+                                value={eventSettings.eventDate}
+                                onChange={(e) => setEventSettings(prev => ({ ...prev, eventDate: e.target.value }))}
+                                className="racing-input"
+                              />
+                            </div>
+                            <div>
+                              <Label htmlFor="eventTime" className="text-racing-white">Čas</Label>
+                              <Input
+                                id="eventTime"
+                                type="time"
+                                value={eventSettings.eventTime}
+                                onChange={(e) => setEventSettings(prev => ({ ...prev, eventTime: e.target.value }))}
+                                className="racing-input"
+                              />
+                            </div>
+                          </div>
+                          <Button type="submit" className="w-full racing-btn-primary">
+                            Uložit nastavení
+                          </Button>
+                        </form>
+                      </DialogContent>
+                    </Dialog>
+                  ) : (
+                    <SidebarMenuButton
+                      onClick={() => onTabChange(item.id)}
+                      className={`w-full justify-start gap-3 rounded-lg px-3 py-2 transition-racing ${
+                        activeTab === item.id
+                          ? 'racing-gradient shadow-racing text-racing-black font-medium'
+                          : 'text-muted-foreground hover:bg-muted/50 hover:text-racing-white'
+                      }`}
+                    >
+                      <item.icon className="h-4 w-4" />
+                      {!isCollapsed && <span>{item.label}</span>}
+                    </SidebarMenuButton>
+                  )}
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>

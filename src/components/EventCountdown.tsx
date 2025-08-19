@@ -1,10 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Settings } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useToast } from '@/hooks/use-toast';
 
 interface EventSettings {
   eventName: string;
@@ -22,10 +16,8 @@ interface TimeRemaining {
 }
 
 export function EventCountdown() {
-  const { toast } = useToast();
-  const [isOpen, setIsOpen] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState<TimeRemaining>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-  const [settings, setSettings] = useState<EventSettings>(() => {
+  const [settings] = useState<EventSettings>(() => {
     const saved = localStorage.getItem('vrakfest-event-settings');
     return saved ? JSON.parse(saved) : {
       eventName: 'VrakFest Racing Championship',
@@ -63,16 +55,6 @@ export function EventCountdown() {
     return () => clearInterval(timer);
   }, [settings.eventDate, settings.eventTime]);
 
-  const handleSaveSettings = (e: React.FormEvent) => {
-    e.preventDefault();
-    localStorage.setItem('vrakfest-event-settings', JSON.stringify(settings));
-    setIsOpen(false);
-    toast({
-      title: "Nastavení uloženo",
-      description: "Údaje o události byly úspěšně aktualizovány.",
-    });
-  };
-
   const formatDateTime = () => {
     const date = new Date(`${settings.eventDate}T${settings.eventTime}`);
     return date.toLocaleString('cs-CZ', {
@@ -85,127 +67,37 @@ export function EventCountdown() {
     });
   };
 
-  const handleCtaClick = () => {
-    if (settings.ctaLink && settings.ctaLink !== '#') {
-      try {
-        const url = settings.ctaLink.startsWith('http') ? settings.ctaLink : `https://${settings.ctaLink}`;
-        window.open(url, '_blank', 'noopener,noreferrer');
-      } catch (error) {
-        console.error('Error opening link:', error);
-        // Fallback - try to navigate in same window
-        window.location.href = settings.ctaLink;
-      }
-    }
-  };
-
   return (
     <div className="racing-gradient rounded-lg p-8 text-center shadow-glow relative">
       <div className="text-racing-black">
         <div className="flex justify-center mb-4">
-          <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogTrigger asChild>
-              <Button
-                variant="ghost"
-                className="bg-racing-black/10 rounded-full px-4 py-1 text-xs font-medium hover:bg-racing-black/20 transition-colors"
-              >
-                Nadcházející událost
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="racing-card">
-              <DialogHeader>
-                <DialogTitle className="racing-gradient-text">Nastavení události</DialogTitle>
-              </DialogHeader>
-              <form onSubmit={handleSaveSettings} className="space-y-4">
-                <div>
-                  <Label htmlFor="eventName" className="text-racing-white">Název události</Label>
-                  <Input
-                    id="eventName"
-                    value={settings.eventName}
-                    onChange={(e) => setSettings(prev => ({ ...prev, eventName: e.target.value }))}
-                    className="racing-input"
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="eventDate" className="text-racing-white">Datum</Label>
-                    <Input
-                      id="eventDate"
-                      type="date"
-                      value={settings.eventDate}
-                      onChange={(e) => setSettings(prev => ({ ...prev, eventDate: e.target.value }))}
-                      className="racing-input"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="eventTime" className="text-racing-white">Čas</Label>
-                    <Input
-                      id="eventTime"
-                      type="time"
-                      value={settings.eventTime}
-                      onChange={(e) => setSettings(prev => ({ ...prev, eventTime: e.target.value }))}
-                      className="racing-input"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <Label htmlFor="ctaText" className="text-racing-white">Text tlačítka</Label>
-                  <Input
-                    id="ctaText"
-                    value={settings.ctaText}
-                    onChange={(e) => setSettings(prev => ({ ...prev, ctaText: e.target.value }))}
-                    className="racing-input"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="ctaLink" className="text-racing-white">Odkaz tlačítka</Label>
-                  <Input
-                    id="ctaLink"
-                    value={settings.ctaLink}
-                    onChange={(e) => setSettings(prev => ({ ...prev, ctaLink: e.target.value }))}
-                    placeholder="https://..."
-                    className="racing-input"
-                  />
-                </div>
-                <Button type="submit" className="w-full racing-btn-primary">
-                  Uložit nastavení
-                </Button>
-              </form>
-            </DialogContent>
-          </Dialog>
+          <div className="bg-racing-black/10 rounded-full px-6 py-2 text-sm font-medium">
+            Nadcházející událost
+          </div>
         </div>
         
         <h2 className="text-2xl font-bold mb-2">{settings.eventName}</h2>
         
         <p className="text-sm opacity-75 mb-6">{formatDateTime()}</p>
         
-        <div className="mb-6">
-          <div className="grid grid-cols-4 gap-4">
-            <div className="bg-racing-black/10 rounded-lg p-3">
-              <div className="text-3xl font-bold">{timeRemaining.days}</div>
-              <div className="text-sm">Dní</div>
-            </div>
-            <div className="bg-racing-black/10 rounded-lg p-3">
-              <div className="text-3xl font-bold">{timeRemaining.hours}</div>
-              <div className="text-sm">Hodin</div>
-            </div>
-            <div className="bg-racing-black/10 rounded-lg p-3">
-              <div className="text-3xl font-bold">{timeRemaining.minutes}</div>
-              <div className="text-sm">Minut</div>
-            </div>
-            <div className="bg-racing-black/10 rounded-lg p-3">
-              <div className="text-3xl font-bold">{timeRemaining.seconds}</div>
-              <div className="text-sm">Sekund</div>
-            </div>
+        <div className="grid grid-cols-4 gap-4">
+          <div className="bg-racing-black/10 rounded-lg p-3">
+            <div className="text-3xl font-bold">{timeRemaining.days}</div>
+            <div className="text-sm">Dní</div>
+          </div>
+          <div className="bg-racing-black/10 rounded-lg p-3">
+            <div className="text-3xl font-bold">{timeRemaining.hours}</div>
+            <div className="text-sm">Hodin</div>
+          </div>
+          <div className="bg-racing-black/10 rounded-lg p-3">
+            <div className="text-3xl font-bold">{timeRemaining.minutes}</div>
+            <div className="text-sm">Minut</div>
+          </div>
+          <div className="bg-racing-black/10 rounded-lg p-3">
+            <div className="text-3xl font-bold">{timeRemaining.seconds}</div>
+            <div className="text-sm">Sekund</div>
           </div>
         </div>
-
-        <Button 
-          onClick={handleCtaClick}
-          className="bg-racing-black text-racing-white hover:bg-racing-black/90 text-base px-8 py-3"
-          disabled={!settings.ctaLink || settings.ctaLink === '#'}
-        >
-          {settings.ctaText}
-        </Button>
       </div>
     </div>
   );
