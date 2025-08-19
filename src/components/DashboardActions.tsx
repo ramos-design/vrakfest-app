@@ -1,4 +1,4 @@
-import { Play, Gauge, Wrench, Battery, CircleDot, Lock } from 'lucide-react';
+import { Play, Gauge, BarChart3, Bell, BookOpen } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 
 interface ActionCardProps {
@@ -31,16 +31,15 @@ interface DashboardActionsProps {
 
 export function DashboardActions({ onStartTournament, onViewControl }: DashboardActionsProps) {
   const actions = [
-    { icon: Play, label: 'Start', color: 'racing-gradient shadow-glow', onClick: onStartTournament },
-    { icon: Gauge, label: 'Drive', color: 'dark-gradient border border-racing-yellow/30', onClick: onViewControl },
-    { icon: Wrench, label: 'Maintenance', color: 'dark-gradient border border-white/20' },
-    { icon: Battery, label: 'Battery', color: 'dark-gradient border border-white/20' },
-    { icon: CircleDot, label: 'Tires', color: 'dark-gradient border border-white/20' },
-    { icon: Lock, label: 'Lock', color: 'dark-gradient border border-white/20' },
+    { icon: Play, label: 'Zahájit závod', color: 'racing-gradient shadow-glow', onClick: onStartTournament },
+    { icon: Gauge, label: 'Kontrola', color: 'dark-gradient border border-racing-yellow/30', onClick: onViewControl },
+    { icon: BarChart3, label: 'Statistiky', color: 'dark-gradient border border-white/20' },
+    { icon: Bell, label: 'Oznámení', color: 'dark-gradient border border-white/20' },
+    { icon: BookOpen, label: 'Pravidla', color: 'dark-gradient border border-white/20' },
   ];
 
   return (
-    <div className="grid grid-cols-6 gap-4">
+    <div className="grid grid-cols-5 gap-4">
       {actions.map((action, index) => (
         <ActionCard
           key={index}
