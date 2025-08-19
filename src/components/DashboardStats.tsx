@@ -42,7 +42,7 @@ export function DashboardStats({
         </CardHeader>
         <CardContent className="space-y-4">
           <StatCard title="Completed VrakFests" value={3} subtitle="VrakFestů se již jelo" icon={Trophy} color="racing-accent" />
-          <StatCard title="Remaining Events" value={5} subtitle="VrakFest událostí zbývá" icon={Target} color="racing-accent" />
+          <StatCard title="Remaining Events" value={1} subtitle="VrakFest událostí zbývá" icon={Target} color="racing-accent" />
           <StatCard title="Current Racers" value={activeRacerCount} subtitle="aktuálně přihlášených jezdců" icon={Award} color="racing-accent" />
           <StatCard title="Total Racers" value={racerCount} subtitle="celkový počet jezdců v roce" icon={Award} color="racing-accent" />
         </CardContent>
