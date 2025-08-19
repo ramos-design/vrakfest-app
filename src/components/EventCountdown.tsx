@@ -72,7 +72,7 @@ export function EventCountdown() {
   };
   return <div className="racing-gradient rounded-lg p-8 text-center shadow-glow relative py-[33px]">
       <div className="text-racing-black px-[2px] py-0 my-0 mx-0">
-        <div className="flex flex-col items-center mb-6">
+        <div className="flex flex-col items-center mb-6 px-0 my-0 py-[5px]">
           <div className="bg-racing-black rounded-full px-3 py-1 text-sm font-medium text-racing-white mb-3">
             Nadcházející událost
           </div>
