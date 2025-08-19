@@ -77,66 +77,7 @@ export const useRacingTournament = () => {
         group.id === groupId ? { ...group, isCompleted: true } : group
       );
 
-      const currentCategoryGroups = updatedGroups.filter(g => 
-        g.category === prev.currentCategory && g.round === prev.currentRound
-      );
-      
-      const allCurrentRoundCompleted = currentCategoryGroups.every(g => g.isCompleted);
-
-      if (allCurrentRoundCompleted) {
-        // Check if we need to move to next category or next round
-        const activeRacers = updatedRacers.filter(r => r.isActive);
-        const currentCategoryActiveRacers = activeRacers.filter(r => r.category === prev.currentCategory);
-        
-        // Find next category with active racers
-        const currentCategoryIndex = categories.indexOf(prev.currentCategory);
-        const nextCategory = categories.slice(currentCategoryIndex + 1).find(cat =>
-          activeRacers.some(r => r.category === cat)
-        );
-
-        if (nextCategory && prev.currentRound <= 3) {
-          // Move to next category in same round
-          const nextCategoryGroups = createGroups(activeRacers, nextCategory, prev.currentRound);
-          return {
-            ...prev,
-            currentCategory: nextCategory,
-            groups: [...updatedGroups, ...nextCategoryGroups]
-          };
-        } else if (prev.currentRound <= 3) {
-          // All categories finished this round, move to next round
-          const nextRound = prev.currentRound + 1;
-          const firstCategoryWithRacers = categories.find(cat =>
-            activeRacers.some(r => r.category === cat)
-          ) || 'do 1.6L';
-          
-          const nextRoundGroups = createGroups(activeRacers, firstCategoryWithRacers, nextRound);
-          
-          return {
-            ...prev,
-            currentRound: nextRound,
-            currentCategory: firstCategoryWithRacers,
-            groups: [...updatedGroups, ...nextRoundGroups]
-          };
-        } else {
-          // From round 4+, continue with elimination rounds
-          const advancingRacers = activeRacers.filter(r => shouldAdvanceRacer(r, prev.currentRound));
-          
-          if (advancingRacers.length <= 6) {
-            // Tournament finished
-            return { ...prev, groups: updatedGroups, isActive: false };
-          }
-          
-          const nextRound = prev.currentRound + 1;
-          const nextRoundGroups = createGroups(advancingRacers, prev.currentCategory, nextRound);
-          
-          return {
-            ...prev,
-            currentRound: nextRound,
-            groups: [...updatedGroups, ...nextRoundGroups]
-          };
-        }
-      }
-
+      // Simply return with completed group - don't advance rounds/categories until all groups are done
       return { ...prev, groups: updatedGroups };
     });
   }, [racers]);
