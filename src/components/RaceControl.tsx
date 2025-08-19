@@ -47,9 +47,6 @@ export const RaceControl = ({ currentGroup, onCompleteRace }: RaceControlProps) 
     setPoints({});
   };
 
-  const allPointsAssigned = currentGroup.racers.every(racer => 
-    points[racer.id] !== undefined && points[racer.id] >= 0
-  );
 
   return (
     <Card className="shadow-card">
@@ -131,7 +128,6 @@ export const RaceControl = ({ currentGroup, onCompleteRace }: RaceControlProps) 
           <div className="pt-4 border-t">
             <Button
               onClick={handleCompleteRace}
-              disabled={!allPointsAssigned}
               className="w-full racing-gradient shadow-racing"
               size="lg"
             >

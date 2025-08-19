@@ -54,18 +54,22 @@ export const useRacingTournament = () => {
   }, []);
 
   const completeRace = useCallback((groupId: string, results: RaceResult[]) => {
-    // Update racer points
-    setRacers(prev => prev.map(racer => {
-      const result = results.find(r => r.racerId === racer.id);
-      if (result) {
-        return {
-          ...racer,
-          points: racer.points + result.points,
-          isActive: result.advances
-        };
-      }
-      return racer;
-    }));
+    // Update racer points and get updated racers
+    let updatedRacers: Racer[];
+    setRacers(prev => {
+      updatedRacers = prev.map(racer => {
+        const result = results.find(r => r.racerId === racer.id);
+        if (result) {
+          return {
+            ...racer,
+            points: racer.points + result.points,
+            isActive: result.advances
+          };
+        }
+        return racer;
+      });
+      return updatedRacers;
+    });
 
     // Mark group as completed
     setTournament(prev => {
@@ -81,7 +85,7 @@ export const useRacingTournament = () => {
 
       if (allCurrentRoundCompleted) {
         // Check if we need to move to next category or next round
-        const activeRacers = racers.filter(r => r.isActive);
+        const activeRacers = updatedRacers.filter(r => r.isActive);
         const currentCategoryActiveRacers = activeRacers.filter(r => r.category === prev.currentCategory);
         
         // Find next category with active racers
