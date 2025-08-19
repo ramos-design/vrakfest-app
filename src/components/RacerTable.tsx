@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Pencil, Trash2, Users } from 'lucide-react';
 import { Racer, RacerCategory } from '@/types/racing';
 import { categories, getCategoryBadgeColor } from '@/utils/racingUtils';
+import { capitalizeText } from '@/lib/utils';
 
 interface RacerTableProps {
   racers: Racer[];
@@ -96,9 +97,9 @@ export const RacerTable = ({ racers, onEdit, onDelete, onAdd }: RacerTableProps)
                   </Badge>
                 </TableCell>
                 <TableCell className="font-medium">
-                  {racer.firstName} {racer.lastName}
+                  {capitalizeText(racer.firstName)} {capitalizeText(racer.lastName)}
                 </TableCell>
-                <TableCell className="text-muted-foreground">{racer.vehicleType}</TableCell>
+                <TableCell className="text-muted-foreground">{capitalizeText(racer.vehicleType)}</TableCell>
                 <TableCell>
                   <Badge className={`${getCategoryBadgeColor(racer.category)} text-white border-0`}>
                     {racer.category}
