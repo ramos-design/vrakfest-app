@@ -90,8 +90,8 @@ export const RacerTable = ({ racers, onEdit, onDelete, onAdd }: RacerTableProps)
             {sortedRacers.map((racer, index) => (
               <TableRow key={racer.id} className="border-border hover:bg-muted/30 transition-racing">
                 <TableCell>
-                  <Badge variant="outline" className="font-mono text-primary border-primary">
-                    #{racer.startNumber}
+                  <Badge className="font-mono bg-yellow-400 text-black border-0 hover:bg-yellow-400">
+                    {racer.startNumber}
                   </Badge>
                 </TableCell>
                 <TableCell className="font-medium">
