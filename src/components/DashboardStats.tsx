@@ -15,9 +15,22 @@ function StatCard({
   color,
   subtitle
 }: StatCardProps) {
+  const renderValue = () => {
+    if (typeof value === 'string' && value.includes('/')) {
+      const [current, max] = value.split('/');
+      return (
+        <span className="text-2xl font-bold">
+          <span className="text-yellow-400">{current}</span>
+          <span className="text-muted-foreground">/{max}</span>
+        </span>
+      );
+    }
+    return <span className="text-2xl font-bold text-racing-white">{value}</span>;
+  };
+
   return <div className="flex items-center justify-between">
       <div>
-        <p className="text-2xl font-bold text-racing-white">{value}</p>
+        {renderValue()}
         <p className="text-sm text-muted-foreground">{subtitle}</p>
       </div>
       <div className={`w-12 h-12 rounded-full flex items-center justify-center ${color}`}>
@@ -43,7 +56,7 @@ export function DashboardStats({
         <CardContent className="space-y-4">
           <StatCard title="Completed VrakFests" value={3} subtitle="VrakFestů se již jelo" icon={Trophy} color="racing-accent" />
           <StatCard title="Remaining Events" value={1} subtitle="VrakFest událostí zbývá" icon={Target} color="racing-accent" />
-          <StatCard title="Current Racers" value={activeRacerCount} subtitle="aktuálně přihlášených jezdců" icon={Award} color="racing-accent" />
+          <StatCard title="Current Racers" value="52/80" subtitle="aktuálně přihlášených jezdců" icon={Award} color="racing-accent" />
           <StatCard title="Total Racers" value={racerCount} subtitle="celkový počet jezdců v roce" icon={Award} color="racing-accent" />
         </CardContent>
       </Card>
