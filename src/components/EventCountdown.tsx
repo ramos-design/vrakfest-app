@@ -7,9 +7,9 @@ interface TimeRemaining {
 }
 
 const DEFAULT_SETTINGS = {
-  eventName: 'VrakFest Racing Championship',
-  eventDate: '2024-12-31',
-  eventTime: '18:00',
+  eventName: 'VrakFest Branky na Moravě',
+  eventDate: '2025-09-13',
+  eventTime: '09:00',
   ctaText: 'Register Now',
   ctaLink: '#'
 };
