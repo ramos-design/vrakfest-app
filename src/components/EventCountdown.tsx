@@ -1,30 +1,25 @@
 import React, { useState, useEffect } from 'react';
-interface EventSettings {
-  eventName: string;
-  eventDate: string;
-  eventTime: string;
-  ctaText: string;
-  ctaLink: string;
-}
 interface TimeRemaining {
   days: number;
   hours: number;
   minutes: number;
   seconds: number;
 }
+
+const DEFAULT_SETTINGS = {
+  eventName: 'VrakFest Racing Championship',
+  eventDate: '2024-12-31',
+  eventTime: '18:00',
+  ctaText: 'Register Now',
+  ctaLink: '#'
+};
+
 export function EventCountdown() {
   const [timeRemaining, setTimeRemaining] = useState<TimeRemaining>({
     days: 0,
     hours: 0,
     minutes: 0,
     seconds: 0
-  });
-  const [settings] = useState<EventSettings>({
-    eventName: 'VrakFest Racing Championship',
-    eventDate: '2024-12-31',
-    eventTime: '18:00',
-    ctaText: 'Register Now',
-    ctaLink: '#'
   });
   const calculateTimeRemaining = (targetDate: Date): TimeRemaining => {
     const now = new Date().getTime();
@@ -50,14 +45,15 @@ export function EventCountdown() {
     };
   };
   useEffect(() => {
-    const targetDate = new Date(`${settings.eventDate}T${settings.eventTime}`);
+    const targetDate = new Date(`${DEFAULT_SETTINGS.eventDate}T${DEFAULT_SETTINGS.eventTime}`);
     const timer = setInterval(() => {
       setTimeRemaining(calculateTimeRemaining(targetDate));
     }, 1000);
     return () => clearInterval(timer);
-  }, [settings.eventDate, settings.eventTime]);
+  }, []);
+  
   const formatDateTime = () => {
-    const date = new Date(`${settings.eventDate}T${settings.eventTime}`);
+    const date = new Date(`${DEFAULT_SETTINGS.eventDate}T${DEFAULT_SETTINGS.eventTime}`);
     return date.toLocaleString('cs-CZ', {
       weekday: 'long',
       year: 'numeric',
@@ -74,7 +70,7 @@ export function EventCountdown() {
             Nadcházející událost
           </div>
           
-          <h2 className="text-2xl font-bold mb-1 px-0">{settings.eventName}</h2>
+          <h2 className="text-2xl font-bold mb-1 px-0">{DEFAULT_SETTINGS.eventName}</h2>
           
           <p className="text-sm opacity-75">{formatDateTime()}</p>
         </div>
