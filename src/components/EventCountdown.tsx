@@ -106,10 +106,9 @@ export function EventCountdown() {
             <DialogTrigger asChild>
               <Button
                 variant="ghost"
-                className="bg-racing-black/10 rounded-full px-4 py-1 text-xs font-medium hover:bg-racing-black/20 transition-colors flex items-center gap-2"
+                className="bg-racing-black/10 rounded-full px-4 py-1 text-xs font-medium hover:bg-racing-black/20 transition-colors"
               >
-                <Settings className="h-3 w-3" />
-                nadcházející událost
+                Nadcházející událost
               </Button>
             </DialogTrigger>
             <DialogContent className="racing-card">
