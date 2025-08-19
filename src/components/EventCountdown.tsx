@@ -19,15 +19,12 @@ export function EventCountdown() {
     minutes: 0,
     seconds: 0
   });
-  const [settings] = useState<EventSettings>(() => {
-    const saved = localStorage.getItem('vrakfest-event-settings');
-    return saved ? JSON.parse(saved) : {
-      eventName: 'VrakFest Racing Championship',
-      eventDate: '2024-12-31',
-      eventTime: '18:00',
-      ctaText: 'Register Now',
-      ctaLink: '#'
-    };
+  const [settings] = useState<EventSettings>({
+    eventName: 'VrakFest Racing Championship',
+    eventDate: '2024-12-31',
+    eventTime: '18:00',
+    ctaText: 'Register Now',
+    ctaLink: '#'
   });
   const calculateTimeRemaining = (targetDate: Date): TimeRemaining => {
     const now = new Date().getTime();
