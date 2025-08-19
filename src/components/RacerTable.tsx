@@ -78,7 +78,6 @@ export const RacerTable = ({ racers, onEdit, onDelete, onAdd }: RacerTableProps)
         <Table>
           <TableHeader>
             <TableRow className="border-border">
-              <TableHead className="text-muted-foreground">Poz.</TableHead>
               <TableHead className="text-muted-foreground">Číslo</TableHead>
               <TableHead className="text-muted-foreground">Jméno</TableHead>
               <TableHead className="text-muted-foreground">Vozidlo</TableHead>
@@ -90,7 +89,6 @@ export const RacerTable = ({ racers, onEdit, onDelete, onAdd }: RacerTableProps)
           <TableBody>
             {sortedRacers.map((racer, index) => (
               <TableRow key={racer.id} className="border-border hover:bg-muted/30 transition-racing">
-                <TableCell className="font-bold">{index + 1}.</TableCell>
                 <TableCell>
                   <Badge variant="outline" className="font-mono text-primary border-primary">
                     #{racer.startNumber}
