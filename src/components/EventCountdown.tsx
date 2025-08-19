@@ -70,13 +70,13 @@ export function EventCountdown() {
   return (
     <div className="racing-gradient rounded-lg p-8 text-center shadow-glow relative">
       <div className="text-racing-black">
-        <div className="flex justify-center mb-4">
+        <div className="flex justify-center mb-3">
           <div className="bg-racing-black rounded-full px-3 py-1 text-sm font-medium text-racing-white">
             Nadcházející událost
           </div>
         </div>
         
-        <h2 className="text-2xl font-bold mb-2">{settings.eventName}</h2>
+        <h2 className="text-2xl font-bold mb-3">{settings.eventName}</h2>
         
         <p className="text-sm opacity-75 mb-6">{formatDateTime()}</p>
         
