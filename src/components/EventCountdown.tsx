@@ -100,69 +100,6 @@ export function EventCountdown() {
 
   return (
     <div className="racing-gradient rounded-lg p-8 text-center shadow-glow relative">
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="racing-card">
-          <DialogHeader>
-            <DialogTitle className="racing-gradient-text">Nastavení události</DialogTitle>
-          </DialogHeader>
-          <form onSubmit={handleSaveSettings} className="space-y-4">
-            <div>
-              <Label htmlFor="eventName" className="text-racing-white">Název události</Label>
-              <Input
-                id="eventName"
-                value={settings.eventName}
-                onChange={(e) => setSettings(prev => ({ ...prev, eventName: e.target.value }))}
-                className="racing-input"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="eventDate" className="text-racing-white">Datum</Label>
-                <Input
-                  id="eventDate"
-                  type="date"
-                  value={settings.eventDate}
-                  onChange={(e) => setSettings(prev => ({ ...prev, eventDate: e.target.value }))}
-                  className="racing-input"
-                />
-              </div>
-              <div>
-                <Label htmlFor="eventTime" className="text-racing-white">Čas</Label>
-                <Input
-                  id="eventTime"
-                  type="time"
-                  value={settings.eventTime}
-                  onChange={(e) => setSettings(prev => ({ ...prev, eventTime: e.target.value }))}
-                  className="racing-input"
-                />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="ctaText" className="text-racing-white">Text tlačítka</Label>
-              <Input
-                id="ctaText"
-                value={settings.ctaText}
-                onChange={(e) => setSettings(prev => ({ ...prev, ctaText: e.target.value }))}
-                className="racing-input"
-              />
-            </div>
-            <div>
-              <Label htmlFor="ctaLink" className="text-racing-white">Odkaz tlačítka</Label>
-              <Input
-                id="ctaLink"
-                value={settings.ctaLink}
-                onChange={(e) => setSettings(prev => ({ ...prev, ctaLink: e.target.value }))}
-                placeholder="https://..."
-                className="racing-input"
-              />
-            </div>
-            <Button type="submit" className="w-full racing-btn-primary">
-              Uložit nastavení
-            </Button>
-          </form>
-        </DialogContent>
-      </Dialog>
-
       <div className="text-racing-black">
         <div className="grid grid-cols-3 items-center mb-4">
           <div></div>
@@ -172,15 +109,77 @@ export function EventCountdown() {
             </div>
           </div>
           <div className="flex justify-end">
-            <DialogTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-racing-black hover:bg-racing-black/10"
-              >
-                <Settings className="h-4 w-4" />
-              </Button>
-            </DialogTrigger>
+            <Dialog open={isOpen} onOpenChange={setIsOpen}>
+              <DialogTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-racing-black hover:bg-racing-black/10"
+                >
+                  <Settings className="h-4 w-4" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="racing-card">
+                <DialogHeader>
+                  <DialogTitle className="racing-gradient-text">Nastavení události</DialogTitle>
+                </DialogHeader>
+                <form onSubmit={handleSaveSettings} className="space-y-4">
+                  <div>
+                    <Label htmlFor="eventName" className="text-racing-white">Název události</Label>
+                    <Input
+                      id="eventName"
+                      value={settings.eventName}
+                      onChange={(e) => setSettings(prev => ({ ...prev, eventName: e.target.value }))}
+                      className="racing-input"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="eventDate" className="text-racing-white">Datum</Label>
+                      <Input
+                        id="eventDate"
+                        type="date"
+                        value={settings.eventDate}
+                        onChange={(e) => setSettings(prev => ({ ...prev, eventDate: e.target.value }))}
+                        className="racing-input"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="eventTime" className="text-racing-white">Čas</Label>
+                      <Input
+                        id="eventTime"
+                        type="time"
+                        value={settings.eventTime}
+                        onChange={(e) => setSettings(prev => ({ ...prev, eventTime: e.target.value }))}
+                        className="racing-input"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <Label htmlFor="ctaText" className="text-racing-white">Text tlačítka</Label>
+                    <Input
+                      id="ctaText"
+                      value={settings.ctaText}
+                      onChange={(e) => setSettings(prev => ({ ...prev, ctaText: e.target.value }))}
+                      className="racing-input"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="ctaLink" className="text-racing-white">Odkaz tlačítka</Label>
+                    <Input
+                      id="ctaLink"
+                      value={settings.ctaLink}
+                      onChange={(e) => setSettings(prev => ({ ...prev, ctaLink: e.target.value }))}
+                      placeholder="https://..."
+                      className="racing-input"
+                    />
+                  </div>
+                  <Button type="submit" className="w-full racing-btn-primary">
+                    Uložit nastavení
+                  </Button>
+                </form>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
         
