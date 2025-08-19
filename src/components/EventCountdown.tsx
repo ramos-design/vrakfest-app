@@ -166,10 +166,16 @@ export function EventCountdown() {
       </Dialog>
 
       <div className="text-racing-black">
-        <h2 className="text-2xl font-bold mb-6">{settings.eventName}</h2>
+        <div className="inline-block bg-racing-black/10 rounded-full px-4 py-1 text-xs font-medium mb-4">
+          nadcházející událost
+        </div>
         
-        <div className="mb-4">
-          <div className="grid grid-cols-4 gap-4 mb-4">
+        <h2 className="text-2xl font-bold mb-4">{settings.eventName}</h2>
+        
+        <p className="text-sm opacity-75 mb-6">{formatDateTime()}</p>
+        
+        <div className="mb-6">
+          <div className="grid grid-cols-4 gap-4">
             <div className="bg-racing-black/10 rounded-lg p-3">
               <div className="text-3xl font-bold">{timeRemaining.days}</div>
               <div className="text-sm">Dní</div>
@@ -187,12 +193,11 @@ export function EventCountdown() {
               <div className="text-sm">Sekund</div>
             </div>
           </div>
-          <p className="text-sm opacity-75">{formatDateTime()}</p>
         </div>
 
         <Button 
           onClick={handleCtaClick}
-          className="racing-btn-primary text-lg px-8 py-3"
+          className="bg-racing-black text-racing-white hover:bg-racing-black/90 text-lg px-8 py-3"
           disabled={!settings.ctaLink || settings.ctaLink === '#'}
         >
           {settings.ctaText}
