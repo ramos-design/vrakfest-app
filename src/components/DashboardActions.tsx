@@ -21,11 +21,11 @@ function ActionCard({ icon: Icon, label, isActive = false, onClick }: ActionCard
       <div className="flex flex-col items-center gap-3">
         <div className={`w-12 h-12 rounded-lg flex items-center justify-center transition-all duration-300 ${
           isActive 
-            ? 'bg-racing-black/10' 
+            ? 'bg-racing-black' 
             : 'bg-white/20 group-hover:bg-racing-black/10'
         }`}>
           <Icon className={`h-6 w-6 transition-colors duration-300 ${
-            isActive ? 'text-racing-black' : 'text-white'
+            isActive ? 'text-white' : 'text-white'
           }`} />
         </div>
         <span className={`font-medium text-sm transition-colors duration-300 ${
