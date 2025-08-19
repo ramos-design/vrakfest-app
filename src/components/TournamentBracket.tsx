@@ -125,7 +125,7 @@ const RaceGroupCard = ({ group, isNext, isCurrentRace, onStartRace }: RaceGroupC
   };
 
   return (
-    <Card className={`transition-racing ${isCurrentRace ? 'ring-2 ring-primary' : ''} ${isNext ? 'border-primary' : ''}`}>
+    <Card className={`transition-racing ${isCurrentRace ? 'ring-2 ring-primary' : ''}`}>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
