@@ -39,11 +39,12 @@ function ActionCard({ icon: Icon, label, isActive = false, onClick }: ActionCard
 interface DashboardActionsProps {
   onStartTournament?: () => void;
   onViewControl?: () => void;
+  isTournamentActive?: boolean;
 }
 
-export function DashboardActions({ onStartTournament, onViewControl }: DashboardActionsProps) {
+export function DashboardActions({ onStartTournament, onViewControl, isTournamentActive = false }: DashboardActionsProps) {
   const actions = [
-    { icon: Play, label: 'Zahájit závod', isActive: true, onClick: onStartTournament },
+    { icon: Play, label: isTournamentActive ? 'Průběh závodu' : 'Zahájit závod', isActive: true, onClick: onStartTournament },
     { icon: Gauge, label: 'Kontrola', isActive: false, onClick: onViewControl },
     { icon: BarChart3, label: 'Statistiky', isActive: false },
     { icon: Car, label: 'Demolition derby', isActive: false },
