@@ -61,18 +61,16 @@ export const TournamentBracket = ({ tournament, racers, onStartRace, onStartTour
   return (
     <Card className="shadow-card">
       <CardHeader>
-        <div className="space-y-2">
+        <div className="flex items-center gap-4">
           <CardTitle className="racing-gradient bg-clip-text text-transparent text-2xl">
             Turnajový závod
           </CardTitle>
-          <div className="flex items-center gap-3">
-            <Badge variant="outline" className="text-base px-3 py-1">
-              Kolo {tournament.currentRound}
-            </Badge>
-            <Badge className={`${getCategoryBadgeColor(tournament.currentCategory)} text-white text-base px-3 py-1`}>
-              {tournament.currentCategory}
-            </Badge>
-          </div>
+          <Badge variant="outline" className="text-base px-3 py-1">
+            Kolo {tournament.currentRound}
+          </Badge>
+          <Badge className={`${getCategoryBadgeColor(tournament.currentCategory)} text-white text-base px-3 py-1`}>
+            {tournament.currentCategory}
+          </Badge>
         </div>
       </CardHeader>
       
