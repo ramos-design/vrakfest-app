@@ -87,7 +87,14 @@ export function EventCountdown() {
 
   const handleCtaClick = () => {
     if (settings.ctaLink && settings.ctaLink !== '#') {
-      window.open(settings.ctaLink, '_blank');
+      try {
+        const url = settings.ctaLink.startsWith('http') ? settings.ctaLink : `https://${settings.ctaLink}`;
+        window.open(url, '_blank', 'noopener,noreferrer');
+      } catch (error) {
+        console.error('Error opening link:', error);
+        // Fallback - try to navigate in same window
+        window.location.href = settings.ctaLink;
+      }
     }
   };
 
