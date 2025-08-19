@@ -1,5 +1,9 @@
 import { useState } from 'react';
-import { Navigation } from '@/components/Navigation';
+import { SidebarProvider } from '@/components/ui/sidebar';
+import { AppSidebar } from '@/components/AppSidebar';
+import { DashboardHeader } from '@/components/DashboardHeader';
+import { DashboardActions } from '@/components/DashboardActions';
+import { DashboardStats } from '@/components/DashboardStats';
 import { RacerTable } from '@/components/RacerTable';
 import { RacerForm } from '@/components/RacerForm';
 import { TournamentBracket } from '@/components/TournamentBracket';
@@ -45,15 +49,50 @@ const Index = () => {
     setEditingRacer(null);
   };
 
+  const handleStartTournament = () => {
+    setActiveTab('turnaj');
+    startTournament();
+  };
+
+  const handleViewControl = () => {
+    setActiveTab('kontrola');
+  };
+
   const renderMainContent = () => {
     switch (activeTab) {
       case 'jezdci':
         return (
-          <RacerTable
-            racers={racers}
-            onEdit={handleEditRacer}
-            onDelete={deleteRacer}
-          />
+          <div className="space-y-6">
+            <DashboardActions 
+              onStartTournament={handleStartTournament}
+              onViewControl={handleViewControl}
+            />
+            
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <RacerTable
+                  racers={racers}
+                  onEdit={handleEditRacer}
+                  onDelete={deleteRacer}
+                />
+              </div>
+              
+              <div className="space-y-6">
+                <RacerForm
+                  racer={editingRacer}
+                  onSave={handleSaveRacer}
+                  onCancel={handleCancelEdit}
+                  compact={true}
+                />
+                
+                <DashboardStats
+                  racerCount={racers.length}
+                  activeRacerCount={activeRacers.length}
+                  tournamentProgress={tournament?.currentRound || 0}
+                />
+              </div>
+            </div>
+          </div>
         );
       
       case 'turnaj':
@@ -83,37 +122,60 @@ const Index = () => {
         );
       
       default:
-        return null;
+        return (
+          <div className="space-y-6">
+            <DashboardActions 
+              onStartTournament={handleStartTournament}
+              onViewControl={handleViewControl}
+            />
+            
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <RacerTable
+                  racers={racers}
+                  onEdit={handleEditRacer}
+                  onDelete={deleteRacer}
+                />
+              </div>
+              
+              <div className="space-y-6">
+                <RacerForm
+                  racer={editingRacer}
+                  onSave={handleSaveRacer}
+                  onCancel={handleCancelEdit}
+                  compact={true}
+                />
+                
+                <DashboardStats
+                  racerCount={racers.length}
+                  activeRacerCount={activeRacers.length}
+                  tournamentProgress={tournament?.currentRound || 0}
+                />
+              </div>
+            </div>
+          </div>
+        );
     }
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-        racerCount={racers.length}
-        activeRacerCount={activeRacers.length}
-        onReset={resetTournament}
-      />
-      
-      <div className="flex">
-        {/* Sidebar with form */}
-        <div className="w-96 bg-card border-r border-border p-6">
-          <RacerForm
-            racer={editingRacer}
-            onSave={handleSaveRacer}
-            onCancel={handleCancelEdit}
-            compact={true}
-          />
-        </div>
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full bg-background">
+        <AppSidebar activeTab={activeTab} onTabChange={setActiveTab} />
         
-        {/* Main content */}
-        <div className="flex-1 p-6">
-          {renderMainContent()}
+        <div className="flex-1 flex flex-col">
+          <DashboardHeader
+            racerCount={racers.length}
+            activeRacerCount={activeRacers.length}
+            onReset={resetTournament}
+          />
+          
+          <main className="flex-1 p-6 overflow-auto">
+            {renderMainContent()}
+          </main>
         </div>
       </div>
-    </div>
+    </SidebarProvider>
   );
 };
 
