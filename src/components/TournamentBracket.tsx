@@ -126,7 +126,7 @@ const RaceGroupCard = ({ group, isNext, isCurrentRace, onStartRace }: RaceGroupC
 
   return (
     <Card className={`transition-racing ${isCurrentRace ? 'ring-2 ring-primary' : ''} ${
-      group.isCompleted ? 'opacity-70 grayscale bg-muted/20' : ''
+      group.isCompleted ? 'bg-muted/50' : ''
     }`}>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
@@ -157,26 +157,31 @@ const RaceGroupCard = ({ group, isNext, isCurrentRace, onStartRace }: RaceGroupC
       
       <CardContent>
         <div className="grid grid-cols-2 gap-2">
-          {group.racers.map((racer, index) => (
-            <div key={racer.id} className="flex items-center gap-2 p-2 bg-muted/30 rounded">
-              <Badge variant="outline" className="font-mono">
-                #{index + 1}
-              </Badge>
-              <span className="text-sm font-medium">
-                {racer.firstName} {racer.lastName}
-              </span>
-              <div className="ml-auto flex items-center gap-1">
-                <Badge variant="secondary" className="font-mono">
-                  {racer.points}b
+          {group.racers.map((racer, index) => {
+            // Simulace bodů získaných v tomto kole (0-3)
+            const roundPoints = group.isCompleted ? Math.floor(Math.random() * 4) : 0;
+            
+            return (
+              <div key={racer.id} className="flex items-center gap-2 p-2 bg-muted/30 rounded">
+                <Badge variant="outline" className="font-mono">
+                  #{index + 1}
                 </Badge>
-                {group.isCompleted && group.round === 1 && (
-                  <Badge className="bg-green-600 text-white font-mono text-xs">
-                    +{Math.min(3, Math.max(0, Math.floor(Math.random() * 4)))}
+                <span className="text-sm font-medium">
+                  {racer.firstName} {racer.lastName}
+                </span>
+                <div className="ml-auto flex items-center gap-1">
+                  <Badge variant="secondary" className="font-mono">
+                    {racer.points}b
                   </Badge>
-                )}
+                  {group.isCompleted && roundPoints > 0 && (
+                    <Badge className="bg-green-600 text-white font-mono text-xs">
+                      +{roundPoints}
+                    </Badge>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </CardContent>
     </Card>
