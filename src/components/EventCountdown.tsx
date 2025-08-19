@@ -105,7 +105,7 @@ export function EventCountdown() {
           <Button
             variant="ghost"
             size="icon"
-            className="absolute top-4 left-4 h-8 w-8 text-racing-black hover:bg-racing-black/10"
+            className="absolute top-4 right-4 h-8 w-8 text-racing-black hover:bg-racing-black/10"
           >
             <Settings className="h-4 w-4" />
           </Button>
@@ -173,8 +173,10 @@ export function EventCountdown() {
       </Dialog>
 
       <div className="text-racing-black">
-        <div className="inline-block bg-racing-black/10 rounded-full px-4 py-1 text-xs font-medium mb-4">
-          nadcházející událost
+        <div className="flex justify-between items-center mb-4">
+          <div className="inline-block bg-racing-black/10 rounded-full px-4 py-1 text-xs font-medium">
+            nadcházející událost
+          </div>
         </div>
         
         <h2 className="text-2xl font-bold mb-2">{settings.eventName}</h2>
