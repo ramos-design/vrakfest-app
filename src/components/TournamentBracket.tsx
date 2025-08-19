@@ -158,8 +158,8 @@ const RaceGroupCard = ({ group, isNext, isCurrentRace, onStartRace }: RaceGroupC
       <CardContent>
         <div className="grid grid-cols-2 gap-2">
           {group.racers.map((racer, index) => {
-            // Simulace bodů získaných v tomto kole (0-3)
-            const roundPoints = group.isCompleted ? Math.floor(Math.random() * 4) : 0;
+            // Najdi skutečné body přidělené v tomto kole
+            const roundPoints = group.results?.find(r => r.racerId === racer.id)?.points || 0;
             
             return (
               <div key={racer.id} className="flex items-center gap-2 p-2 bg-muted/30 rounded">

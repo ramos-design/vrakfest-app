@@ -72,7 +72,7 @@ export const useRacingTournament = () => {
     // Mark group as completed and keep tournament active
     setTournament(prev => {
       const updatedGroups = prev.groups.map(group =>
-        group.id === groupId ? { ...group, isCompleted: true } : group
+        group.id === groupId ? { ...group, isCompleted: true, results } : group
       );
 
       return { 

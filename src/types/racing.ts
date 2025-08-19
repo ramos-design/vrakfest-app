@@ -18,6 +18,7 @@ export interface RaceGroup {
   round: number;
   isCompleted: boolean;
   hasStarted: boolean;
+  results?: RaceResult[];
 }
 
 export interface Tournament {
