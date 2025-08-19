@@ -101,15 +101,6 @@ export function EventCountdown() {
   return (
     <div className="racing-gradient rounded-lg p-8 text-center shadow-glow relative">
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute top-4 right-4 h-8 w-8 text-racing-black hover:bg-racing-black/10"
-          >
-            <Settings className="h-4 w-4" />
-          </Button>
-        </DialogTrigger>
         <DialogContent className="racing-card">
           <DialogHeader>
             <DialogTitle className="racing-gradient-text">Nastavení události</DialogTitle>
@@ -173,9 +164,23 @@ export function EventCountdown() {
       </Dialog>
 
       <div className="text-racing-black">
-        <div className="flex justify-between items-center mb-4">
-          <div className="inline-block bg-racing-black/10 rounded-full px-4 py-1 text-xs font-medium">
-            nadcházející událost
+        <div className="grid grid-cols-3 items-center mb-4">
+          <div></div>
+          <div className="flex justify-center">
+            <div className="inline-block bg-racing-black/10 rounded-full px-4 py-1 text-xs font-medium">
+              nadcházející událost
+            </div>
+          </div>
+          <div className="flex justify-end">
+            <DialogTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-racing-black hover:bg-racing-black/10"
+              >
+                <Settings className="h-4 w-4" />
+              </Button>
+            </DialogTrigger>
           </div>
         </div>
         
