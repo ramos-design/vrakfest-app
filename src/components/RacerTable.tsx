@@ -50,17 +50,27 @@ export const RacerTable = ({ racers, onEdit, onDelete, onAdd }: RacerTableProps)
           onChange={(e) => setSearch(e.target.value)}
           className="flex-1"
         />
-        <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-          <SelectTrigger className="w-48">
-            <SelectValue placeholder="Všechny kategorie" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Všechny kategorie</SelectItem>
-            {categories.map(category => (
-              <SelectItem key={category} value={category}>{category}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="flex gap-2">
+          <Button
+            variant={categoryFilter === 'all' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setCategoryFilter('all')}
+            className={categoryFilter === 'all' ? 'racing-btn-primary' : 'border-racing-yellow/20 hover:bg-racing-yellow/10'}
+          >
+            Vše
+          </Button>
+          {categories.map(category => (
+            <Button
+              key={category}
+              variant={categoryFilter === category ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setCategoryFilter(category)}
+              className={categoryFilter === category ? 'racing-btn-primary' : 'border-racing-yellow/20 hover:bg-racing-yellow/10'}
+            >
+              {category}
+            </Button>
+          ))}
+        </div>
       </div>
       
       <div className="bg-card rounded-lg border border-border">
