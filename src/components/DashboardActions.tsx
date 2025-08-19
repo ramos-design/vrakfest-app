@@ -1,4 +1,4 @@
-import { Play, Gauge, BarChart3, Bell, BookOpen } from 'lucide-react';
+import { Play, Gauge, BarChart3, Bell, BookOpen, Car } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 
 interface ActionCardProps {
@@ -46,12 +46,13 @@ export function DashboardActions({ onStartTournament, onViewControl }: Dashboard
     { icon: Play, label: 'Zahájit závod', isActive: true, onClick: onStartTournament },
     { icon: Gauge, label: 'Kontrola', isActive: false, onClick: onViewControl },
     { icon: BarChart3, label: 'Statistiky', isActive: false },
+    { icon: Car, label: 'Demolition derby', isActive: false },
     { icon: Bell, label: 'Oznámení', isActive: false },
     { icon: BookOpen, label: 'Pravidla', isActive: false },
   ];
 
   return (
-    <div className="grid grid-cols-5 gap-4">
+    <div className="grid grid-cols-6 gap-4">
       {actions.map((action, index) => (
         <ActionCard
           key={index}
