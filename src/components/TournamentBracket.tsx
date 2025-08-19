@@ -86,14 +86,16 @@ export const TournamentBracket = ({ tournament, racers, onStartRace, onStartTour
         )}
 
         <div className="space-y-4">
-          {currentCategoryGroups.map((group, index) => (
-            <RaceGroupCard
-              key={group.id}
-              group={group}
-              isNext={group === nextGroup}
-              onStartRace={onStartRace}
-            />
-          ))}
+          {currentCategoryGroups
+            .filter(group => group !== currentGroup)
+            .map((group, index) => (
+              <RaceGroupCard
+                key={group.id}
+                group={group}
+                isNext={group === nextGroup}
+                onStartRace={onStartRace}
+              />
+            ))}
         </div>
 
         {currentCategoryGroups.length === 0 && (
