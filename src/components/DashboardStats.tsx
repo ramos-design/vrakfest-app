@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Trophy, Target, Award } from 'lucide-react';
+import { EventCountdown } from './EventCountdown';
 
 interface StatCardProps {
   title: string;
@@ -61,15 +62,7 @@ export function DashboardStats({ racerCount, activeRacerCount, tournamentProgres
         </CardContent>
       </Card>
 
-      <div className="racing-gradient rounded-lg p-8 text-center shadow-glow">
-        <div className="text-racing-black">
-          <h2 className="text-2xl font-bold mb-4">VrakFest Racing™</h2>
-          <div className="w-full h-32 bg-racing-black/10 rounded-lg flex items-center justify-center mb-4">
-            <div className="text-6xl">🏎️</div>
-          </div>
-          <p className="text-sm font-semibold">Ready for the next race</p>
-        </div>
-      </div>
+      <EventCountdown />
     </div>
   );
 }
