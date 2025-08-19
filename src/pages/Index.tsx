@@ -62,14 +62,7 @@ const Index = () => {
     switch (activeTab) {
       case 'jezdci':
         return (
-          <div className="space-y-6">
-            <DashboardActions 
-              onStartTournament={handleStartTournament}
-              onViewControl={handleViewControl}
-              isTournamentActive={tournament.isActive}
-            />
-            
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
                 <RacerTable
                   racers={racers}
@@ -93,7 +86,6 @@ const Index = () => {
                 />
               </div>
             </div>
-          </div>
         );
       
       case 'turnaj':
@@ -124,36 +116,28 @@ const Index = () => {
       
       default:
         return (
-          <div className="space-y-6">
-            <DashboardActions 
-              onStartTournament={handleStartTournament}
-              onViewControl={handleViewControl}
-              isTournamentActive={tournament.isActive}
-            />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2">
+              <RacerTable
+                racers={racers}
+                onEdit={handleEditRacer}
+                onDelete={deleteRacer}
+              />
+            </div>
             
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2">
-                <RacerTable
-                  racers={racers}
-                  onEdit={handleEditRacer}
-                  onDelete={deleteRacer}
-                />
-              </div>
+            <div className="space-y-6">
+              <RacerForm
+                racer={editingRacer}
+                onSave={handleSaveRacer}
+                onCancel={handleCancelEdit}
+                compact={true}
+              />
               
-              <div className="space-y-6">
-                <RacerForm
-                  racer={editingRacer}
-                  onSave={handleSaveRacer}
-                  onCancel={handleCancelEdit}
-                  compact={true}
-                />
-                
-                <DashboardStats
-                  racerCount={racers.length}
-                  activeRacerCount={activeRacers.length}
-                  tournamentProgress={tournament?.currentRound || 0}
-                />
-              </div>
+              <DashboardStats
+                racerCount={racers.length}
+                activeRacerCount={activeRacers.length}
+                tournamentProgress={tournament?.currentRound || 0}
+              />
             </div>
           </div>
         );
@@ -173,7 +157,14 @@ const Index = () => {
           />
           
           <main className="flex-1 p-6 overflow-auto">
-            {renderMainContent()}
+            <div className="space-y-6">
+              <DashboardActions 
+                onStartTournament={handleStartTournament}
+                onViewControl={handleViewControl}
+                isTournamentActive={tournament.isActive}
+              />
+              {renderMainContent()}
+            </div>
           </main>
         </div>
       </div>
