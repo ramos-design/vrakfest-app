@@ -1,9 +1,9 @@
 import { useState, useCallback } from 'react';
 import { Racer, Tournament, RaceGroup, RaceResult, RacerCategory } from '@/types/racing';
-import { createGroups, shouldAdvanceRacer, categories, generateSampleRacers } from '@/utils/racingUtils';
+import { createGroups, shouldAdvanceRacer, categories, generateRealRacers } from '@/utils/racingUtils';
 
 export const useRacingTournament = () => {
-  const [racers, setRacers] = useState<Racer[]>(() => generateSampleRacers());
+  const [racers, setRacers] = useState<Racer[]>(() => generateRealRacers());
   const [tournament, setTournament] = useState<Tournament>({
     currentRound: 1,
     currentCategory: 'do 1.6L',
