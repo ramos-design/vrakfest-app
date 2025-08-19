@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-
 interface EventSettings {
   eventName: string;
   eventDate: string;
@@ -7,16 +6,19 @@ interface EventSettings {
   ctaText: string;
   ctaLink: string;
 }
-
 interface TimeRemaining {
   days: number;
   hours: number;
   minutes: number;
   seconds: number;
 }
-
 export function EventCountdown() {
-  const [timeRemaining, setTimeRemaining] = useState<TimeRemaining>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [timeRemaining, setTimeRemaining] = useState<TimeRemaining>({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+  });
   const [settings] = useState<EventSettings>(() => {
     const saved = localStorage.getItem('vrakfest-event-settings');
     return saved ? JSON.parse(saved) : {
@@ -27,34 +29,36 @@ export function EventCountdown() {
       ctaLink: '#'
     };
   });
-
   const calculateTimeRemaining = (targetDate: Date): TimeRemaining => {
     const now = new Date().getTime();
     const target = targetDate.getTime();
     const difference = target - now;
-
     if (difference > 0) {
       const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-      return { days, hours, minutes, seconds };
+      const hours = Math.floor(difference % (1000 * 60 * 60 * 24) / (1000 * 60 * 60));
+      const minutes = Math.floor(difference % (1000 * 60 * 60) / (1000 * 60));
+      const seconds = Math.floor(difference % (1000 * 60) / 1000);
+      return {
+        days,
+        hours,
+        minutes,
+        seconds
+      };
     }
-
-    return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+    return {
+      days: 0,
+      hours: 0,
+      minutes: 0,
+      seconds: 0
+    };
   };
-
   useEffect(() => {
     const targetDate = new Date(`${settings.eventDate}T${settings.eventTime}`);
-    
     const timer = setInterval(() => {
       setTimeRemaining(calculateTimeRemaining(targetDate));
     }, 1000);
-
     return () => clearInterval(timer);
   }, [settings.eventDate, settings.eventTime]);
-
   const formatDateTime = () => {
     const date = new Date(`${settings.eventDate}T${settings.eventTime}`);
     return date.toLocaleString('cs-CZ', {
@@ -66,17 +70,15 @@ export function EventCountdown() {
       minute: '2-digit'
     });
   };
-
-  return (
-    <div className="racing-gradient rounded-lg p-8 text-center shadow-glow relative">
-      <div className="text-racing-black">
+  return <div className="racing-gradient rounded-lg p-8 text-center shadow-glow relative py-[33px]">
+      <div className="text-racing-black px-[2px] py-0 my-0 mx-0">
         <div className="flex justify-center mb-3">
           <div className="bg-racing-black rounded-full px-3 py-1 text-sm font-medium text-racing-white">
             Nadcházející událost
           </div>
         </div>
         
-        <h2 className="text-2xl font-bold mb-3">{settings.eventName}</h2>
+        <h2 className="text-2xl font-bold mb-3 px-0">{settings.eventName}</h2>
         
         <p className="text-sm opacity-75 mb-6">{formatDateTime()}</p>
         
@@ -99,6 +101,5 @@ export function EventCountdown() {
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 }
