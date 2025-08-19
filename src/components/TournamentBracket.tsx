@@ -76,13 +76,10 @@ export const TournamentBracket = ({ tournament, racers, onStartRace, onStartTour
       
       <CardContent>
         {currentGroup && (
-          <div className="mb-6 p-4 border-2 border-primary rounded-lg bg-primary/5">
+          <div className="mb-6 p-4 rounded-lg bg-racing-yellow">
             <div className="flex items-center gap-2 mb-3">
-              <Clock className="w-5 h-5 text-primary" />
-              <span className="font-semibold text-primary">Právě jede:</span>
-              <Badge className={`${getCategoryBadgeColor(currentGroup.category)} text-white`}>
-                {currentGroup.category}
-              </Badge>
+              <Clock className="w-5 h-5 text-racing-black" />
+              <span className="font-semibold text-racing-black">Právě jede:</span>
             </div>
             <RaceGroupCard group={currentGroup} isCurrentRace={true} onStartRace={onStartRace} />
           </div>
