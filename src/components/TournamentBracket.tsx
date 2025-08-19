@@ -170,14 +170,14 @@ const RaceGroupCard = ({ group, isNext, isCurrentRace, onStartRace }: RaceGroupC
                   {racer.firstName} {racer.lastName}
                 </span>
                 <div className="ml-auto flex items-center gap-1">
-                  <Badge variant="secondary" className="font-mono">
-                    {racer.points}b
-                  </Badge>
                   {group.isCompleted && roundPoints > 0 && (
                     <Badge className="bg-green-600 text-white font-mono text-xs">
                       +{roundPoints}
                     </Badge>
                   )}
+                  <Badge variant="secondary" className="font-mono">
+                    {racer.points}b
+                  </Badge>
                 </div>
               </div>
             );
