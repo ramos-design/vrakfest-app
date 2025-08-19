@@ -170,7 +170,7 @@ export function EventCountdown() {
           nadcházející událost
         </div>
         
-        <h2 className="text-2xl font-bold mb-4">{settings.eventName}</h2>
+        <h2 className="text-2xl font-bold mb-2">{settings.eventName}</h2>
         
         <p className="text-sm opacity-75 mb-6">{formatDateTime()}</p>
         
@@ -197,7 +197,7 @@ export function EventCountdown() {
 
         <Button 
           onClick={handleCtaClick}
-          className="bg-racing-black text-racing-white hover:bg-racing-black/90 text-lg px-8 py-3"
+          className="bg-racing-black text-racing-white hover:bg-racing-black/90 text-base px-8 py-3"
           disabled={!settings.ctaLink || settings.ctaLink === '#'}
         >
           {settings.ctaText}
