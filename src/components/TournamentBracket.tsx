@@ -125,7 +125,9 @@ const RaceGroupCard = ({ group, isNext, isCurrentRace, onStartRace }: RaceGroupC
   };
 
   return (
-    <Card className={`transition-racing ${isCurrentRace ? 'ring-2 ring-primary' : ''}`}>
+    <Card className={`transition-racing ${isCurrentRace ? 'ring-2 ring-primary' : ''} ${
+      group.isCompleted ? 'opacity-70 grayscale bg-muted/20' : ''
+    }`}>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -163,9 +165,16 @@ const RaceGroupCard = ({ group, isNext, isCurrentRace, onStartRace }: RaceGroupC
               <span className="text-sm font-medium">
                 {racer.firstName} {racer.lastName}
               </span>
-              <Badge variant="secondary" className="ml-auto font-mono">
-                {racer.points}b
-              </Badge>
+              <div className="ml-auto flex items-center gap-1">
+                <Badge variant="secondary" className="font-mono">
+                  {racer.points}b
+                </Badge>
+                {group.isCompleted && group.round === 1 && (
+                  <Badge className="bg-green-600 text-white font-mono text-xs">
+                    +{Math.min(3, Math.max(0, Math.floor(Math.random() * 4)))}
+                  </Badge>
+                )}
+              </div>
             </div>
           ))}
         </div>
