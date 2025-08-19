@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Pencil, Trash2, UserPlus } from 'lucide-react';
+import { Pencil, Trash2, Users } from 'lucide-react';
 import { Racer, RacerCategory } from '@/types/racing';
 import { categories, getCategoryBadgeColor } from '@/utils/racingUtils';
 
@@ -13,7 +13,7 @@ interface RacerTableProps {
   racers: Racer[];
   onEdit: (racer: Racer) => void;
   onDelete: (id: string) => void;
-  onAdd: () => void;
+  onAdd?: () => void;
 }
 
 export const RacerTable = ({ racers, onEdit, onDelete, onAdd }: RacerTableProps) => {
@@ -35,102 +35,93 @@ export const RacerTable = ({ racers, onEdit, onDelete, onAdd }: RacerTableProps)
   const sortedRacers = filteredRacers.sort((a, b) => b.points - a.points);
 
   return (
-    <Card className="shadow-card">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="racing-gradient bg-clip-text text-transparent">
-            Jezdci ({racers.length}/100)
-          </CardTitle>
-          <Button onClick={onAdd} className="racing-gradient shadow-racing">
-            <UserPlus className="w-4 h-4 mr-2" />
-            Přidat jezdce
-          </Button>
-        </div>
-        
-        <div className="flex gap-4 mt-4">
-          <Input
-            placeholder="Hledat jezdce..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="flex-1"
-          />
-          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-            <SelectTrigger className="w-48">
-              <SelectValue placeholder="Všechny kategorie" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Všechny kategorie</SelectItem>
-              {categories.map(category => (
-                <SelectItem key={category} value={category}>{category}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </CardHeader>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
+          <Users className="w-5 h-5" />
+          Jezdci ({racers.length}/100)
+        </h2>
+      </div>
       
-      <CardContent>
-        <div className="rounded-md border">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>#</TableHead>
-                <TableHead>Jméno</TableHead>
-                <TableHead>Startovní číslo</TableHead>
-                <TableHead>Vozidlo</TableHead>
-                <TableHead>Kategorie</TableHead>
-                <TableHead>Body</TableHead>
-                <TableHead>Akce</TableHead>
+      <div className="flex gap-4">
+        <Input
+          placeholder="Hledat jezdce..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="flex-1"
+        />
+        <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+          <SelectTrigger className="w-48">
+            <SelectValue placeholder="Všechny kategorie" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Všechny kategorie</SelectItem>
+            {categories.map(category => (
+              <SelectItem key={category} value={category}>{category}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      
+      <div className="bg-card rounded-lg border border-border">
+        <Table>
+          <TableHeader>
+            <TableRow className="border-border">
+              <TableHead className="text-muted-foreground">Poz.</TableHead>
+              <TableHead className="text-muted-foreground">Číslo</TableHead>
+              <TableHead className="text-muted-foreground">Jméno</TableHead>
+              <TableHead className="text-muted-foreground">Vozidlo</TableHead>
+              <TableHead className="text-muted-foreground">Kategorie</TableHead>
+              <TableHead className="text-muted-foreground text-center">Body</TableHead>
+              <TableHead className="text-muted-foreground">Akce</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {sortedRacers.map((racer, index) => (
+              <TableRow key={racer.id} className="border-border hover:bg-muted/30 transition-racing">
+                <TableCell className="font-bold">{index + 1}.</TableCell>
+                <TableCell>
+                  <Badge variant="outline" className="font-mono text-primary border-primary">
+                    #{racer.startNumber}
+                  </Badge>
+                </TableCell>
+                <TableCell className="font-medium">
+                  {racer.firstName} {racer.lastName}
+                </TableCell>
+                <TableCell className="text-muted-foreground">{racer.vehicleType}</TableCell>
+                <TableCell>
+                  <Badge className={`${getCategoryBadgeColor(racer.category)} text-white border-0`}>
+                    {racer.category}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-center">
+                  <span className="font-bold text-foreground">{racer.points}</span>
+                </TableCell>
+                <TableCell>
+                  <div className="flex gap-1">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onEdit(racer)}
+                      className="w-8 h-8 p-0 hover:bg-primary/10 hover:text-primary"
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onDelete(racer.id)}
+                      className="w-8 h-8 p-0 hover:bg-destructive/10 hover:text-destructive"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {sortedRacers.map((racer, index) => (
-                <TableRow key={racer.id} className="transition-racing hover:bg-muted/50">
-                  <TableCell className="font-mono">{index + 1}</TableCell>
-                  <TableCell className="font-medium">
-                    {racer.firstName} {racer.lastName}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="outline" className="font-mono">
-                      {racer.startNumber}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{racer.vehicleType}</TableCell>
-                  <TableCell>
-                    <Badge className={`${getCategoryBadgeColor(racer.category)} text-white`}>
-                      {racer.category}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="secondary" className="font-mono font-bold">
-                      {racer.points}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => onEdit(racer)}
-                        className="transition-racing hover:shadow-racing"
-                      >
-                        <Pencil className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => onDelete(racer.id)}
-                        className="text-destructive hover:bg-destructive hover:text-destructive-foreground transition-racing"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      </CardContent>
-    </Card>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
   );
 };

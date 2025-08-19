@@ -10,7 +10,6 @@ import { Racer } from '@/types/racing';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('jezdci');
-  const [showRacerForm, setShowRacerForm] = useState(false);
   const [editingRacer, setEditingRacer] = useState<Racer | null>(null);
 
   const {
@@ -29,42 +28,24 @@ const Index = () => {
   const activeRacers = racers.filter(r => r.isActive);
   const currentRaceGroup = getCurrentRaceGroup();
 
-  const handleAddRacer = () => {
-    setEditingRacer(null);
-    setShowRacerForm(true);
-  };
-
   const handleEditRacer = (racer: Racer) => {
     setEditingRacer(racer);
-    setShowRacerForm(true);
   };
 
   const handleSaveRacer = (racerData: Omit<Racer, 'id'>) => {
     if (editingRacer) {
       updateRacer(editingRacer.id, racerData);
+      setEditingRacer(null);
     } else {
       addRacer(racerData);
     }
-    setShowRacerForm(false);
+  };
+
+  const handleCancelEdit = () => {
     setEditingRacer(null);
   };
 
-  const handleCancelRacerForm = () => {
-    setShowRacerForm(false);
-    setEditingRacer(null);
-  };
-
-  const renderContent = () => {
-    if (showRacerForm) {
-      return (
-        <RacerForm
-          racer={editingRacer}
-          onSave={handleSaveRacer}
-          onCancel={handleCancelRacerForm}
-        />
-      );
-    }
-
+  const renderMainContent = () => {
     switch (activeTab) {
       case 'jezdci':
         return (
@@ -72,7 +53,6 @@ const Index = () => {
             racers={racers}
             onEdit={handleEditRacer}
             onDelete={deleteRacer}
-            onAdd={handleAddRacer}
           />
         );
       
@@ -116,9 +96,23 @@ const Index = () => {
         activeRacerCount={activeRacers.length}
         onReset={resetTournament}
       />
-      <main className="container mx-auto px-4 py-6">
-        {renderContent()}
-      </main>
+      
+      <div className="flex">
+        {/* Sidebar with form */}
+        <div className="w-96 bg-card border-r border-border p-6">
+          <RacerForm
+            racer={editingRacer}
+            onSave={handleSaveRacer}
+            onCancel={handleCancelEdit}
+            compact={true}
+          />
+        </div>
+        
+        {/* Main content */}
+        <div className="flex-1 p-6">
+          {renderMainContent()}
+        </div>
+      </div>
     </div>
   );
 };
