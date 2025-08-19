@@ -61,6 +61,13 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				racing: {
+					orange: 'hsl(var(--racing-orange))',
+					red: 'hsl(var(--racing-red))',
+					green: 'hsl(var(--category-small))',
+					blue: 'hsl(var(--category-large))',
+					purple: 'hsl(var(--category-women))'
 				}
 			},
 			borderRadius: {
