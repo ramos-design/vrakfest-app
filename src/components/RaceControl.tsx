@@ -16,6 +16,22 @@ interface RaceControlProps {
 export const RaceControl = ({ currentGroup, onCompleteRace }: RaceControlProps) => {
   const [points, setPoints] = useState<{ [racerId: string]: number }>({});
 
+  const handleCompleteRace = () => {
+    if (!currentGroup) return;
+    
+    const results: RaceResult[] = currentGroup.racers.map(racer => ({
+      racerId: racer.id,
+      points: points[racer.id] || 0,
+      advances: currentGroup.round <= 3 || (points[racer.id] || 0) >= 2
+    }));
+
+    onCompleteRace(currentGroup.id, results);
+    setPoints({});
+    
+    // Automatically redirect to tournament tab after completing race
+    window.dispatchEvent(new CustomEvent('redirectToTournament'));
+  };
+
   if (!currentGroup) {
     return (
       <Card className="shadow-card">
@@ -35,18 +51,6 @@ export const RaceControl = ({ currentGroup, onCompleteRace }: RaceControlProps) 
     const pointValue = Math.max(0, Math.min(3, parseInt(value) || 0));
     setPoints({ ...points, [racerId]: pointValue });
   };
-
-  const handleCompleteRace = () => {
-    const results: RaceResult[] = currentGroup.racers.map(racer => ({
-      racerId: racer.id,
-      points: points[racer.id] || 0,
-      advances: currentGroup.round <= 3 || (points[racer.id] || 0) >= 2
-    }));
-
-    onCompleteRace(currentGroup.id, results);
-    setPoints({});
-  };
-
 
   return (
     <Card className="shadow-card">

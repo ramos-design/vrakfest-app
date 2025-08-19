@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
 import { DashboardHeader } from '@/components/DashboardHeader';
@@ -28,6 +28,16 @@ const Index = () => {
     resetTournament,
     getCurrentRaceGroup
   } = useRacingTournament();
+
+  // Listen for redirect to tournament event
+  useEffect(() => {
+    const handleRedirect = () => {
+      setActiveTab('turnaj');
+    };
+    
+    window.addEventListener('redirectToTournament', handleRedirect);
+    return () => window.removeEventListener('redirectToTournament', handleRedirect);
+  }, []);
 
   const activeRacers = racers.filter(r => r.isActive);
   const currentRaceGroup = getCurrentRaceGroup();
