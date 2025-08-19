@@ -101,7 +101,7 @@ export function EventCountdown() {
   return (
     <div className="racing-gradient rounded-lg p-8 text-center shadow-glow relative">
       <div className="text-racing-black">
-        <div className="grid grid-cols-3 items-center mb-4">
+        <div className="grid items-center mb-4" style={{ gridTemplateColumns: 'min-content 1fr min-content' }}>
           <div></div>
           <div className="flex justify-center">
             <div className="inline-block bg-racing-black/10 rounded-full px-4 py-1 text-xs font-medium">
