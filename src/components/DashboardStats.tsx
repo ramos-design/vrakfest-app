@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Trophy, Target, Award } from 'lucide-react';
+import { Trophy, Target, Flag, Award } from 'lucide-react';
 import { EventCountdown } from './EventCountdown';
 interface StatCardProps {
   title: string;
@@ -56,7 +56,7 @@ export function DashboardStats({
         <CardContent className="space-y-4">
           <StatCard title="Completed VrakFests" value={3} subtitle="VrakFestů se již jelo" icon={Trophy} color="racing-accent" />
           <StatCard title="Remaining Events" value={1} subtitle="VrakFest událostí zbývá" icon={Target} color="racing-accent" />
-          <StatCard title="Current Racers" value="52/80" subtitle="aktuálně přihlášených jezdců" icon={Award} color="racing-accent" />
+          <StatCard title="Current Racers" value="52/80" subtitle="aktuálně přihlášených jezdců" icon={Flag} color="racing-accent" />
           <StatCard title="Total Racers" value={racerCount} subtitle="celkový počet jezdců v roce" icon={Award} color="racing-accent" />
         </CardContent>
       </Card>
