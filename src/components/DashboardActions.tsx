@@ -31,12 +31,12 @@ interface DashboardActionsProps {
 
 export function DashboardActions({ onStartTournament, onViewControl }: DashboardActionsProps) {
   const actions = [
-    { icon: Play, label: 'Start', color: 'bg-gradient-to-br from-orange-400 to-orange-600', onClick: onStartTournament },
-    { icon: Gauge, label: 'Drive', color: 'bg-gradient-to-br from-blue-400 to-blue-600', onClick: onViewControl },
-    { icon: Wrench, label: 'Maintenance', color: 'bg-gradient-to-br from-indigo-400 to-indigo-600' },
-    { icon: Battery, label: 'Battery', color: 'bg-gradient-to-br from-red-400 to-red-600' },
-    { icon: CircleDot, label: 'Tires', color: 'bg-gradient-to-br from-pink-400 to-pink-600' },
-    { icon: Lock, label: 'Lock', color: 'bg-gradient-to-br from-purple-400 to-purple-600' },
+    { icon: Play, label: 'Start', color: 'racing-gradient shadow-glow', onClick: onStartTournament },
+    { icon: Gauge, label: 'Drive', color: 'dark-gradient border border-racing-yellow/30', onClick: onViewControl },
+    { icon: Wrench, label: 'Maintenance', color: 'dark-gradient border border-white/20' },
+    { icon: Battery, label: 'Battery', color: 'dark-gradient border border-white/20' },
+    { icon: CircleDot, label: 'Tires', color: 'dark-gradient border border-white/20' },
+    { icon: Lock, label: 'Lock', color: 'dark-gradient border border-white/20' },
   ];
 
   return (

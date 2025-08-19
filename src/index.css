@@ -2,37 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
-/* VrakFest Racing Tournament Design System */
+/* VrakFest Racing Tournament Design System - Racing Colors */
 
 @layer base {
   :root {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 0 0% 5%;
+    --foreground: 0 0% 98%;
 
-    --card: 217.2 32.6% 17.5%;
-    --card-foreground: 210 40% 98%;
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 217.2 32.6% 17.5%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 16 100% 66%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 48 100% 50%;
+    --primary-foreground: 0 0% 5%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
 
-    --accent: 24 100% 50%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 48 100% 60%;
+    --accent-foreground: 0 0% 5%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 16 100% 66%;
+    --border: 0 0% 20%;
+    --input: 0 0% 15%;
+    --ring: 48 100% 50%;
 
     --radius: 0.75rem;
 
@@ -42,12 +42,19 @@
     --category-women: 316 70% 50%;
     
     /* Racing specific colors */
-    --racing-orange: 16 100% 66%;
-    --racing-red: 0 84% 60%;
+    --racing-yellow: 48 100% 50%;
+    --racing-gold: 45 100% 60%;
+    --racing-black: 0 0% 5%;
+    --racing-white: 0 0% 98%;
+    
+    /* Gradients */
+    --gradient-racing: linear-gradient(135deg, hsl(var(--racing-yellow)), hsl(var(--racing-gold)));
+    --gradient-dark: linear-gradient(135deg, hsl(var(--racing-black)), hsl(0 0% 15%));
     
     /* Shadows */
-    --shadow-racing: 0 10px 30px -10px hsl(var(--racing-orange) / 0.3);
-    --shadow-card: 0 4px 20px -5px hsl(0 0% 0% / 0.4);
+    --shadow-racing: 0 10px 30px -10px hsl(var(--racing-yellow) / 0.4);
+    --shadow-card: 0 4px 20px -5px hsl(0 0% 0% / 0.6);
+    --shadow-glow: 0 0 40px hsl(var(--racing-yellow) / 0.3);
 
     /* Transitions */
     --transition-racing: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -66,7 +73,18 @@
 
 @layer components {
   .racing-gradient {
-    background: linear-gradient(135deg, hsl(var(--racing-orange)), hsl(var(--racing-red)));
+    background: var(--gradient-racing);
+  }
+  
+  .racing-gradient-text {
+    background: var(--gradient-racing);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .dark-gradient {
+    background: var(--gradient-dark);
   }
   
   .category-small {
@@ -89,7 +107,22 @@
     box-shadow: var(--shadow-card);
   }
   
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+  
   .transition-racing {
     transition: var(--transition-racing);
+  }
+  
+  .racing-accent {
+    background: hsl(var(--racing-yellow));
+    color: hsl(var(--racing-black));
+  }
+  
+  .racing-card {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    color: hsl(var(--card-foreground));
   }
 }

@@ -63,8 +63,10 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				racing: {
-					orange: 'hsl(var(--racing-orange))',
-					red: 'hsl(var(--racing-red))',
+					yellow: 'hsl(var(--racing-yellow))',
+					gold: 'hsl(var(--racing-gold))',
+					black: 'hsl(var(--racing-black))',
+					white: 'hsl(var(--racing-white))',
 					green: 'hsl(var(--category-small))',
 					blue: 'hsl(var(--category-large))',
 					purple: 'hsl(var(--category-women))'

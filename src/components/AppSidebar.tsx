@@ -31,15 +31,15 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
 
   return (
     <Sidebar className={isCollapsed ? "w-14" : "w-60"}>
-      <SidebarContent className="bg-card border-r border-border">
+      <SidebarContent className="racing-card border-r border-racing-yellow/20">
         <div className="p-4">
           <div className="flex items-center gap-2 mb-6">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">V</span>
+            <div className="w-8 h-8 racing-gradient rounded-lg flex items-center justify-center shadow-racing">
+              <span className="text-racing-black font-bold text-sm">V</span>
             </div>
             {!isCollapsed && (
               <div>
-                <h1 className="font-bold text-foreground">VrakFest</h1>
+                <h1 className="font-bold racing-gradient-text">VrakFest</h1>
                 <p className="text-xs text-muted-foreground">Racing System</p>
               </div>
             )}
@@ -54,10 +54,10 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
                 <SidebarMenuItem key={item.id}>
                   <SidebarMenuButton
                     onClick={() => onTabChange(item.id)}
-                    className={`w-full justify-start gap-3 rounded-lg px-3 py-2 transition-colors ${
+                    className={`w-full justify-start gap-3 rounded-lg px-3 py-2 transition-racing ${
                       activeTab === item.id
-                        ? 'bg-primary text-primary-foreground font-medium'
-                        : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                        ? 'racing-gradient shadow-racing text-racing-black font-medium'
+                        : 'text-muted-foreground hover:bg-muted/50 hover:text-racing-white'
                     }`}
                   >
                     <item.icon className="h-4 w-4" />
@@ -71,19 +71,19 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
 
         {!isCollapsed && (
           <div className="mt-auto p-4">
-            <div className="bg-muted/50 rounded-lg p-3">
-              <h3 className="font-medium text-sm text-foreground mb-1">Scheduled Races</h3>
+            <div className="bg-racing-black/50 border border-racing-yellow/20 rounded-lg p-3">
+              <h3 className="font-medium text-sm racing-gradient-text mb-1">Scheduled Races</h3>
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-primary rounded-full"></div>
+                  <div className="w-2 h-2 bg-racing-yellow rounded-full shadow-glow"></div>
                   <span className="text-xs text-muted-foreground">VrakFest 2024</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                  <div className="w-2 h-2 bg-racing-white rounded-full"></div>
                   <span className="text-xs text-muted-foreground">Dynamics 22</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <div className="w-2 h-2 bg-racing-white/50 rounded-full"></div>
                   <span className="text-xs text-muted-foreground">Olympics</span>
                 </div>
               </div>
