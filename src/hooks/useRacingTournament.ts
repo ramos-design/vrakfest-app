@@ -54,9 +54,9 @@ export const useRacingTournament = () => {
   }, []);
 
   const completeRace = useCallback((groupId: string, results: RaceResult[]) => {
-    // Update racer points
+    // Update racer points and tournament simultaneously
     setRacers(prev => {
-      return prev.map(racer => {
+      const updatedRacers = prev.map(racer => {
         const result = results.find(r => r.racerId === racer.id);
         if (result) {
           return {
@@ -67,19 +67,35 @@ export const useRacingTournament = () => {
         }
         return racer;
       });
-    });
 
-    // Mark group as completed and keep tournament active
-    setTournament(prev => {
-      const updatedGroups = prev.groups.map(group =>
-        group.id === groupId ? { ...group, isCompleted: true, results } : group
-      );
+      // Also update tournament groups with the updated racers
+      setTournament(prevTournament => {
+        const updatedGroups = prevTournament.groups.map(group => {
+          if (group.id === groupId) {
+            // Update racers in this group with current points
+            const updatedGroupRacers = group.racers.map(groupRacer => {
+              const updatedRacer = updatedRacers.find(r => r.id === groupRacer.id);
+              return updatedRacer || groupRacer;
+            });
+            
+            return { 
+              ...group, 
+              isCompleted: true, 
+              results,
+              racers: updatedGroupRacers
+            };
+          }
+          return group;
+        });
 
-      return { 
-        ...prev, 
-        groups: updatedGroups,
-        isActive: true  // Ensure tournament stays active
-      };
+        return { 
+          ...prevTournament, 
+          groups: updatedGroups,
+          isActive: true
+        };
+      });
+
+      return updatedRacers;
     });
   }, []);
 
