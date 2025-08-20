@@ -53,7 +53,7 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
     { id: 'turnaj', label: 'Turnaj', icon: Users },
     { id: 'kontrola', label: 'Kontrola', icon: Trophy },
     { id: 'bodove-poradei', label: 'Bodové pořadí', icon: BarChart3 },
-    { id: 'statistiky', label: 'Jezdci', icon: BarChart3 },
+    { id: 'statistiky', label: 'Přehled jezdců', icon: BarChart3 },
     { id: 'udalosti', label: 'Události', icon: Calendar },
     { id: 'settings', label: 'Nastavení', icon: Settings },
   ];

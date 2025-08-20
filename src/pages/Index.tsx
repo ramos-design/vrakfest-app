@@ -8,6 +8,7 @@ import { RacerTable } from '@/components/RacerTable';
 import { RacerForm } from '@/components/RacerForm';
 import { TournamentBracket } from '@/components/TournamentBracket';
 import { RaceControl } from '@/components/RaceControl';
+import { RacerOverview } from '@/components/RacerOverview';
 import { Statistics } from '@/components/Statistics';
 import { Events } from '@/components/Events';
 import { useRacingTournament } from '@/hooks/useRacingTournament';
@@ -127,9 +128,8 @@ const Index = () => {
       
       case 'statistiky':
         return (
-          <Statistics
+          <RacerOverview
             racers={racers}
-            tournament={tournament}
           />
         );
       
