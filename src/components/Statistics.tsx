@@ -1,7 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Trophy, TrendingUp, Users } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Trophy, TrendingUp, Users, Medal, Calendar, ChevronRight } from 'lucide-react';
 import { Racer, RacerCategory, Tournament } from '@/types/racing';
 import { categories, getCategoryBadgeColor } from '@/utils/racingUtils';
 
@@ -12,8 +15,6 @@ interface StatisticsProps {
 
 export const Statistics = ({ racers, tournament }: StatisticsProps) => {
   const activeRacers = racers.filter(r => r.isActive);
-  const totalPoints = activeRacers.reduce((sum, racer) => sum + racer.points, 0);
-  const averagePoints = activeRacers.length > 0 ? (totalPoints / activeRacers.length).toFixed(1) : '0';
 
   const getTopRacersByCategory = (category: RacerCategory) => {
     return activeRacers
@@ -26,10 +27,200 @@ export const Statistics = ({ racers, tournament }: StatisticsProps) => {
     .sort((a, b) => b.points - a.points)
     .slice(0, 10);
 
+  const OverallTopDialog = () => (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Card className="shadow-card cursor-pointer hover:shadow-lg transition-all duration-200 border-primary/20 hover:border-primary/40">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Trophy className="w-8 h-8 text-primary" />
+                <div>
+                  <p className="text-lg font-bold">Celkové pořadí</p>
+                  <p className="text-sm text-muted-foreground">TOP 10 jezdců</p>
+                </div>
+              </div>
+              <ChevronRight className="w-5 h-5 text-muted-foreground" />
+            </div>
+          </CardContent>
+        </Card>
+      </DialogTrigger>
+      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Celkové pořadí - Top 10</DialogTitle>
+        </DialogHeader>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-12">#</TableHead>
+              <TableHead>Jezdec</TableHead>
+              <TableHead>Kategorie</TableHead>
+              <TableHead>Vozidlo</TableHead>
+              <TableHead className="text-right">Body</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {overallTop.map((racer, index) => (
+              <TableRow key={racer.id} className="transition-racing hover:bg-muted/50">
+                <TableCell>
+                  <div className="flex items-center">
+                    {index < 3 && (
+                      <Trophy className={`w-4 h-4 mr-1 ${
+                        index === 0 ? 'text-yellow-500' : 
+                        index === 1 ? 'text-gray-400' : 'text-amber-600'
+                      }`} />
+                    )}
+                    <span className="font-mono font-bold">{index + 1}</span>
+                  </div>
+                </TableCell>
+                <TableCell className="font-medium">
+                  {racer.firstName} {racer.lastName}
+                  <div className="text-sm text-muted-foreground">#{racer.startNumber}</div>
+                </TableCell>
+                <TableCell>
+                  <Badge className={`${getCategoryBadgeColor(racer.category)} text-white`}>
+                    {racer.category}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-muted-foreground">
+                  {racer.vehicleType}
+                </TableCell>
+                <TableCell className="text-right">
+                  <Badge variant="secondary" className="font-mono font-bold text-lg">
+                    {racer.points}
+                  </Badge>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </DialogContent>
+    </Dialog>
+  );
+
+  const TournamentRankingDialog = () => (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Card className="shadow-card cursor-pointer hover:shadow-lg transition-all duration-200 border-primary/20 hover:border-primary/40">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Medal className="w-8 h-8 text-primary" />
+                <div>
+                  <p className="text-lg font-bold">Aktuální turnaj</p>
+                  <p className="text-sm text-muted-foreground">Pořadí podle kategorií</p>
+                </div>
+              </div>
+              <ChevronRight className="w-5 h-5 text-muted-foreground" />
+            </div>
+          </CardContent>
+        </Card>
+      </DialogTrigger>
+      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Pořadí v aktuálním turnaji</DialogTitle>
+        </DialogHeader>
+        <Tabs defaultValue={categories[0]} className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            {categories.map(category => (
+              <TabsTrigger key={category} value={category}>
+                {category}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          {categories.map(category => {
+            const categoryRacers = getTopRacersByCategory(category);
+            return (
+              <TabsContent key={category} value={category}>
+                {categoryRacers.length > 0 ? (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-12">#</TableHead>
+                        <TableHead>Jezdec</TableHead>
+                        <TableHead>Vozidlo</TableHead>
+                        <TableHead className="text-right">Body</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {categoryRacers.map((racer, index) => (
+                        <TableRow key={racer.id} className="transition-racing hover:bg-muted/50">
+                          <TableCell>
+                            <div className="flex items-center">
+                              {index < 3 && (
+                                <Trophy className={`w-4 h-4 mr-1 ${
+                                  index === 0 ? 'text-yellow-500' : 
+                                  index === 1 ? 'text-gray-400' : 'text-amber-600'
+                                }`} />
+                              )}
+                              <span className="font-mono font-bold">{index + 1}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell className="font-medium">
+                            {racer.firstName} {racer.lastName}
+                            <div className="text-sm text-muted-foreground">#{racer.startNumber}</div>
+                          </TableCell>
+                          <TableCell className="text-muted-foreground">
+                            {racer.vehicleType}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <Badge variant="secondary" className="font-mono font-bold text-lg">
+                              {racer.points}
+                            </Badge>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    Žádní jezdci v této kategorii
+                  </div>
+                )}
+              </TabsContent>
+            );
+          })}
+        </Tabs>
+      </DialogContent>
+    </Dialog>
+  );
+
+  const HistoricalEventsDialog = () => (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Card className="shadow-card cursor-pointer hover:shadow-lg transition-all duration-200 border-primary/20 hover:border-primary/40">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Calendar className="w-8 h-8 text-primary" />
+                <div>
+                  <p className="text-lg font-bold">Historické události</p>
+                  <p className="text-sm text-muted-foreground">Body z předchozích závodů</p>
+                </div>
+              </div>
+              <ChevronRight className="w-5 h-5 text-muted-foreground" />
+            </div>
+          </CardContent>
+        </Card>
+      </DialogTrigger>
+      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Body z jednotlivých událostí</DialogTitle>
+        </DialogHeader>
+        <div className="text-center py-8 text-muted-foreground">
+          <Calendar className="w-12 h-12 mx-auto mb-4 opacity-50" />
+          <p>Historické údaje zatím nejsou k dispozici</p>
+          <p className="text-sm">Budou zobrazeny po dokončení prvních závodů</p>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+
   return (
     <div className="space-y-6">
-      {/* Tournament Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* Action Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Active Racers - Static Card */}
         <Card className="shadow-card">
           <CardContent className="p-6">
             <div className="flex items-center gap-3">
@@ -42,153 +233,11 @@ export const Statistics = ({ racers, tournament }: StatisticsProps) => {
           </CardContent>
         </Card>
         
-        <Card className="shadow-card">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-3">
-              <TrendingUp className="w-8 h-8 text-primary" />
-              <div>
-                <p className="text-2xl font-bold">{averagePoints}</p>
-                <p className="text-sm text-muted-foreground">Průměr bodů</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="shadow-card">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-3">
-              <Trophy className="w-8 h-8 text-primary" />
-              <div>
-                <p className="text-2xl font-bold">
-                  {tournament.isActive ? `Kolo ${tournament.currentRound}` : 'Čeká'}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  {tournament.isActive ? tournament.currentCategory : 'Na zahájení'}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Clickable Cards */}
+        <OverallTopDialog />
+        <TournamentRankingDialog />
+        <HistoricalEventsDialog />
       </div>
-
-      {/* Overall Leaderboard */}
-      <Card className="shadow-card">
-        <CardHeader>
-          <CardTitle className="racing-gradient bg-clip-text text-transparent">
-            Celkové pořadí - Top 10
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-12">#</TableHead>
-                <TableHead>Jezdec</TableHead>
-                <TableHead>Kategorie</TableHead>
-                <TableHead>Vozidlo</TableHead>
-                <TableHead className="text-right">Body</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {overallTop.map((racer, index) => (
-                <TableRow key={racer.id} className="transition-racing hover:bg-muted/50">
-                  <TableCell>
-                    <div className="flex items-center">
-                      {index < 3 && (
-                        <Trophy className={`w-4 h-4 mr-1 ${
-                          index === 0 ? 'text-yellow-500' : 
-                          index === 1 ? 'text-gray-400' : 'text-amber-600'
-                        }`} />
-                      )}
-                      <span className="font-mono font-bold">{index + 1}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="font-medium">
-                    {racer.firstName} {racer.lastName}
-                    <div className="text-sm text-muted-foreground">#{racer.startNumber}</div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge className={`${getCategoryBadgeColor(racer.category)} text-white`}>
-                      {racer.category}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {racer.vehicleType}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <Badge variant="secondary" className="font-mono font-bold text-lg">
-                      {racer.points}
-                    </Badge>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-
-      {/* Category Leaderboards */}
-      {categories.map(category => {
-        const categoryRacers = getTopRacersByCategory(category);
-        
-        if (categoryRacers.length === 0) return null;
-        
-        return (
-          <Card key={category} className="shadow-card">
-            <CardHeader>
-              <div className="flex items-center gap-3">
-                <CardTitle className="racing-gradient bg-clip-text text-transparent">
-                  Žebříček kategorie
-                </CardTitle>
-                <Badge className={`${getCategoryBadgeColor(category)} text-white text-lg px-3 py-1`}>
-                  {category}
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-12">#</TableHead>
-                    <TableHead>Jezdec</TableHead>
-                    <TableHead>Vozidlo</TableHead>
-                    <TableHead className="text-right">Body</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {categoryRacers.map((racer, index) => (
-                    <TableRow key={racer.id} className="transition-racing hover:bg-muted/50">
-                      <TableCell>
-                        <div className="flex items-center">
-                          {index < 3 && (
-                            <Trophy className={`w-4 h-4 mr-1 ${
-                              index === 0 ? 'text-yellow-500' : 
-                              index === 1 ? 'text-gray-400' : 'text-amber-600'
-                            }`} />
-                          )}
-                          <span className="font-mono font-bold">{index + 1}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        {racer.firstName} {racer.lastName}
-                        <div className="text-sm text-muted-foreground">#{racer.startNumber}</div>
-                      </TableCell>
-                      <TableCell className="text-muted-foreground">
-                        {racer.vehicleType}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <Badge variant="secondary" className="font-mono font-bold text-lg">
-                          {racer.points}
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        );
-      })}
     </div>
   );
 };
