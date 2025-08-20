@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
 import { CheckCircle, XCircle } from 'lucide-react';
 import { RaceGroup, Racer, RaceResult } from '@/types/racing';
 import { getCategoryBadgeColor } from '@/utils/racingUtils';
@@ -15,6 +16,7 @@ interface RaceControlProps {
 
 export const RaceControl = ({ currentGroup, onCompleteRace }: RaceControlProps) => {
   const [points, setPoints] = useState<{ [racerId: string]: number }>({});
+  const [advances, setAdvances] = useState<{ [racerId: string]: boolean }>({});
 
   const handleCompleteRace = () => {
     if (!currentGroup) return;
@@ -22,11 +24,12 @@ export const RaceControl = ({ currentGroup, onCompleteRace }: RaceControlProps) 
     const results: RaceResult[] = currentGroup.racers.map(racer => ({
       racerId: racer.id,
       points: points[racer.id] || 0,
-      advances: currentGroup.round <= 3 || (points[racer.id] || 0) >= 2
+      advances: advances[racer.id] !== undefined ? advances[racer.id] : true // Default to true (postupuje)
     }));
 
     onCompleteRace(currentGroup.id, results);
     setPoints({});
+    setAdvances({});
     
     // Automatically redirect to tournament tab after completing race
     setTimeout(() => {
@@ -52,6 +55,10 @@ export const RaceControl = ({ currentGroup, onCompleteRace }: RaceControlProps) 
   const handlePointsChange = (racerId: string, value: string) => {
     const pointValue = Math.max(0, Math.min(3, parseInt(value) || 0));
     setPoints({ ...points, [racerId]: pointValue });
+  };
+
+  const handleAdvancesChange = (racerId: string, willAdvance: boolean) => {
+    setAdvances({ ...advances, [racerId]: willAdvance });
   };
 
   return (
@@ -108,23 +115,27 @@ export const RaceControl = ({ currentGroup, onCompleteRace }: RaceControlProps) 
                     className="w-20 text-center font-mono"
                   />
                   
-                  {currentGroup.round <= 3 ? (
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`advances-${racer.id}`}
+                      checked={advances[racer.id] !== undefined ? advances[racer.id] : true}
+                      onCheckedChange={(checked) => handleAdvancesChange(racer.id, checked as boolean)}
+                    />
+                    <Label htmlFor={`advances-${racer.id}`} className="text-sm">
+                      Postupuje
+                    </Label>
+                  </div>
+                  
+                  {(advances[racer.id] !== undefined ? advances[racer.id] : true) ? (
                     <Badge className="bg-green-600 text-white">
                       <CheckCircle className="w-3 h-3 mr-1" />
                       Postupuje
                     </Badge>
                   ) : (
-                    (points[racer.id] || 0) >= 2 ? (
-                      <Badge className="bg-green-600 text-white">
-                        <CheckCircle className="w-3 h-3 mr-1" />
-                        Postupuje
-                      </Badge>
-                    ) : (
-                      <Badge className="bg-red-600 text-white">
-                        <XCircle className="w-3 h-3 mr-1" />
-                        Vypadává
-                      </Badge>
-                    )
+                    <Badge className="bg-red-600 text-white">
+                      <XCircle className="w-3 h-3 mr-1" />
+                      Vypadává
+                    </Badge>
                   )}
                 </div>
               </div>
@@ -139,18 +150,6 @@ export const RaceControl = ({ currentGroup, onCompleteRace }: RaceControlProps) 
             >
               Ukončit jízdu a přidělit body
             </Button>
-            
-            {currentGroup.round <= 3 && (
-              <p className="text-sm text-muted-foreground mt-2 text-center">
-                První 3 kola: Všichni jezdci postupují bez ohledu na body
-              </p>
-            )}
-            
-            {currentGroup.round > 3 && (
-              <p className="text-sm text-muted-foreground mt-2 text-center">
-                Od 4. kola: Postupují pouze jezdci s 2+ body
-              </p>
-            )}
           </div>
         </div>
       </CardContent>
