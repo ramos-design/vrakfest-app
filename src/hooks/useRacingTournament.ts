@@ -125,6 +125,23 @@ export const useRacingTournament = () => {
     return tournament.groups.find(g => g.hasStarted && !g.isCompleted) || null;
   }, [tournament.groups]);
 
+  const addRacersToGroup = useCallback((groupId: string, racerIds: string[]) => {
+    setTournament(prev => ({
+      ...prev,
+      groups: prev.groups.map(group => {
+        if (group.id === groupId) {
+          // Find the racers to add
+          const racersToAdd = racers.filter(r => racerIds.includes(r.id));
+          return {
+            ...group,
+            racers: [...group.racers, ...racersToAdd]
+          };
+        }
+        return group;
+      })
+    }));
+  }, [racers]);
+
   return {
     racers,
     tournament,
@@ -135,6 +152,7 @@ export const useRacingTournament = () => {
     startRace,
     completeRace,
     resetTournament,
-    getCurrentRaceGroup
+    getCurrentRaceGroup,
+    addRacersToGroup
   };
 };

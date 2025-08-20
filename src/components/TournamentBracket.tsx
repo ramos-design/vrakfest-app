@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -6,6 +7,7 @@ import { RaceGroup, Tournament, Racer } from '@/types/racing';
 import { getCategoryBadgeColor, getCategoryColor } from '@/utils/racingUtils';
 import { TournamentSettings } from '@/components/TournamentSettings';
 import { TournamentSettings as ITournamentSettings } from '@/types/tournamentSettings';
+import { IncompleteGroupDialog } from '@/components/IncompleteGroupDialog';
 
 interface TournamentBracketProps {
   tournament: Tournament;
@@ -14,9 +16,23 @@ interface TournamentBracketProps {
   onStartTournament: () => void;
   tournamentSettings: ITournamentSettings;
   onSettingsChange: (settings: ITournamentSettings) => void;
+  onAddRacersToGroup: (groupId: string, racerIds: string[]) => void;
 }
 
-export const TournamentBracket = ({ tournament, racers, onStartRace, onStartTournament, tournamentSettings, onSettingsChange }: TournamentBracketProps) => {
+export const TournamentBracket = ({ 
+  tournament, 
+  racers, 
+  onStartRace, 
+  onStartTournament, 
+  tournamentSettings, 
+  onSettingsChange,
+  onAddRacersToGroup 
+}: TournamentBracketProps) => {
+  const [incompleteGroupDialog, setIncompleteGroupDialog] = useState<{
+    isOpen: boolean;
+    group: RaceGroup | null;
+  }>({ isOpen: false, group: null });
+
   const activeRacers = racers.filter(r => r.isActive);
   const currentCategoryGroups = tournament.groups.filter(g => 
     g.category === tournament.currentCategory && g.round === tournament.currentRound
@@ -24,6 +40,46 @@ export const TournamentBracket = ({ tournament, racers, onStartRace, onStartTour
   
   const nextGroup = currentCategoryGroups.find(g => !g.hasStarted);
   const currentGroup = currentCategoryGroups.find(g => g.hasStarted && !g.isCompleted);
+
+  // Find racers with 0 points for incomplete group dialog
+  const getAvailableRacersForGroup = (group: RaceGroup) => {
+    return racers.filter(r => 
+      r.points === 0 && 
+      r.isActive && 
+      r.category === group.category &&
+      !group.racers.some(gr => gr.id === r.id) // Not already in this group
+    );
+  };
+
+  const handleStartRace = (groupId: string) => {
+    const group = tournament.groups.find(g => g.id === groupId);
+    if (!group) return;
+
+    // Check if group is incomplete
+    if (group.racers.length < tournamentSettings.racersPerGroup) {
+      setIncompleteGroupDialog({ isOpen: true, group });
+      return;
+    }
+
+    // Start race normally
+    onStartRace(groupId);
+  };
+
+  const handleContinueWithCurrentSize = () => {
+    if (incompleteGroupDialog.group) {
+      onStartRace(incompleteGroupDialog.group.id);
+    }
+  };
+
+  const handleAddRacersAndStart = (racerIds: string[]) => {
+    if (incompleteGroupDialog.group) {
+      onAddRacersToGroup(incompleteGroupDialog.group.id, racerIds);
+      // Start the race after adding racers
+      setTimeout(() => {
+        onStartRace(incompleteGroupDialog.group!.id);
+      }, 100);
+    }
+  };
 
   if (!tournament.isActive) {
     return (
@@ -91,7 +147,7 @@ export const TournamentBracket = ({ tournament, racers, onStartRace, onStartTour
               <Clock className="w-5 h-5 text-racing-black" />
               <span className="font-semibold text-racing-black">Právě jede:</span>
             </div>
-            <RaceGroupCard group={currentGroup} isCurrentRace={true} onStartRace={onStartRace} />
+            <RaceGroupCard group={currentGroup} isCurrentRace={true} onStartRace={handleStartRace} />
           </div>
         )}
 
@@ -103,7 +159,7 @@ export const TournamentBracket = ({ tournament, racers, onStartRace, onStartTour
                 key={group.id}
                 group={group}
                 isNext={group === nextGroup}
-                onStartRace={onStartRace}
+                onStartRace={handleStartRace}
               />
             ))}
         </div>
@@ -114,6 +170,16 @@ export const TournamentBracket = ({ tournament, racers, onStartRace, onStartTour
             <p className="text-muted-foreground">Zatím žádní jezdci</p>
           </div>
         )}
+
+        <IncompleteGroupDialog
+          isOpen={incompleteGroupDialog.isOpen}
+          onClose={() => setIncompleteGroupDialog({ isOpen: false, group: null })}
+          group={incompleteGroupDialog.group!}
+          targetGroupSize={tournamentSettings.racersPerGroup}
+          availableRacers={incompleteGroupDialog.group ? getAvailableRacersForGroup(incompleteGroupDialog.group) : []}
+          onContinueWithCurrentSize={handleContinueWithCurrentSize}
+          onAddRacersAndStart={handleAddRacersAndStart}
+        />
       </CardContent>
     </Card>
   );

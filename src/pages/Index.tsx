@@ -30,7 +30,8 @@ const Index = () => {
     startRace,
     completeRace,
     resetTournament,
-    getCurrentRaceGroup
+    getCurrentRaceGroup,
+    addRacersToGroup
   } = useRacingTournament();
 
   // Listen for redirect to tournament event
@@ -115,6 +116,7 @@ const Index = () => {
             onStartTournament={handleStartTournament}
             tournamentSettings={tournamentSettings}
             onSettingsChange={handleSettingsChange}
+            onAddRacersToGroup={addRacersToGroup}
           />
         );
       
