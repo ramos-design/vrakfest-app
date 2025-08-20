@@ -47,7 +47,7 @@ export const TournamentSettings = ({ settings, onSettingsChange, disabled = fals
       <DialogTrigger asChild>
         <Button 
           variant="outline" 
-          className="bg-background text-foreground border-border hover:bg-muted"
+          className="bg-white text-foreground border-border hover:bg-gray-50"
           disabled={disabled}
         >
           <Settings className="w-4 h-4 mr-2" />
@@ -114,7 +114,7 @@ export const TournamentSettings = ({ settings, onSettingsChange, disabled = fals
                       ...prev,
                       pointSystem: {
                         ...prev.pointSystem,
-                        minPoints: Math.max(0, parseInt(e.target.value) || 1)
+                        minPoints: Math.max(0, parseInt(e.target.value) || 0)
                       }
                     }))}
                   />

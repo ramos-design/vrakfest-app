@@ -14,7 +14,7 @@ export interface TournamentSettings {
 export const defaultTournamentSettings: TournamentSettings = {
   racersPerGroup: 6,
   pointSystem: {
-    minPoints: 1,
+    minPoints: 0,
     maxPoints: 10
   },
   enabledCategories: ['do 1.6L', 'nad 1.6L', 'Ženy']

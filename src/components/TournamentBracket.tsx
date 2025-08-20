@@ -52,7 +52,7 @@ export const TournamentBracket = ({ tournament, racers, onStartRace, onStartTour
                 })}
               </div>
             </div>
-            <div className="flex gap-3">
+            <div className="flex justify-center gap-3">
               <TournamentSettings 
                 settings={tournamentSettings}
                 onSettingsChange={onSettingsChange}
