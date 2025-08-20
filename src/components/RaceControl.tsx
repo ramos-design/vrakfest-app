@@ -29,7 +29,9 @@ export const RaceControl = ({ currentGroup, onCompleteRace }: RaceControlProps) 
     setPoints({});
     
     // Automatically redirect to tournament tab after completing race
-    window.dispatchEvent(new CustomEvent('redirectToTournament'));
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('redirectToTournament'));
+    }, 100);
   };
 
   if (!currentGroup) {

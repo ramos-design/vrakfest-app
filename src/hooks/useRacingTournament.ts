@@ -66,7 +66,8 @@ export const useRacingTournament = () => {
   }, []);
 
   const completeRace = useCallback((groupId: string, results: RaceResult[]) => {
-    // Update racer points and tournament simultaneously
+    console.log('CompleteRace called with:', { groupId, results });
+    
     setRacers(prev => {
       const updatedRacers = prev.map(racer => {
         const result = results.find(r => r.racerId === racer.id);
@@ -79,35 +80,32 @@ export const useRacingTournament = () => {
         }
         return racer;
       });
+      
+      console.log('Updated racers:', updatedRacers);
+      return updatedRacers;
+    });
 
-      // Also update tournament groups with the updated racers
-      setTournament(prevTournament => {
-        const updatedGroups = prevTournament.groups.map(group => {
-          if (group.id === groupId) {
-            // Update racers in this group with current points
-            const updatedGroupRacers = group.racers.map(groupRacer => {
-              const updatedRacer = updatedRacers.find(r => r.id === groupRacer.id);
-              return updatedRacer || groupRacer;
-            });
-            
-            return { 
-              ...group, 
-              isCompleted: true, 
-              results,
-              racers: updatedGroupRacers
-            };
-          }
-          return group;
-        });
-
-        return { 
-          ...prevTournament, 
-          groups: updatedGroups,
-          isActive: true
-        };
+    setTournament(prev => {
+      console.log('Previous tournament state:', prev);
+      
+      const updatedGroups = prev.groups.map(group => {
+        if (group.id === groupId) {
+          return { 
+            ...group, 
+            isCompleted: true, 
+            results
+          };
+        }
+        return group;
       });
 
-      return updatedRacers;
+      const newTournamentState = { 
+        ...prev, 
+        groups: updatedGroups
+      };
+      
+      console.log('New tournament state:', newTournamentState);
+      return newTournamentState;
     });
   }, []);
 

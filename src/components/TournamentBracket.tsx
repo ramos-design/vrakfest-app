@@ -17,6 +17,7 @@ interface TournamentBracketProps {
   tournamentSettings: ITournamentSettings;
   onSettingsChange: (settings: ITournamentSettings) => void;
   onAddRacersToGroup: (groupId: string, racerIds: string[]) => void;
+  onSwitchToControl: () => void;
 }
 
 export const TournamentBracket = ({ 
@@ -26,7 +27,8 @@ export const TournamentBracket = ({
   onStartTournament, 
   tournamentSettings, 
   onSettingsChange,
-  onAddRacersToGroup 
+  onAddRacersToGroup,
+  onSwitchToControl
 }: TournamentBracketProps) => {
   const [incompleteGroupDialog, setIncompleteGroupDialog] = useState<{
     isOpen: boolean;
@@ -63,6 +65,9 @@ export const TournamentBracket = ({
 
     // Start race normally
     onStartRace(groupId);
+    
+    // Automatically switch to control tab when race starts
+    onSwitchToControl();
   };
 
   const handleContinueWithCurrentSize = () => {
@@ -77,6 +82,7 @@ export const TournamentBracket = ({
       // Start the race after adding racers
       setTimeout(() => {
         onStartRace(incompleteGroupDialog.group!.id);
+        onSwitchToControl();
       }, 100);
     }
   };

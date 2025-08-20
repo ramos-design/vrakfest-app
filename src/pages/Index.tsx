@@ -121,6 +121,7 @@ const Index = () => {
             tournamentSettings={tournamentSettings}
             onSettingsChange={handleSettingsChange}
             onAddRacersToGroup={addRacersToGroup}
+            onSwitchToControl={handleViewControl}
           />
         );
       
