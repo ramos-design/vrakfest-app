@@ -51,7 +51,8 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
   const menuItems = [
     { id: 'jezdci', label: 'Nástěnka', icon: Home },
     { id: 'turnaj', label: 'Turnaj', icon: Users },
-    { id: 'kontrola', label: 'Bodové pořadí', icon: Trophy },
+    { id: 'kontrola', label: 'Kontrola', icon: Trophy },
+    { id: 'bodove-poradei', label: 'Bodové pořadí', icon: BarChart3 },
     { id: 'statistiky', label: 'Jezdci', icon: BarChart3 },
     { id: 'udalosti', label: 'Události', icon: Calendar },
     { id: 'settings', label: 'Nastavení', icon: Settings },

@@ -117,6 +117,14 @@ const Index = () => {
           />
         );
       
+      case 'bodove-poradei':
+        return (
+          <Statistics
+            racers={racers}
+            tournament={tournament}
+          />
+        );
+      
       case 'statistiky':
         return (
           <Statistics
