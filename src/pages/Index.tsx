@@ -9,6 +9,7 @@ import { RacerForm } from '@/components/RacerForm';
 import { TournamentBracket } from '@/components/TournamentBracket';
 import { RaceControl } from '@/components/RaceControl';
 import { Statistics } from '@/components/Statistics';
+import { Events } from '@/components/Events';
 import { useRacingTournament } from '@/hooks/useRacingTournament';
 import { Racer } from '@/types/racing';
 
@@ -123,6 +124,9 @@ const Index = () => {
             tournament={tournament}
           />
         );
+      
+      case 'udalosti':
+        return <Events />;
       
       default:
         return (

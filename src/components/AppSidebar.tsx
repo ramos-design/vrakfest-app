@@ -1,4 +1,4 @@
-import { Home, Users, Trophy, BarChart3, Settings, Calculator } from 'lucide-react';
+import { Home, Users, Trophy, BarChart3, Settings, Calendar } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -49,12 +49,12 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
   };
 
   const menuItems = [
-    { id: 'jezdci', label: 'Home', icon: Home },
-    { id: 'turnaj', label: 'Garage', icon: Users },
-    { id: 'kontrola', label: 'Service Menu', icon: Trophy },
-    { id: 'statistiky', label: 'Racers', icon: BarChart3 },
-    { id: 'calculator', label: 'Calculator', icon: Calculator },
-    { id: 'settings', label: 'Settings', icon: Settings },
+    { id: 'jezdci', label: 'Nástěnka', icon: Home },
+    { id: 'turnaj', label: 'Turnaj', icon: Users },
+    { id: 'kontrola', label: 'Bodové pořadí', icon: Trophy },
+    { id: 'statistiky', label: 'Jezdci', icon: BarChart3 },
+    { id: 'udalosti', label: 'Události', icon: Calendar },
+    { id: 'settings', label: 'Nastavení', icon: Settings },
   ];
 
   return (
