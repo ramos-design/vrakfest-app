@@ -208,9 +208,7 @@ const RaceGroupCard = ({ group, isNext, isCurrentRace, onStartRace }: RaceGroupC
   };
 
   return (
-    <Card className={`transition-racing ${
-      isCurrentRace ? 'ring-2 ring-racing-yellow border-racing-yellow' : group.isCompleted ? 'bg-muted/50' : ''
-    }`}>
+    <Card className={`transition-racing ${group.isCompleted ? 'bg-muted/50' : ''}`}>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -239,17 +237,19 @@ const RaceGroupCard = ({ group, isNext, isCurrentRace, onStartRace }: RaceGroupC
       </CardHeader>
       
       <CardContent>
-        <div className="grid grid-cols-2 gap-2">
+        <div className={`grid grid-cols-2 gap-2 ${isCurrentRace ? 'p-3 rounded bg-racing-yellow' : ''}`}>
           {group.racers.map((racer, index) => {
             // Najdi skutečné body přidělené v tomto kole
             const roundPoints = group.results?.find(r => r.racerId === racer.id)?.points || 0;
             
             return (
-              <div key={racer.id} className="flex items-center gap-2 p-2 bg-muted/30 rounded">
+              <div key={racer.id} className={`flex items-center gap-2 p-2 rounded ${
+                isCurrentRace ? 'bg-racing-yellow/80' : 'bg-muted/30'
+              }`}>
                 <Badge variant="outline" className="font-mono">
                   #{index + 1}
                 </Badge>
-                <span className="text-sm font-medium">
+                <span className={`text-sm font-medium ${isCurrentRace ? 'text-racing-black' : ''}`}>
                   {racer.firstName} {racer.lastName}
                 </span>
                 <div className="ml-auto flex items-center gap-1">
