@@ -108,13 +108,13 @@ export const TournamentSettings = ({ settings, onSettingsChange, disabled = fals
                     id="minPoints"
                     type="number"
                     min="0"
-                    max={localSettings.pointSystem.maxPoints - 1}
+                    max={localSettings.pointSystem.maxPoints}
                     value={localSettings.pointSystem.minPoints}
                     onChange={(e) => setLocalSettings(prev => ({
                       ...prev,
                       pointSystem: {
                         ...prev.pointSystem,
-                        minPoints: Math.max(0, parseInt(e.target.value) || 0)
+                        minPoints: Math.max(0, Math.min(prev.pointSystem.maxPoints, parseInt(e.target.value) || 0))
                       }
                     }))}
                   />
@@ -124,14 +124,14 @@ export const TournamentSettings = ({ settings, onSettingsChange, disabled = fals
                   <Input
                     id="maxPoints"
                     type="number"
-                    min={localSettings.pointSystem.minPoints + 1}
+                    min={localSettings.pointSystem.minPoints}
                     max="50"
                     value={localSettings.pointSystem.maxPoints}
                     onChange={(e) => setLocalSettings(prev => ({
                       ...prev,
                       pointSystem: {
                         ...prev.pointSystem,
-                        maxPoints: Math.max(prev.pointSystem.minPoints + 1, parseInt(e.target.value) || 10)
+                        maxPoints: Math.max(prev.pointSystem.minPoints, parseInt(e.target.value) || 3)
                       }
                     }))}
                   />
