@@ -161,8 +161,13 @@ export const TournamentBracket = ({
           {currentCategoryGroups
             .filter(group => group !== currentGroup)
             .sort((a, b) => {
-              // Keep original order by group ID
-              return a.id.localeCompare(b.id);
+              // Extract group numbers and sort numerically
+              const getGroupNumber = (groupId: string) => {
+                const match = groupId.match(/group(\d+)$/);
+                return match ? parseInt(match[1], 10) : 0;
+              };
+              
+              return getGroupNumber(a.id) - getGroupNumber(b.id);
             })
             .map((group, index) => (
               <RaceGroupCard
