@@ -26,7 +26,6 @@ export function RacerOverview({ racers }: RacerOverviewProps) {
           <TableRow className="border-racing-yellow/20">
             <TableHead className="text-racing-white font-medium">Startovní číslo</TableHead>
             <TableHead className="text-racing-white font-medium">Jméno</TableHead>
-            <TableHead className="text-racing-white font-medium">Příjmení</TableHead>
             <TableHead className="text-racing-white font-medium">Vozidlo</TableHead>
             <TableHead className="text-racing-white font-medium">Body celkem</TableHead>
             <TableHead className="text-racing-white font-medium">Status</TableHead>
@@ -38,8 +37,7 @@ export function RacerOverview({ racers }: RacerOverviewProps) {
               <TableCell className="font-medium text-racing-yellow">
                 #{racer.startNumber}
               </TableCell>
-              <TableCell className="text-racing-white">{racer.firstName}</TableCell>
-              <TableCell className="text-racing-white">{racer.lastName}</TableCell>
+              <TableCell className="text-racing-white">{racer.firstName} {racer.lastName}</TableCell>
               <TableCell className="text-racing-white">{racer.vehicleType}</TableCell>
               <TableCell className="text-racing-white font-semibold">
                 <span className="racing-gradient-text">{racer.points}</span>
@@ -56,7 +54,7 @@ export function RacerOverview({ racers }: RacerOverviewProps) {
           ))}
           {categoryRacers.length === 0 && (
             <TableRow>
-              <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+              <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
                 V této kategorii nejsou žádní aktivní jezdci
               </TableCell>
             </TableRow>
