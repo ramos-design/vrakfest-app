@@ -47,7 +47,8 @@ export const TournamentSettings = ({ settings, onSettingsChange, disabled = fals
       <DialogTrigger asChild>
         <Button 
           variant="outline" 
-          className="bg-white text-foreground border-border hover:bg-gray-50"
+          size="lg"
+          className="bg-white text-black border-border hover:bg-blue-600 hover:text-white transition-colors"
           disabled={disabled}
         >
           <Settings className="w-4 h-4 mr-2" />
