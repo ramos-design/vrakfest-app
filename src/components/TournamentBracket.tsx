@@ -171,15 +171,17 @@ export const TournamentBracket = ({
           </div>
         )}
 
-        <IncompleteGroupDialog
-          isOpen={incompleteGroupDialog.isOpen}
-          onClose={() => setIncompleteGroupDialog({ isOpen: false, group: null })}
-          group={incompleteGroupDialog.group!}
-          targetGroupSize={tournamentSettings.racersPerGroup}
-          availableRacers={incompleteGroupDialog.group ? getAvailableRacersForGroup(incompleteGroupDialog.group) : []}
-          onContinueWithCurrentSize={handleContinueWithCurrentSize}
-          onAddRacersAndStart={handleAddRacersAndStart}
-        />
+        {incompleteGroupDialog.group && (
+          <IncompleteGroupDialog
+            isOpen={incompleteGroupDialog.isOpen}
+            onClose={() => setIncompleteGroupDialog({ isOpen: false, group: null })}
+            group={incompleteGroupDialog.group}
+            targetGroupSize={tournamentSettings.racersPerGroup}
+            availableRacers={getAvailableRacersForGroup(incompleteGroupDialog.group)}
+            onContinueWithCurrentSize={handleContinueWithCurrentSize}
+            onAddRacersAndStart={handleAddRacersAndStart}
+          />
+        )}
       </CardContent>
     </Card>
   );
