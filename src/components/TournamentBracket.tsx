@@ -147,19 +147,8 @@ export const TournamentBracket = ({
       </CardHeader>
       
       <CardContent>
-        {currentGroup && (
-          <div className="mb-6 p-4 rounded-lg bg-racing-yellow">
-            <div className="flex items-center gap-2 mb-3">
-              <Clock className="w-5 h-5 text-racing-black" />
-              <span className="font-semibold text-racing-black">Právě jede:</span>
-            </div>
-            <RaceGroupCard group={currentGroup} isCurrentRace={true} onStartRace={handleStartRace} />
-          </div>
-        )}
-
         <div className="space-y-4">
           {currentCategoryGroups
-            .filter(group => group !== currentGroup)
             .sort((a, b) => {
               // Extract group numbers and sort numerically
               const getGroupNumber = (groupId: string) => {
@@ -174,6 +163,7 @@ export const TournamentBracket = ({
                 key={group.id}
                 group={group}
                 isNext={group === nextGroup}
+                isCurrentRace={group === currentGroup}
                 onStartRace={handleStartRace}
               />
             ))}
@@ -218,8 +208,8 @@ const RaceGroupCard = ({ group, isNext, isCurrentRace, onStartRace }: RaceGroupC
   };
 
   return (
-    <Card className={`transition-racing ${isCurrentRace ? 'ring-2 ring-primary' : ''} ${
-      group.isCompleted ? 'bg-muted/50' : ''
+    <Card className={`transition-racing ${
+      isCurrentRace ? 'bg-racing-yellow ring-2 ring-primary' : group.isCompleted ? 'bg-muted/50' : ''
     }`}>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
