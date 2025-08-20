@@ -161,13 +161,7 @@ export const TournamentBracket = ({
           {currentCategoryGroups
             .filter(group => group !== currentGroup)
             .sort((a, b) => {
-              // Prioritize next group (not started yet)
-              if (!a.hasStarted && b.hasStarted) return -1;
-              if (a.hasStarted && !b.hasStarted) return 1;
-              // Then sort by completion status (incomplete first)
-              if (!a.isCompleted && b.isCompleted) return -1;
-              if (a.isCompleted && !b.isCompleted) return 1;
-              // Finally sort by group ID
+              // Keep original order by group ID
               return a.id.localeCompare(b.id);
             })
             .map((group, index) => (
