@@ -18,16 +18,13 @@ function StatCard({
   const renderValue = () => {
     if (typeof value === 'string' && value.includes('/')) {
       const [current, max] = value.split('/');
-      return (
-        <span className="text-2xl font-bold">
+      return <span className="text-2xl font-bold">
           <span className="text-yellow-400">{current}</span>
           <span className="text-muted-foreground">/{max}</span>
-        </span>
-      );
+        </span>;
     }
     return <span className="text-2xl font-bold text-racing-white">{value}</span>;
   };
-
   return <div className="flex items-center justify-between">
       <div>
         {renderValue()}
@@ -51,7 +48,7 @@ export function DashboardStats({
   return <div className="space-y-6">
       <Card className="racing-card shadow-card">
         <CardHeader>
-          <CardTitle className="font-semibold racing-gradient-text text-2xl">VrakFest závody 2025</CardTitle>
+          <CardTitle className="font-semibold racing-gradient-text text-3xl">VrakFest 2025</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <StatCard title="Completed VrakFests" value={3} subtitle="VrakFestů se již jelo" icon={Trophy} color="racing-accent" />
