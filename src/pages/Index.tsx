@@ -64,6 +64,10 @@ const Index = () => {
     setEditingRacer(null);
   };
 
+  const handleViewTournament = () => {
+    setActiveTab('turnaj');
+  };
+
   const handleStartTournament = () => {
     setActiveTab('turnaj');
     startTournament(tournamentSettings);
@@ -192,6 +196,7 @@ const Index = () => {
             <div className="space-y-6">
               <DashboardActions 
                 onStartTournament={handleStartTournament}
+                onViewTournament={handleViewTournament}
                 onViewControl={handleViewControl}
                 isTournamentActive={tournament.isActive}
               />
