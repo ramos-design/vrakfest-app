@@ -162,6 +162,7 @@ export const TournamentBracket = ({
               <RaceGroupCard
                 key={group.id}
                 group={group}
+                tournament={tournament}
                 isNext={group === nextGroup}
                 isCurrentRace={group === currentGroup}
                 onStartRace={handleStartRace}
@@ -194,12 +195,13 @@ export const TournamentBracket = ({
 
 interface RaceGroupCardProps {
   group: RaceGroup;
+  tournament: Tournament;
   isNext?: boolean;
   isCurrentRace?: boolean;
   onStartRace: (groupId: string) => void;
 }
 
-const RaceGroupCard = ({ group, isNext, isCurrentRace, onStartRace }: RaceGroupCardProps) => {
+const RaceGroupCard = ({ group, tournament, isNext, isCurrentRace, onStartRace }: RaceGroupCardProps) => {
   const getStatusBadge = () => {
     if (group.isCompleted) return <Badge className="bg-green-600 text-white">Dokončeno</Badge>;
     if (group.hasStarted) return <Badge className="bg-yellow-600 text-white">Probíhá</Badge>;
@@ -244,6 +246,14 @@ const RaceGroupCard = ({ group, isNext, isCurrentRace, onStartRace }: RaceGroupC
             // Najdi skutečné body přidělené v tomto kole
             const roundPoints = group.results?.find(r => r.racerId === racer.id)?.points || 0;
             
+            // Spočítej body z aktuálního turnaje (ze všech dokončených skupin)
+            const tournamentPoints = tournament.groups
+              .filter(g => g.isCompleted)
+              .reduce((total, g) => {
+                const result = g.results?.find(r => r.racerId === racer.id);
+                return total + (result?.points || 0);
+              }, 0);
+            
             return (
               <div key={racer.id} className="flex items-center gap-2 p-2 bg-muted/30 rounded">
                 <Badge variant="outline" className="font-mono">
@@ -259,7 +269,7 @@ const RaceGroupCard = ({ group, isNext, isCurrentRace, onStartRace }: RaceGroupC
                     </Badge>
                   )}
                   <Badge variant="secondary" className="font-mono">
-                    {racer.points}b
+                    {tournamentPoints}b
                   </Badge>
                 </div>
               </div>
