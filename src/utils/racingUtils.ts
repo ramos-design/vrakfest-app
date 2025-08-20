@@ -37,15 +37,15 @@ export const shuffleArray = <T>(array: T[]): T[] => {
   return shuffled;
 };
 
-export const createGroups = (racers: Racer[], category: RacerCategory, round: number): RaceGroup[] => {
+export const createGroups = (racers: Racer[], category: RacerCategory, round: number, racersPerGroup: number = 6): RaceGroup[] => {
   const categoryRacers = racers.filter(r => r.category === category && r.isActive);
   const shuffledRacers = shuffleArray(categoryRacers);
   const groups: RaceGroup[] = [];
   
-  for (let i = 0; i < shuffledRacers.length; i += 6) {
-    const groupRacers = shuffledRacers.slice(i, i + 6);
+  for (let i = 0; i < shuffledRacers.length; i += racersPerGroup) {
+    const groupRacers = shuffledRacers.slice(i, i + racersPerGroup);
     groups.push({
-      id: `${category}-round${round}-group${Math.floor(i / 6) + 1}`,
+      id: `${category}-round${round}-group${Math.floor(i / racersPerGroup) + 1}`,
       racers: groupRacers,
       category,
       round,

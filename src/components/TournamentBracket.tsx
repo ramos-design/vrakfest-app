@@ -4,15 +4,19 @@ import { Badge } from '@/components/ui/badge';
 import { Play, Trophy, Clock } from 'lucide-react';
 import { RaceGroup, Tournament, Racer } from '@/types/racing';
 import { getCategoryBadgeColor, getCategoryColor } from '@/utils/racingUtils';
+import { TournamentSettings } from '@/components/TournamentSettings';
+import { TournamentSettings as ITournamentSettings } from '@/types/tournamentSettings';
 
 interface TournamentBracketProps {
   tournament: Tournament;
   racers: Racer[];
   onStartRace: (groupId: string) => void;
   onStartTournament: () => void;
+  tournamentSettings: ITournamentSettings;
+  onSettingsChange: (settings: ITournamentSettings) => void;
 }
 
-export const TournamentBracket = ({ tournament, racers, onStartRace, onStartTournament }: TournamentBracketProps) => {
+export const TournamentBracket = ({ tournament, racers, onStartRace, onStartTournament, tournamentSettings, onSettingsChange }: TournamentBracketProps) => {
   const activeRacers = racers.filter(r => r.isActive);
   const currentCategoryGroups = tournament.groups.filter(g => 
     g.category === tournament.currentCategory && g.round === tournament.currentRound
@@ -48,10 +52,16 @@ export const TournamentBracket = ({ tournament, racers, onStartRace, onStartTour
                 })}
               </div>
             </div>
-            <Button onClick={onStartTournament} className="racing-gradient shadow-racing" size="lg">
-              <Play className="w-5 h-5 mr-2" />
-              Zahájit turnaj
-            </Button>
+            <div className="flex gap-3">
+              <TournamentSettings 
+                settings={tournamentSettings}
+                onSettingsChange={onSettingsChange}
+              />
+              <Button onClick={onStartTournament} className="racing-gradient shadow-racing" size="lg">
+                <Play className="w-5 h-5 mr-2" />
+                Zahájit turnaj
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>

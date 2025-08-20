@@ -13,10 +13,12 @@ import { Statistics } from '@/components/Statistics';
 import { Events } from '@/components/Events';
 import { useRacingTournament } from '@/hooks/useRacingTournament';
 import { Racer } from '@/types/racing';
+import { TournamentSettings, defaultTournamentSettings } from '@/types/tournamentSettings';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('jezdci');
   const [editingRacer, setEditingRacer] = useState<Racer | null>(null);
+  const [tournamentSettings, setTournamentSettings] = useState<TournamentSettings>(defaultTournamentSettings);
 
   const {
     racers,
@@ -63,7 +65,11 @@ const Index = () => {
 
   const handleStartTournament = () => {
     setActiveTab('turnaj');
-    startTournament();
+    startTournament(tournamentSettings);
+  };
+
+  const handleSettingsChange = (settings: TournamentSettings) => {
+    setTournamentSettings(settings);
   };
 
   const handleViewControl = () => {
@@ -106,7 +112,9 @@ const Index = () => {
             tournament={tournament}
             racers={racers}
             onStartRace={startRace}
-            onStartTournament={startTournament}
+            onStartTournament={handleStartTournament}
+            tournamentSettings={tournamentSettings}
+            onSettingsChange={handleSettingsChange}
           />
         );
       

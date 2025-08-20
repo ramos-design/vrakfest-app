@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { Racer, Tournament, RaceGroup, RaceResult, RacerCategory } from '@/types/racing';
 import { createGroups, shouldAdvanceRacer, categories, generateRealRacers } from '@/utils/racingUtils';
+import { TournamentSettings } from '@/types/tournamentSettings';
 
 export const useRacingTournament = () => {
   const [racers, setRacers] = useState<Racer[]>(() => generateRealRacers());
@@ -26,15 +27,26 @@ export const useRacingTournament = () => {
     setRacers(prev => prev.filter(racer => racer.id !== id));
   }, []);
 
-  const startTournament = useCallback(() => {
+  const startTournament = useCallback((settings?: TournamentSettings) => {
     const activeRacers = racers.filter(r => r.isActive);
     if (activeRacers.length === 0) return;
 
-    const firstCategory = categories.find(cat => 
-      activeRacers.some(r => r.category === cat)
-    ) || 'do 1.6L';
+    // Use settings if provided, otherwise use default behavior
+    const racersPerGroup = settings?.racersPerGroup || 6;
+    const enabledCategories = settings?.enabledCategories || categories;
+    
+    // Filter racers by enabled categories
+    const filteredRacers = activeRacers.filter(r => 
+      enabledCategories.includes(r.category)
+    );
+    
+    if (filteredRacers.length === 0) return;
 
-    const initialGroups = createGroups(activeRacers, firstCategory, 1);
+    const firstCategory = enabledCategories.find(cat => 
+      filteredRacers.some(r => r.category === cat)
+    ) || enabledCategories[0];
+
+    const initialGroups = createGroups(filteredRacers, firstCategory, 1, racersPerGroup);
 
     setTournament({
       currentRound: 1,
