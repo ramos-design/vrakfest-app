@@ -209,7 +209,7 @@ const RaceGroupCard = ({ group, isNext, isCurrentRace, onStartRace }: RaceGroupC
 
   return (
     <Card className={`transition-racing ${
-      isCurrentRace ? 'bg-racing-yellow ring-2 ring-primary' : group.isCompleted ? 'bg-muted/50' : ''
+      isCurrentRace ? 'ring-2 ring-racing-yellow border-racing-yellow' : group.isCompleted ? 'bg-muted/50' : ''
     }`}>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
