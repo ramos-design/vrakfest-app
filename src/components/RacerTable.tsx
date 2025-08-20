@@ -38,10 +38,15 @@ export const RacerTable = ({ racers, onEdit, onDelete, onAdd }: RacerTableProps)
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
-          <Users className="w-5 h-5" />
-          Jezdci ({racers.length}/100)
-        </h2>
+        <div className="space-y-2">
+          <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
+            <Users className="w-5 h-5" />
+            Přehled přihlášených jezdců ({racers.length}/80)
+          </h2>
+          <div className="text-sm text-muted-foreground bg-muted/50 px-3 py-1 rounded-md inline-block">
+            Událost: VrakFest Branky na Moravě
+          </div>
+        </div>
       </div>
       
       <div className="flex gap-4">
