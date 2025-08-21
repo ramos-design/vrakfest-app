@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Button } from '@/components/ui/button';
 import { Racer, RacerCategory } from '@/types/racing';
 import { RacerForm } from '@/components/RacerForm';
-import { Edit, Trash2, Plus } from 'lucide-react';
+import { Edit, Trash2, Plus, X } from 'lucide-react';
 
 interface RacerOverviewProps {
   racers: Racer[];
@@ -45,6 +45,11 @@ export function RacerOverview({ racers, onEdit, onDelete, onSave, onCancel, edit
 
   const handleAddRacer = () => {
     setIsPanelOpen(true);
+  };
+
+  const handleHidePanel = () => {
+    onCancel();
+    setIsPanelOpen(false);
   };
 
   const renderRacerTable = (categoryRacers: Racer[]) => (
@@ -109,8 +114,8 @@ export function RacerOverview({ racers, onEdit, onDelete, onSave, onCancel, edit
   );
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div className="lg:col-span-2">
+    <div className={`grid gap-6 ${isPanelOpen ? 'grid-cols-1 lg:grid-cols-3' : 'grid-cols-1'}`}>
+      <div className={isPanelOpen ? "lg:col-span-2" : "col-span-1"}>
         <Card className="racing-card border-racing-yellow/30">
           <CardHeader>
             <div className="flex items-center justify-between">
@@ -118,11 +123,20 @@ export function RacerOverview({ racers, onEdit, onDelete, onSave, onCancel, edit
                 Přehled jezdců podle kategorií
               </CardTitle>
               <Button 
-                onClick={handleAddRacer}
+                onClick={isPanelOpen ? handleHidePanel : handleAddRacer}
                 className="bg-primary hover:bg-primary/90"
               >
-                <Plus className="w-4 h-4 mr-2" />
-                Přidat jezdce
+                {isPanelOpen ? (
+                  <>
+                    <X className="w-4 h-4 mr-2" />
+                    Skrýt panel
+                  </>
+                ) : (
+                  <>
+                    <Plus className="w-4 h-4 mr-2" />
+                    Přidat jezdce
+                  </>
+                )}
               </Button>
             </div>
           </CardHeader>
