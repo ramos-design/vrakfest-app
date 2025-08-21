@@ -150,6 +150,11 @@ const Index = () => {
         return (
           <RacerOverview
             racers={racers}
+            onEdit={handleEditRacer}
+            onDelete={deleteRacer}
+            onSave={handleSaveRacer}
+            onCancel={handleCancelEdit}
+            editingRacer={editingRacer}
           />
         );
       
