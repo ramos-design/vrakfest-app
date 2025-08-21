@@ -36,7 +36,6 @@ export function RacerOverview({ racers, onEdit, onDelete, onSave, onCancel, edit
             <TableHead className="text-racing-white font-medium">Jméno</TableHead>
             <TableHead className="text-racing-white font-medium">Vozidlo</TableHead>
             <TableHead className="text-racing-white font-medium">Body celkem</TableHead>
-            <TableHead className="text-racing-white font-medium">Status</TableHead>
             <TableHead className="text-racing-white font-medium">Akce</TableHead>
           </TableRow>
         </TableHeader>
@@ -50,14 +49,6 @@ export function RacerOverview({ racers, onEdit, onDelete, onSave, onCancel, edit
               <TableCell className="text-racing-white">{racer.vehicleType}</TableCell>
               <TableCell className="text-racing-white font-semibold">
                 <span className="racing-gradient-text">{racer.points}</span>
-              </TableCell>
-              <TableCell>
-                <Badge 
-                  variant={racer.isActive ? "default" : "secondary"}
-                  className={racer.isActive ? "racing-gradient text-racing-black" : "bg-gray-600"}
-                >
-                  {racer.isActive ? "Aktivní" : "Neaktivní"}
-                </Badge>
               </TableCell>
               <TableCell>
                 <div className="flex gap-2">
@@ -83,7 +74,7 @@ export function RacerOverview({ racers, onEdit, onDelete, onSave, onCancel, edit
           ))}
           {categoryRacers.length === 0 && (
             <TableRow>
-              <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+              <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
                 V této kategorii nejsou žádní aktivní jezdci
               </TableCell>
             </TableRow>
