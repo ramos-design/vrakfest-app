@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -26,6 +26,31 @@ export const RacerForm = ({ racer, onSave, onCancel, compact = false }: RacerFor
   });
 
   const [isExpanded, setIsExpanded] = useState(false);
+
+  // Update form data when racer prop changes
+  useEffect(() => {
+    if (racer) {
+      setFormData({
+        firstName: racer.firstName,
+        lastName: racer.lastName,
+        startNumber: racer.startNumber,
+        vehicleType: racer.vehicleType,
+        category: racer.category,
+        points: racer.points,
+        isActive: racer.isActive
+      });
+    } else {
+      setFormData({
+        firstName: '',
+        lastName: '',
+        startNumber: 0,
+        vehicleType: '',
+        category: 'do 1.6L' as RacerCategory,
+        points: 0,
+        isActive: true
+      });
+    }
+  }, [racer]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
