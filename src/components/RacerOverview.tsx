@@ -28,43 +28,47 @@ export function RacerOverview({ racers, onEdit, onDelete, onSave, onCancel, edit
   };
 
   const renderRacerTable = (categoryRacers: Racer[]) => (
-    <div className="racing-card border border-racing-yellow/30">
+    <div className="bg-card rounded-lg border border-border">
       <Table>
         <TableHeader>
-          <TableRow className="border-racing-yellow/20">
-            <TableHead className="text-racing-white font-medium">Startovní číslo</TableHead>
-            <TableHead className="text-racing-white font-medium">Jméno</TableHead>
-            <TableHead className="text-racing-white font-medium">Vozidlo</TableHead>
-            <TableHead className="text-racing-white font-medium">Body celkem</TableHead>
-            <TableHead className="text-racing-white font-medium">Akce</TableHead>
+          <TableRow className="border-border">
+            <TableHead className="text-muted-foreground">Startovní číslo</TableHead>
+            <TableHead className="text-muted-foreground">Jméno</TableHead>
+            <TableHead className="text-muted-foreground">Vozidlo</TableHead>
+            <TableHead className="text-muted-foreground text-center">Body</TableHead>
+            <TableHead className="text-muted-foreground">Akce</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {categoryRacers.map((racer, index) => (
-            <TableRow key={racer.id} className="border-racing-yellow/10 hover:bg-racing-yellow/5">
-              <TableCell className="font-medium text-racing-yellow">
-                #{racer.startNumber}
+            <TableRow key={racer.id} className="border-border hover:bg-muted/30 transition-colors">
+              <TableCell>
+                <Badge className="font-mono bg-yellow-400 text-black border-0 hover:bg-yellow-400">
+                  {racer.startNumber}
+                </Badge>
               </TableCell>
-              <TableCell className="text-racing-white">{racer.firstName} {racer.lastName}</TableCell>
-              <TableCell className="text-racing-white">{racer.vehicleType}</TableCell>
-              <TableCell className="text-racing-white font-semibold">
-                <span className="racing-gradient-text">{racer.points}</span>
+              <TableCell className="font-medium">
+                {racer.firstName} {racer.lastName}
+              </TableCell>
+              <TableCell className="text-muted-foreground">{racer.vehicleType}</TableCell>
+              <TableCell className="text-center">
+                <span className="font-bold text-foreground">{racer.points}</span>
               </TableCell>
               <TableCell>
-                <div className="flex gap-2">
+                <div className="flex gap-1">
                   <Button
+                    variant="ghost"
                     size="sm"
-                    variant="outline"
                     onClick={() => onEdit(racer)}
-                    className="border-racing-yellow/30 text-racing-yellow hover:bg-racing-yellow/10"
+                    className="w-8 h-8 p-0 hover:bg-primary/10 hover:text-primary"
                   >
                     <Edit className="w-4 h-4" />
                   </Button>
                   <Button
+                    variant="ghost"
                     size="sm"
-                    variant="outline"
                     onClick={() => onDelete(racer.id)}
-                    className="border-red-500/30 text-red-500 hover:bg-red-500/10"
+                    className="w-8 h-8 p-0 hover:bg-destructive/10 hover:text-destructive"
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>
