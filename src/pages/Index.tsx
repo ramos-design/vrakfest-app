@@ -86,6 +86,10 @@ const Index = () => {
     setActiveTab('komunikace');
   };
 
+  const handleViewStatistics = () => {
+    setActiveTab('bodove-poradei');
+  };
+
   const renderMainContent = () => {
     switch (activeTab) {
       case 'jezdci':
@@ -213,6 +217,7 @@ const Index = () => {
                 onViewTournament={handleViewTournament}
                 onViewControl={handleViewControl}
                 onViewCommunication={handleViewCommunication}
+                onViewStatistics={handleViewStatistics}
                 isTournamentActive={tournament.isActive}
               />
               {renderMainContent()}
