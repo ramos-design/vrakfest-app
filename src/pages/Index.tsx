@@ -95,28 +95,22 @@ const Index = () => {
       case 'jezdci':
         return (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2">
-                <RacerTable
-                  racers={racers}
-                  onEdit={handleEditRacer}
-                  onDelete={deleteRacer}
-                />
-              </div>
-              
-              <div className="space-y-6">
-                <RacerForm
-                  racer={editingRacer}
-                  onSave={handleSaveRacer}
-                  onCancel={handleCancelEdit}
-                  compact={true}
-                />
-                
-                <DashboardStats
-                  racerCount={racers.length}
-                  activeRacerCount={activeRacers.length}
-                  tournamentProgress={tournament?.currentRound || 0}
-                />
-              </div>
+            <div className="lg:col-span-2">
+              <RacerTable
+                racers={racers}
+                onEdit={handleEditRacer}
+                onDelete={deleteRacer}
+                showActions={false}
+              />
+            </div>
+            
+            <div className="space-y-6">              
+              <DashboardStats
+                racerCount={racers.length}
+                activeRacerCount={activeRacers.length}
+                tournamentProgress={tournament?.currentRound || 0}
+              />
+            </div>
             </div>
         );
       
@@ -176,17 +170,11 @@ const Index = () => {
                 racers={racers}
                 onEdit={handleEditRacer}
                 onDelete={deleteRacer}
+                showActions={false}
               />
             </div>
             
-            <div className="space-y-6">
-              <RacerForm
-                racer={editingRacer}
-                onSave={handleSaveRacer}
-                onCancel={handleCancelEdit}
-                compact={true}
-              />
-              
+            <div className="space-y-6">              
               <DashboardStats
                 racerCount={racers.length}
                 activeRacerCount={activeRacers.length}

@@ -124,7 +124,7 @@ export function RacerOverview({ racers, onEdit, onDelete, onSave, onCancel, edit
               </CardTitle>
               <Button 
                 onClick={isPanelOpen ? handleHidePanel : handleAddRacer}
-                className="bg-primary hover:bg-primary/90"
+                className={isPanelOpen ? "bg-red-600 hover:bg-red-700 text-white" : "bg-primary hover:bg-primary/90"}
               >
                 {isPanelOpen ? (
                   <>

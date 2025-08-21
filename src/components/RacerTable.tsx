@@ -15,9 +15,10 @@ interface RacerTableProps {
   onEdit: (racer: Racer) => void;
   onDelete: (id: string) => void;
   onAdd?: () => void;
+  showActions?: boolean;
 }
 
-export const RacerTable = ({ racers, onEdit, onDelete, onAdd }: RacerTableProps) => {
+export const RacerTable = ({ racers, onEdit, onDelete, onAdd, showActions = true }: RacerTableProps) => {
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
 
@@ -88,7 +89,7 @@ export const RacerTable = ({ racers, onEdit, onDelete, onAdd }: RacerTableProps)
               <TableHead className="text-muted-foreground">Vozidlo</TableHead>
               <TableHead className="text-muted-foreground">Kategorie</TableHead>
               <TableHead className="text-muted-foreground text-center">Body</TableHead>
-              <TableHead className="text-muted-foreground">Akce</TableHead>
+              {showActions && <TableHead className="text-muted-foreground">Akce</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -111,26 +112,28 @@ export const RacerTable = ({ racers, onEdit, onDelete, onAdd }: RacerTableProps)
                 <TableCell className="text-center">
                   <span className="font-bold text-foreground">{racer.points}</span>
                 </TableCell>
-                <TableCell>
-                  <div className="flex gap-1">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onEdit(racer)}
-                      className="w-8 h-8 p-0 hover:bg-primary/10 hover:text-primary"
-                    >
-                      <Pencil className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onDelete(racer.id)}
-                      className="w-8 h-8 p-0 hover:bg-destructive/10 hover:text-destructive"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </TableCell>
+                {showActions && (
+                  <TableCell>
+                    <div className="flex gap-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onEdit(racer)}
+                        className="w-8 h-8 p-0 hover:bg-primary/10 hover:text-primary"
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onDelete(racer.id)}
+                        className="w-8 h-8 p-0 hover:bg-destructive/10 hover:text-destructive"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                )}
               </TableRow>
             ))}
           </TableBody>
