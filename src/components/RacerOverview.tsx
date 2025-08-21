@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Button } from '@/components/ui/button';
 import { Racer, RacerCategory } from '@/types/racing';
 import { RacerForm } from '@/components/RacerForm';
-import { Edit, Trash2 } from 'lucide-react';
+import { Edit, Trash2, Plus } from 'lucide-react';
 
 interface RacerOverviewProps {
   racers: Racer[];
@@ -20,11 +20,31 @@ interface RacerOverviewProps {
 export function RacerOverview({ racers, onEdit, onDelete, onSave, onCancel, editingRacer }: RacerOverviewProps) {
   const categories: RacerCategory[] = ['do 1.6L', 'nad 1.6L', 'Ženy'];
   const [activeCategory, setActiveCategory] = useState<RacerCategory>('do 1.6L');
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
 
   const getRacersByCategory = (category: RacerCategory) => {
     return racers
       .filter(racer => racer.category === category && racer.isActive)
       .sort((a, b) => b.points - a.points);
+  };
+
+  const handleEdit = (racer: Racer) => {
+    onEdit(racer);
+    setIsPanelOpen(true);
+  };
+
+  const handleSave = (racerData: Omit<Racer, 'id'>) => {
+    onSave(racerData);
+    setIsPanelOpen(false);
+  };
+
+  const handleCancel = () => {
+    onCancel();
+    setIsPanelOpen(false);
+  };
+
+  const handleAddRacer = () => {
+    setIsPanelOpen(true);
   };
 
   const renderRacerTable = (categoryRacers: Racer[]) => (
@@ -56,12 +76,12 @@ export function RacerOverview({ racers, onEdit, onDelete, onSave, onCancel, edit
               </TableCell>
               <TableCell>
                 <div className="flex gap-1">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onEdit(racer)}
-                    className="w-8 h-8 p-0 hover:bg-primary/10 hover:text-primary"
-                  >
+                   <Button
+                     variant="ghost"
+                     size="sm"
+                     onClick={() => handleEdit(racer)}
+                     className="w-8 h-8 p-0 hover:bg-primary/10 hover:text-primary"
+                   >
                     <Edit className="w-4 h-4" />
                   </Button>
                   <Button
@@ -93,9 +113,18 @@ export function RacerOverview({ racers, onEdit, onDelete, onSave, onCancel, edit
       <div className="lg:col-span-2">
         <Card className="racing-card border-racing-yellow/30">
           <CardHeader>
-            <CardTitle className="racing-gradient-text text-xl">
-              Přehled jezdců podle kategorií
-            </CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle className="racing-gradient-text text-xl">
+                Přehled jezdců podle kategorií
+              </CardTitle>
+              <Button 
+                onClick={handleAddRacer}
+                className="bg-primary hover:bg-primary/90"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Přidat jezdce
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
             <Tabs value={activeCategory} onValueChange={(value) => setActiveCategory(value as RacerCategory)}>
@@ -135,12 +164,14 @@ export function RacerOverview({ racers, onEdit, onDelete, onSave, onCancel, edit
       </div>
       
       <div className="space-y-6">
-        <RacerForm
-          racer={editingRacer}
-          onSave={onSave}
-          onCancel={onCancel}
-          compact={true}
-        />
+        {isPanelOpen && (
+          <RacerForm
+            racer={editingRacer}
+            onSave={handleSave}
+            onCancel={handleCancel}
+            compact={true}
+          />
+        )}
       </div>
     </div>
   );
