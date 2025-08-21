@@ -48,16 +48,17 @@ interface DashboardActionsProps {
   onStartTournament?: () => void;
   onViewControl?: () => void;
   onViewTournament?: () => void;
+  onViewCommunication?: () => void;
   isTournamentActive?: boolean;
 }
 
-export function DashboardActions({ onStartTournament, onViewControl, onViewTournament, isTournamentActive = false }: DashboardActionsProps) {
+export function DashboardActions({ onStartTournament, onViewControl, onViewTournament, onViewCommunication, isTournamentActive = false }: DashboardActionsProps) {
   const actions = [
     { icon: isTournamentActive ? Search : Play, label: isTournamentActive ? 'Průběh závodu' : 'Zahájit závod', isActive: isTournamentActive, onClick: isTournamentActive ? onViewTournament : onStartTournament, isStartButton: true },
     { icon: Gauge, label: 'Kontrola', isActive: false, onClick: onViewControl },
     { icon: BarChart3, label: 'Statistiky', isActive: false },
     { icon: Car, label: 'Demolition derby', isActive: false },
-    { icon: Bell, label: 'Oznámení', isActive: false },
+    { icon: Bell, label: 'Komunikace', isActive: false, onClick: onViewCommunication },
     { icon: BookOpen, label: 'Pravidla', isActive: false },
   ];
 

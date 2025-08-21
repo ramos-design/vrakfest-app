@@ -11,6 +11,7 @@ import { RaceControl } from '@/components/RaceControl';
 import { RacerOverview } from '@/components/RacerOverview';
 import { Statistics } from '@/components/Statistics';
 import { Events } from '@/components/Events';
+import { Communication } from '@/components/Communication';
 import { useRacingTournament } from '@/hooks/useRacingTournament';
 import { Racer } from '@/types/racing';
 import { TournamentSettings, defaultTournamentSettings } from '@/types/tournamentSettings';
@@ -79,6 +80,10 @@ const Index = () => {
 
   const handleViewControl = () => {
     setActiveTab('kontrola');
+  };
+
+  const handleViewCommunication = () => {
+    setActiveTab('komunikace');
   };
 
   const renderMainContent = () => {
@@ -151,6 +156,9 @@ const Index = () => {
       case 'udalosti':
         return <Events />;
       
+      case 'komunikace':
+        return <Communication />;
+      
       default:
         return (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -199,6 +207,7 @@ const Index = () => {
                 onStartTournament={handleStartTournament}
                 onViewTournament={handleViewTournament}
                 onViewControl={handleViewControl}
+                onViewCommunication={handleViewCommunication}
                 isTournamentActive={tournament.isActive}
               />
               {renderMainContent()}
