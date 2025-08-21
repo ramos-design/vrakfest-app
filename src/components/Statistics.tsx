@@ -1,10 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import React from 'react';
+import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Trophy, TrendingUp, Users, Medal, Calendar, ChevronRight } from 'lucide-react';
+import { Trophy, TrendingUp, Medal, Calendar } from 'lucide-react';
 import { Racer, RacerCategory, Tournament } from '@/types/racing';
 import { categories, getCategoryBadgeColor } from '@/utils/racingUtils';
 
@@ -14,6 +13,7 @@ interface StatisticsProps {
 }
 
 export const Statistics = ({ racers, tournament }: StatisticsProps) => {
+  const [selectedView, setSelectedView] = React.useState<'current-tournament' | 'overall-overview' | 'overall-top' | 'historical'>('current-tournament');
   const activeRacers = racers.filter(r => r.isActive);
 
   // Calculate tournament points (points gained only from current tournament)
@@ -26,13 +26,6 @@ export const Statistics = ({ racers, tournament }: StatisticsProps) => {
       const result = group.results.find(r => r.racerId === racerId);
       return totalPoints + (result ? result.points : 0);
     }, 0);
-  };
-
-  const getTopRacersByCategory = (category: RacerCategory) => {
-    return activeRacers
-      .filter(r => r.category === category)
-      .sort((a, b) => b.points - a.points)
-      .slice(0, 10);
   };
 
   const getTournamentRacersByCategory = (category: RacerCategory) => {
@@ -49,294 +42,286 @@ export const Statistics = ({ racers, tournament }: StatisticsProps) => {
     .sort((a, b) => b.points - a.points)
     .slice(0, 10);
 
-  const CurrentTournamentDialog = () => (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Card className="shadow-card cursor-pointer hover:shadow-lg transition-all duration-200 border-primary/20 hover:border-primary/40">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Medal className="w-8 h-8 text-primary" />
-                <div>
-                  <p className="text-lg font-bold">Aktuální turnaj</p>
-                  <p className="text-sm text-muted-foreground">Body z probíhajícího turnaje</p>
-                </div>
-              </div>
-              <ChevronRight className="w-5 h-5 text-muted-foreground" />
-            </div>
-          </CardContent>
-        </Card>
-      </DialogTrigger>
-      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Pořadí v aktuálním turnaji</DialogTitle>
-        </DialogHeader>
-        <Tabs defaultValue={categories[0]} className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            {categories.map(category => (
-              <TabsTrigger key={category} value={category}>
-                {category}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-          {categories.map(category => {
-            const categoryRacers = getTournamentRacersByCategory(category);
-            return (
-              <TabsContent key={category} value={category}>
-                {categoryRacers.length > 0 ? (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="w-12">#</TableHead>
-                        <TableHead>Jezdec</TableHead>
-                        <TableHead>Vozidlo</TableHead>
-                        <TableHead className="text-right">Body v turnaji</TableHead>
+  const renderCurrentTournament = () => (
+    <div className="mt-6">
+      <h3 className="text-xl font-bold mb-4">Pořadí v aktuálním turnaji</h3>
+      <Tabs defaultValue={categories[0]} className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          {categories.map(category => (
+            <TabsTrigger key={category} value={category}>
+              {category}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        {categories.map(category => {
+          const categoryRacers = getTournamentRacersByCategory(category);
+          return (
+            <TabsContent key={category} value={category}>
+              {categoryRacers.length > 0 ? (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-12">#</TableHead>
+                      <TableHead>Jezdec</TableHead>
+                      <TableHead>Vozidlo</TableHead>
+                      <TableHead className="text-right">Body v turnaji</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {categoryRacers.map((racer, index) => (
+                      <TableRow key={racer.id} className="transition-racing hover:bg-muted/50">
+                        <TableCell>
+                          <div className="flex items-center">
+                            {index < 3 && (
+                              <Trophy className={`w-4 h-4 mr-1 ${
+                                index === 0 ? 'text-yellow-500' : 
+                                index === 1 ? 'text-gray-400' : 'text-amber-600'
+                              }`} />
+                            )}
+                            <span className="font-mono font-bold">{index + 1}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="font-medium">
+                          {racer.firstName} {racer.lastName}
+                          <div className="text-sm text-muted-foreground">#{racer.startNumber}</div>
+                        </TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {racer.vehicleType}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Badge variant="secondary" className="font-mono font-bold text-lg">
+                            {racer.tournamentPoints}
+                          </Badge>
+                        </TableCell>
                       </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {categoryRacers.map((racer, index) => (
-                        <TableRow key={racer.id} className="transition-racing hover:bg-muted/50">
-                          <TableCell>
-                            <div className="flex items-center">
-                              {index < 3 && (
-                                <Trophy className={`w-4 h-4 mr-1 ${
-                                  index === 0 ? 'text-yellow-500' : 
-                                  index === 1 ? 'text-gray-400' : 'text-amber-600'
-                                }`} />
-                              )}
-                              <span className="font-mono font-bold">{index + 1}</span>
-                            </div>
-                          </TableCell>
-                          <TableCell className="font-medium">
-                            {racer.firstName} {racer.lastName}
-                            <div className="text-sm text-muted-foreground">#{racer.startNumber}</div>
-                          </TableCell>
-                          <TableCell className="text-muted-foreground">
-                            {racer.vehicleType}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <Badge variant="secondary" className="font-mono font-bold text-lg">
-                              {racer.tournamentPoints}
-                            </Badge>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                ) : (
-                  <div className="text-center py-8 text-muted-foreground">
-                    Žádní jezdci v této kategorii
-                  </div>
-                )}
-              </TabsContent>
-            );
-          })}
-        </Tabs>
-      </DialogContent>
-    </Dialog>
+                    ))}
+                  </TableBody>
+                </Table>
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  Žádní jezdci v této kategorii
+                </div>
+              )}
+            </TabsContent>
+          );
+        })}
+      </Tabs>
+    </div>
   );
 
-  const OverallOverviewDialog = () => (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Card className="shadow-card cursor-pointer hover:shadow-lg transition-all duration-200 border-primary/20 hover:border-primary/40">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <TrendingUp className="w-8 h-8 text-primary" />
-                <div>
-                  <p className="text-lg font-bold">Celkový přehled</p>
-                  <p className="text-sm text-muted-foreground">Body všech jezdců</p>
-                </div>
-              </div>
-              <ChevronRight className="w-5 h-5 text-muted-foreground" />
-            </div>
-          </CardContent>
-        </Card>
-      </DialogTrigger>
-      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Celkový přehled bodů všech jezdců</DialogTitle>
-        </DialogHeader>
-        <Tabs defaultValue={categories[0]} className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            {categories.map(category => (
-              <TabsTrigger key={category} value={category}>
-                {category}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-          {categories.map(category => {
-            const categoryRacers = activeRacers
-              .filter(r => r.category === category)
-              .sort((a, b) => b.points - a.points);
-            return (
-              <TabsContent key={category} value={category}>
-                {categoryRacers.length > 0 ? (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="w-12">#</TableHead>
-                        <TableHead>Jezdec</TableHead>
-                        <TableHead>Vozidlo</TableHead>
-                        <TableHead className="text-right">Celkové body</TableHead>
+  const renderOverallOverview = () => (
+    <div className="mt-6">
+      <h3 className="text-xl font-bold mb-4">Celkový přehled bodů všech jezdců</h3>
+      <Tabs defaultValue={categories[0]} className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          {categories.map(category => (
+            <TabsTrigger key={category} value={category}>
+              {category}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        {categories.map(category => {
+          const categoryRacers = activeRacers
+            .filter(r => r.category === category)
+            .sort((a, b) => b.points - a.points);
+          return (
+            <TabsContent key={category} value={category}>
+              {categoryRacers.length > 0 ? (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-12">#</TableHead>
+                      <TableHead>Jezdec</TableHead>
+                      <TableHead>Vozidlo</TableHead>
+                      <TableHead className="text-right">Celkové body</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {categoryRacers.map((racer, index) => (
+                      <TableRow key={racer.id} className="transition-racing hover:bg-muted/50">
+                        <TableCell>
+                          <div className="flex items-center">
+                            {index < 3 && (
+                              <Trophy className={`w-4 h-4 mr-1 ${
+                                index === 0 ? 'text-yellow-500' : 
+                                index === 1 ? 'text-gray-400' : 'text-amber-600'
+                              }`} />
+                            )}
+                            <span className="font-mono font-bold">{index + 1}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="font-medium">
+                          {racer.firstName} {racer.lastName}
+                          <div className="text-sm text-muted-foreground">#{racer.startNumber}</div>
+                        </TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {racer.vehicleType}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Badge variant="secondary" className="font-mono font-bold text-lg">
+                            {racer.points}
+                          </Badge>
+                        </TableCell>
                       </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {categoryRacers.map((racer, index) => (
-                        <TableRow key={racer.id} className="transition-racing hover:bg-muted/50">
-                          <TableCell>
-                            <div className="flex items-center">
-                              {index < 3 && (
-                                <Trophy className={`w-4 h-4 mr-1 ${
-                                  index === 0 ? 'text-yellow-500' : 
-                                  index === 1 ? 'text-gray-400' : 'text-amber-600'
-                                }`} />
-                              )}
-                              <span className="font-mono font-bold">{index + 1}</span>
-                            </div>
-                          </TableCell>
-                          <TableCell className="font-medium">
-                            {racer.firstName} {racer.lastName}
-                            <div className="text-sm text-muted-foreground">#{racer.startNumber}</div>
-                          </TableCell>
-                          <TableCell className="text-muted-foreground">
-                            {racer.vehicleType}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <Badge variant="secondary" className="font-mono font-bold text-lg">
-                              {racer.points}
-                            </Badge>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                ) : (
-                  <div className="text-center py-8 text-muted-foreground">
-                    Žádní jezdci v této kategorii
-                  </div>
-                )}
-              </TabsContent>
-            );
-          })}
-        </Tabs>
-      </DialogContent>
-    </Dialog>
+                    ))}
+                  </TableBody>
+                </Table>
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  Žádní jezdci v této kategorii
+                </div>
+              )}
+            </TabsContent>
+          );
+        })}
+      </Tabs>
+    </div>
   );
 
-  const OverallTopDialog = () => (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Card className="shadow-card cursor-pointer hover:shadow-lg transition-all duration-200 border-primary/20 hover:border-primary/40">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Trophy className="w-8 h-8 text-primary" />
-                <div>
-                  <p className="text-lg font-bold">Celkové pořadí</p>
-                  <p className="text-sm text-muted-foreground">TOP 10 jezdců ze všech kategorií</p>
+  const renderOverallTop = () => (
+    <div className="mt-6">
+      <h3 className="text-xl font-bold mb-4">Celkové pořadí - TOP 10</h3>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-12">#</TableHead>
+            <TableHead>Jezdec</TableHead>
+            <TableHead>Kategorie</TableHead>
+            <TableHead>Vozidlo</TableHead>
+            <TableHead className="text-right">Body</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {overallTop.map((racer, index) => (
+            <TableRow key={racer.id} className="transition-racing hover:bg-muted/50">
+              <TableCell>
+                <div className="flex items-center">
+                  {index < 3 && (
+                    <Trophy className={`w-4 h-4 mr-1 ${
+                      index === 0 ? 'text-yellow-500' : 
+                      index === 1 ? 'text-gray-400' : 'text-amber-600'
+                    }`} />
+                  )}
+                  <span className="font-mono font-bold">{index + 1}</span>
                 </div>
-              </div>
-              <ChevronRight className="w-5 h-5 text-muted-foreground" />
-            </div>
-          </CardContent>
-        </Card>
-      </DialogTrigger>
-      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Celkové pořadí - TOP 10</DialogTitle>
-        </DialogHeader>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-12">#</TableHead>
-              <TableHead>Jezdec</TableHead>
-              <TableHead>Kategorie</TableHead>
-              <TableHead>Vozidlo</TableHead>
-              <TableHead className="text-right">Body</TableHead>
+              </TableCell>
+              <TableCell className="font-medium">
+                {racer.firstName} {racer.lastName}
+                <div className="text-sm text-muted-foreground">#{racer.startNumber}</div>
+              </TableCell>
+              <TableCell>
+                <Badge className={`${getCategoryBadgeColor(racer.category)} text-white`}>
+                  {racer.category}
+                </Badge>
+              </TableCell>
+              <TableCell className="text-muted-foreground">
+                {racer.vehicleType}
+              </TableCell>
+              <TableCell className="text-right">
+                <Badge variant="secondary" className="font-mono font-bold text-lg">
+                  {racer.points}
+                </Badge>
+              </TableCell>
             </TableRow>
-          </TableHeader>
-          <TableBody>
-            {overallTop.map((racer, index) => (
-              <TableRow key={racer.id} className="transition-racing hover:bg-muted/50">
-                <TableCell>
-                  <div className="flex items-center">
-                    {index < 3 && (
-                      <Trophy className={`w-4 h-4 mr-1 ${
-                        index === 0 ? 'text-yellow-500' : 
-                        index === 1 ? 'text-gray-400' : 'text-amber-600'
-                      }`} />
-                    )}
-                    <span className="font-mono font-bold">{index + 1}</span>
-                  </div>
-                </TableCell>
-                <TableCell className="font-medium">
-                  {racer.firstName} {racer.lastName}
-                  <div className="text-sm text-muted-foreground">#{racer.startNumber}</div>
-                </TableCell>
-                <TableCell>
-                  <Badge className={`${getCategoryBadgeColor(racer.category)} text-white`}>
-                    {racer.category}
-                  </Badge>
-                </TableCell>
-                <TableCell className="text-muted-foreground">
-                  {racer.vehicleType}
-                </TableCell>
-                <TableCell className="text-right">
-                  <Badge variant="secondary" className="font-mono font-bold text-lg">
-                    {racer.points}
-                  </Badge>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </DialogContent>
-    </Dialog>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   );
 
-  const HistoricalEventsDialog = () => (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Card className="shadow-card cursor-pointer hover:shadow-lg transition-all duration-200 border-primary/20 hover:border-primary/40">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Calendar className="w-8 h-8 text-primary" />
-                <div>
-                  <p className="text-lg font-bold">Historické události</p>
-                  <p className="text-sm text-muted-foreground">Body z předchozích závodů</p>
-                </div>
-              </div>
-              <ChevronRight className="w-5 h-5 text-muted-foreground" />
-            </div>
-          </CardContent>
-        </Card>
-      </DialogTrigger>
-      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Body z jednotlivých událostí</DialogTitle>
-        </DialogHeader>
-        <div className="text-center py-8 text-muted-foreground">
-          <Calendar className="w-12 h-12 mx-auto mb-4 opacity-50" />
-          <p>Historické údaje zatím nejsou k dispozici</p>
-          <p className="text-sm">Budou zobrazeny po dokončení prvních závodů</p>
-        </div>
-      </DialogContent>
-    </Dialog>
+  const renderHistorical = () => (
+    <div className="mt-6">
+      <h3 className="text-xl font-bold mb-4">Body z jednotlivých událostí</h3>
+      <div className="text-center py-8 text-muted-foreground">
+        <Calendar className="w-12 h-12 mx-auto mb-4 opacity-50" />
+        <p>Historické údaje zatím nejsou k dispozici</p>
+        <p className="text-sm">Budou zobrazeny po dokončení prvních závodů</p>
+      </div>
+    </div>
   );
 
   return (
     <div className="space-y-6">
       {/* Action Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Clickable Cards in order requested by user */}
-        <CurrentTournamentDialog />
-        <OverallOverviewDialog />
-        <OverallTopDialog />
-        <HistoricalEventsDialog />
+        {/* Current Tournament Card */}
+        <Card 
+          className={`shadow-card cursor-pointer hover:shadow-lg transition-all duration-200 border-primary/20 hover:border-primary/40 ${
+            selectedView === 'current-tournament' ? 'ring-2 ring-primary bg-primary/5' : ''
+          }`}
+          onClick={() => setSelectedView('current-tournament')}
+        >
+          <CardContent className="p-6">
+            <div className="flex items-center gap-3">
+              <Medal className="w-8 h-8 text-primary" />
+              <div>
+                <p className="text-lg font-bold">Aktuální turnaj</p>
+                <p className="text-sm text-muted-foreground">Body z probíhajícího turnaje</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Overall Overview Card */}
+        <Card 
+          className={`shadow-card cursor-pointer hover:shadow-lg transition-all duration-200 border-primary/20 hover:border-primary/40 ${
+            selectedView === 'overall-overview' ? 'ring-2 ring-primary bg-primary/5' : ''
+          }`}
+          onClick={() => setSelectedView('overall-overview')}
+        >
+          <CardContent className="p-6">
+            <div className="flex items-center gap-3">
+              <TrendingUp className="w-8 h-8 text-primary" />
+              <div>
+                <p className="text-lg font-bold">Celkový přehled</p>
+                <p className="text-sm text-muted-foreground">Body všech jezdců</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Overall Top Card */}
+        <Card 
+          className={`shadow-card cursor-pointer hover:shadow-lg transition-all duration-200 border-primary/20 hover:border-primary/40 ${
+            selectedView === 'overall-top' ? 'ring-2 ring-primary bg-primary/5' : ''
+          }`}
+          onClick={() => setSelectedView('overall-top')}
+        >
+          <CardContent className="p-6">
+            <div className="flex items-center gap-3">
+              <Trophy className="w-8 h-8 text-primary" />
+              <div>
+                <p className="text-lg font-bold">Celkové pořadí</p>
+                <p className="text-sm text-muted-foreground">TOP 10 jezdců ze všech kategorií</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Historical Events Card */}
+        <Card 
+          className={`shadow-card cursor-pointer hover:shadow-lg transition-all duration-200 border-primary/20 hover:border-primary/40 ${
+            selectedView === 'historical' ? 'ring-2 ring-primary bg-primary/5' : ''
+          }`}
+          onClick={() => setSelectedView('historical')}
+        >
+          <CardContent className="p-6">
+            <div className="flex items-center gap-3">
+              <Calendar className="w-8 h-8 text-primary" />
+              <div>
+                <p className="text-lg font-bold">Historické události</p>
+                <p className="text-sm text-muted-foreground">Body z předchozích závodů</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
+
+      {/* Tables shown below based on selected view */}
+      {selectedView === 'current-tournament' && renderCurrentTournament()}
+      {selectedView === 'overall-overview' && renderOverallOverview()}
+      {selectedView === 'overall-top' && renderOverallTop()}
+      {selectedView === 'historical' && renderHistorical()}
     </div>
   );
 };
