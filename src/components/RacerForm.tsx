@@ -193,6 +193,19 @@ export const RacerForm = ({ racer, onSave, onCancel, compact = false }: RacerFor
               </Select>
             </div>
             
+            <div>
+              <Label htmlFor="points" className="text-sm font-medium text-foreground">Body</Label>
+              <Input
+                id="points"
+                type="number"
+                min="0"
+                placeholder="0"
+                value={formData.points || ''}
+                onChange={(e) => setFormData({ ...formData, points: parseInt(e.target.value) || 0 })}
+                className="mt-1 bg-racing-black/30 border-racing-yellow/20 text-racing-white"
+              />
+            </div>
+            
             <div className="flex gap-2 pt-4">
               <Button type="submit" className="flex-1 racing-gradient text-racing-black font-medium shadow-racing hover:shadow-glow">
                 {racer ? 'Upravit jezdce' : 'Přidat jezdce'}
