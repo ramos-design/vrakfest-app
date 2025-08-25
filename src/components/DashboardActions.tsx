@@ -1,4 +1,4 @@
-import { Play, Gauge, BarChart3, Bell, BookOpen, Car, Search } from 'lucide-react';
+import { Play, Gauge, BarChart3, Car, BookOpen, Search, MessageSquare } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 
 interface ActionCardProps {
@@ -59,7 +59,7 @@ export function DashboardActions({ onStartTournament, onViewControl, onViewTourn
     { icon: Gauge, label: 'Kontrola', isActive: false, onClick: onViewControl },
     { icon: BarChart3, label: 'Statistiky', isActive: false, onClick: onViewStatistics },
     { icon: Car, label: 'Demolition derby', isActive: false },
-    { icon: Bell, label: 'Komunikace', isActive: false, onClick: onViewCommunication },
+    { icon: MessageSquare, label: 'Komunikace', isActive: false, onClick: onViewCommunication },
     { icon: BookOpen, label: 'Pravidla', isActive: false },
   ];
 
