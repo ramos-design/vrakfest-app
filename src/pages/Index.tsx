@@ -12,6 +12,9 @@ import { RacerOverview } from '@/components/RacerOverview';
 import { Statistics } from '@/components/Statistics';
 import { Events } from '@/components/Events';
 import { Communication } from '@/components/Communication';
+import { RaceRules } from '@/components/RaceRules';
+import { ActionLog } from '@/components/ActionLog';
+import { Marketplace } from '@/components/Marketplace';
 import { useRacingTournament } from '@/hooks/useRacingTournament';
 import { Racer } from '@/types/racing';
 import { TournamentSettings, defaultTournamentSettings } from '@/types/tournamentSettings';
@@ -90,6 +93,10 @@ const Index = () => {
     setActiveTab('bodove-poradei');
   };
 
+  const handleViewMarketplace = () => {
+    setActiveTab('bazar');
+  };
+
   const renderMainContent = () => {
     switch (activeTab) {
       case 'jezdci':
@@ -162,6 +169,15 @@ const Index = () => {
       case 'komunikace':
         return <Communication />;
       
+      case 'pravidla':
+        return <RaceRules />;
+      
+      case 'log-akci':
+        return <ActionLog />;
+      
+      case 'bazar':
+        return <Marketplace />;
+      
       default:
         return (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -206,6 +222,7 @@ const Index = () => {
                 onViewControl={handleViewControl}
                 onViewCommunication={handleViewCommunication}
                 onViewStatistics={handleViewStatistics}
+                onViewMarketplace={handleViewMarketplace}
                 isTournamentActive={tournament.isActive}
               />
               {renderMainContent()}

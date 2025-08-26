@@ -1,4 +1,4 @@
-import { Home, Users, Trophy, BarChart3, Settings, Calendar, Car } from 'lucide-react';
+import { Home, Users, Trophy, BarChart3, Settings, Calendar, Car, BookOpen, Activity, ShoppingCart, MessageSquare } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -55,6 +55,10 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
     { id: 'bodove-poradei', label: 'Bodové pořadí', icon: BarChart3 },
     { id: 'statistiky', label: 'Přehled jezdců', icon: Car },
     { id: 'udalosti', label: 'Události', icon: Calendar },
+    { id: 'komunikace', label: 'Komunikace', icon: MessageSquare },
+    { id: 'pravidla', label: 'Pravidla závodu', icon: BookOpen },
+    { id: 'log-akci', label: 'Log akcí', icon: Activity },
+    { id: 'bazar', label: 'Bazar', icon: ShoppingCart },
     { id: 'settings', label: 'Nastavení', icon: Settings },
   ];
 

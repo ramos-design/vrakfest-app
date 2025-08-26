@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -43,6 +43,44 @@ export function Communication() {
   const [editingMessage, setEditingMessage] = useState<string | null>(null);
   const [editText, setEditText] = useState('');
   const [deleteChannelId, setDeleteChannelId] = useState<string | null>(null);
+
+  // Load channels from localStorage on component mount
+  useEffect(() => {
+    const savedChannels = localStorage.getItem('communication-channels');
+    const savedActiveChannelId = localStorage.getItem('communication-active-channel');
+    
+    if (savedChannels) {
+      const parsedChannels = JSON.parse(savedChannels).map((channel: any) => ({
+        ...channel,
+        messages: channel.messages.map((msg: any) => ({
+          ...msg,
+          timestamp: new Date(msg.timestamp),
+          originalTimestamp: msg.originalTimestamp ? new Date(msg.originalTimestamp) : undefined
+        }))
+      }));
+      setChannels(parsedChannels);
+      
+      if (savedActiveChannelId && parsedChannels.find((ch: any) => ch.id === savedActiveChannelId)) {
+        setActiveChannelId(savedActiveChannelId);
+      } else if (parsedChannels.length > 0) {
+        setActiveChannelId(parsedChannels[0].id);
+      }
+    }
+  }, []);
+
+  // Save channels to localStorage whenever channels change
+  useEffect(() => {
+    if (channels.length > 0) {
+      localStorage.setItem('communication-channels', JSON.stringify(channels));
+    }
+  }, [channels]);
+
+  // Save active channel ID to localStorage whenever it changes
+  useEffect(() => {
+    if (activeChannelId) {
+      localStorage.setItem('communication-active-channel', activeChannelId);
+    }
+  }, [activeChannelId]);
 
   const activeChannel = channels.find(ch => ch.id === activeChannelId);
 
@@ -108,11 +146,23 @@ export function Communication() {
   };
 
   const handleDeleteChannel = (channelId: string) => {
-    setChannels(prev => prev.filter(ch => ch.id !== channelId));
+    const updatedChannels = channels.filter(ch => ch.id !== channelId);
+    setChannels(updatedChannels);
+    
     if (activeChannelId === channelId) {
-      const remainingChannels = channels.filter(ch => ch.id !== channelId);
-      setActiveChannelId(remainingChannels.length > 0 ? remainingChannels[0].id : null);
+      const newActiveId = updatedChannels.length > 0 ? updatedChannels[0].id : null;
+      setActiveChannelId(newActiveId);
+      if (newActiveId) {
+        localStorage.setItem('communication-active-channel', newActiveId);
+      } else {
+        localStorage.removeItem('communication-active-channel');
+      }
     }
+    
+    if (updatedChannels.length === 0) {
+      localStorage.removeItem('communication-channels');
+    }
+    
     setDeleteChannelId(null);
   };
 
