@@ -107,7 +107,7 @@ const Index = () => {
                 racers={racers}
                 onEdit={handleEditRacer}
                 onDelete={deleteRacer}
-                showActions={false}
+                showActions={true}
               />
             </div>
             
@@ -117,6 +117,15 @@ const Index = () => {
                 activeRacerCount={activeRacers.length}
                 tournamentProgress={tournament?.currentRound || 0}
               />
+              
+              {editingRacer && (
+                <RacerForm
+                  racer={editingRacer}
+                  onSave={handleSaveRacer}
+                  onCancel={handleCancelEdit}
+                  compact={true}
+                />
+              )}
             </div>
             </div>
         );
@@ -186,7 +195,7 @@ const Index = () => {
                 racers={racers}
                 onEdit={handleEditRacer}
                 onDelete={deleteRacer}
-                showActions={false}
+                showActions={true}
               />
             </div>
             
@@ -196,6 +205,15 @@ const Index = () => {
                 activeRacerCount={activeRacers.length}
                 tournamentProgress={tournament?.currentRound || 0}
               />
+              
+              {editingRacer && (
+                <RacerForm
+                  racer={editingRacer}
+                  onSave={handleSaveRacer}
+                  onCancel={handleCancelEdit}
+                  compact={true}
+                />
+              )}
             </div>
           </div>
         );
