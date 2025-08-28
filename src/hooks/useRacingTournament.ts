@@ -27,6 +27,12 @@ export const useRacingTournament = () => {
     setRacers(prev => prev.filter(racer => racer.id !== id));
   }, []);
 
+  const deactivateRacer = useCallback((id: string) => {
+    setRacers(prev => prev.map(racer => 
+      racer.id === id ? { ...racer, isActive: false } : racer
+    ));
+  }, []);
+
   const startTournament = useCallback((settings?: TournamentSettings) => {
     const activeRacers = racers.filter(r => r.isActive);
     if (activeRacers.length === 0) return;
@@ -146,6 +152,7 @@ export const useRacingTournament = () => {
     addRacer,
     updateRacer,
     deleteRacer,
+    deactivateRacer,
     startTournament,
     startRace,
     completeRace,

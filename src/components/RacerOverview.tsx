@@ -13,12 +13,13 @@ interface RacerOverviewProps {
   racers: Racer[];
   onEdit: (racer: Racer) => void;
   onDelete: (id: string) => void;
+  onDeactivate: (id: string) => void;
   onSave: (racerData: Omit<Racer, 'id'>) => void;
   onCancel: () => void;
   editingRacer: Racer | null;
 }
 
-export function RacerOverview({ racers, onEdit, onDelete, onSave, onCancel, editingRacer }: RacerOverviewProps) {
+export function RacerOverview({ racers, onEdit, onDelete, onDeactivate, onSave, onCancel, editingRacer }: RacerOverviewProps) {
   const categories: RacerCategory[] = ['do 1.6L', 'nad 1.6L', 'Ženy'];
   const [activeCategory, setActiveCategory] = useState<RacerCategory>('do 1.6L');
   const [isPanelOpen, setIsPanelOpen] = useState(false);
@@ -45,6 +46,14 @@ export function RacerOverview({ racers, onEdit, onDelete, onSave, onCancel, edit
   const handleCancel = () => {
     onCancel();
     setIsPanelOpen(false);
+  };
+
+  const handleDelete = (racerId: string) => {
+    if (viewMode === 'tournament') {
+      onDeactivate(racerId);
+    } else {
+      onDelete(racerId);
+    }
   };
 
   const handleAddRacer = () => {
@@ -96,7 +105,7 @@ export function RacerOverview({ racers, onEdit, onDelete, onSave, onCancel, edit
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => onDelete(racer.id)}
+                    onClick={() => handleDelete(racer.id)}
                     className="w-8 h-8 p-0 hover:bg-destructive/10 hover:text-destructive"
                   >
                     <Trash2 className="w-4 h-4" />

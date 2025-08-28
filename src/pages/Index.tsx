@@ -30,6 +30,7 @@ const Index = () => {
     addRacer,
     updateRacer,
     deleteRacer,
+    deactivateRacer,
     startTournament,
     startRace,
     completeRace,
@@ -157,6 +158,7 @@ const Index = () => {
             racers={racers}
             onEdit={handleEditRacer}
             onDelete={deleteRacer}
+            onDeactivate={deactivateRacer}
             onSave={handleSaveRacer}
             onCancel={handleCancelEdit}
             editingRacer={editingRacer}
