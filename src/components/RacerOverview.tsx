@@ -4,9 +4,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Racer, RacerCategory } from '@/types/racing';
 import { RacerForm } from '@/components/RacerForm';
-import { Edit, Trash2, Plus, X } from 'lucide-react';
+import { Edit, Trash2, Plus, X, Trophy, Users } from 'lucide-react';
 
 interface RacerOverviewProps {
   racers: Racer[];
@@ -21,11 +22,14 @@ export function RacerOverview({ racers, onEdit, onDelete, onSave, onCancel, edit
   const categories: RacerCategory[] = ['do 1.6L', 'nad 1.6L', 'Ženy'];
   const [activeCategory, setActiveCategory] = useState<RacerCategory>('do 1.6L');
   const [isPanelOpen, setIsPanelOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<'tournament' | 'all'>('tournament');
 
   const getRacersByCategory = (category: RacerCategory) => {
-    return racers
-      .filter(racer => racer.category === category && racer.isActive)
-      .sort((a, b) => b.points - a.points);
+    const filteredRacers = viewMode === 'tournament' 
+      ? racers.filter(racer => racer.category === category && racer.isActive)
+      : racers.filter(racer => racer.category === category);
+    
+    return filteredRacers.sort((a, b) => b.points - a.points);
   };
 
   const handleEdit = (racer: Racer) => {
@@ -101,13 +105,15 @@ export function RacerOverview({ racers, onEdit, onDelete, onSave, onCancel, edit
               </TableCell>
             </TableRow>
           ))}
-          {categoryRacers.length === 0 && (
-            <TableRow>
-              <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
-                V této kategorii nejsou žádní aktivní jezdci
-              </TableCell>
-            </TableRow>
-          )}
+           {categoryRacers.length === 0 && (
+             <TableRow>
+               <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                 {viewMode === 'tournament' 
+                   ? 'V této kategorii nejsou žádní aktivní jezdci'
+                   : 'V této kategorii nejsou žádní jezdci'}
+               </TableCell>
+             </TableRow>
+           )}
         </TableBody>
       </Table>
     </div>
@@ -139,6 +145,31 @@ export function RacerOverview({ racers, onEdit, onDelete, onSave, onCancel, edit
                 )}
               </Button>
             </div>
+            
+            <div className="flex items-center gap-4 pt-4">
+              <span className="text-sm text-muted-foreground">Zobrazit:</span>
+              <ToggleGroup 
+                type="single" 
+                value={viewMode} 
+                onValueChange={(value) => value && setViewMode(value as 'tournament' | 'all')}
+                className="bg-card border border-border rounded-lg p-1"
+              >
+                <ToggleGroupItem 
+                  value="tournament" 
+                  className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground text-sm px-4 py-2"
+                >
+                  <Trophy className="w-4 h-4 mr-2" />
+                  Aktuální turnaj
+                </ToggleGroupItem>
+                <ToggleGroupItem 
+                  value="all" 
+                  className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground text-sm px-4 py-2"
+                >
+                  <Users className="w-4 h-4 mr-2" />
+                  Všichni jezdci
+                </ToggleGroupItem>
+              </ToggleGroup>
+            </div>
           </CardHeader>
           <CardContent>
             <Tabs value={activeCategory} onValueChange={(value) => setActiveCategory(value as RacerCategory)}>
@@ -163,6 +194,9 @@ export function RacerOverview({ racers, onEdit, onDelete, onSave, onCancel, edit
                     <div className="flex items-center justify-between">
                       <h3 className="text-lg font-semibold text-racing-white">
                         Kategorie: <span className="racing-gradient-text">{category}</span>
+                        <span className="text-sm text-muted-foreground ml-2">
+                          ({viewMode === 'tournament' ? 'Aktuální turnaj' : 'Všichni jezdci'})
+                        </span>
                       </h3>
                       <Badge variant="outline" className="border-racing-yellow text-racing-yellow">
                         {getRacersByCategory(category).length} jezdců
