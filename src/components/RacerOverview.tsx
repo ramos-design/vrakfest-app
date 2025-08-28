@@ -7,19 +7,20 @@ import { Button } from '@/components/ui/button';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Racer, RacerCategory } from '@/types/racing';
 import { RacerForm } from '@/components/RacerForm';
-import { Edit, Trash2, Plus, X, Trophy, Users } from 'lucide-react';
+import { Edit, Trash2, Plus, X, Trophy, Users, UserPlus } from 'lucide-react';
 
 interface RacerOverviewProps {
   racers: Racer[];
   onEdit: (racer: Racer) => void;
   onDelete: (id: string) => void;
   onDeactivate: (id: string) => void;
+  onActivate: (id: string) => void;
   onSave: (racerData: Omit<Racer, 'id'>) => void;
   onCancel: () => void;
   editingRacer: Racer | null;
 }
 
-export function RacerOverview({ racers, onEdit, onDelete, onDeactivate, onSave, onCancel, editingRacer }: RacerOverviewProps) {
+export function RacerOverview({ racers, onEdit, onDelete, onDeactivate, onActivate, onSave, onCancel, editingRacer }: RacerOverviewProps) {
   const categories: RacerCategory[] = ['do 1.6L', 'nad 1.6L', 'Ženy'];
   const [activeCategory, setActiveCategory] = useState<RacerCategory>('do 1.6L');
   const [isPanelOpen, setIsPanelOpen] = useState(false);
@@ -102,6 +103,19 @@ export function RacerOverview({ racers, onEdit, onDelete, onDeactivate, onSave, 
                    >
                     <Edit className="w-4 h-4" />
                   </Button>
+                  
+                  {viewMode === 'all' && !racer.isActive && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onActivate(racer.id)}
+                      className="w-8 h-8 p-0 hover:bg-green-600/10 hover:text-green-600"
+                      title="Přidat do aktuálního turnaje"
+                    >
+                      <UserPlus className="w-4 h-4" />
+                    </Button>
+                  )}
+                  
                   <Button
                     variant="ghost"
                     size="sm"
