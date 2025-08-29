@@ -222,6 +222,9 @@ const Index = () => {
             racerCount={racers.length}
             activeRacerCount={activeRacers.length}
             onReset={resetTournament}
+            currentInfo={tournament.isActive ? "Turnaj probíhá" : "Turnaj není spuštěn"}
+            userRole="admin"
+            onRoleChange={(role) => console.log('Role changed to:', role)}
           />
           
           <main className="flex-1 p-6 overflow-auto">

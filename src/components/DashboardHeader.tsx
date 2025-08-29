@@ -1,5 +1,4 @@
-import { Search, Bell, User } from 'lucide-react';
-import { Input } from '@/components/ui/input';
+import { Bell, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -9,31 +8,43 @@ interface DashboardHeaderProps {
   racerCount: number;
   activeRacerCount: number;
   onReset: () => void;
+  currentInfo?: string; // Pro zobrazení aktuálních informací
+  userRole?: 'admin' | 'user';
+  onRoleChange?: (role: 'admin' | 'user') => void;
 }
 
-export function DashboardHeader({ racerCount, activeRacerCount, onReset }: DashboardHeaderProps) {
+export function DashboardHeader({ 
+  racerCount, 
+  activeRacerCount, 
+  onReset, 
+  currentInfo = "Vítejte v závodní aplikaci",
+  userRole = 'admin',
+  onRoleChange 
+}: DashboardHeaderProps) {
   return (
     <header className="h-16 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex items-center justify-between h-full px-6">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 flex-1">
           <SidebarTrigger className="p-2" />
-          <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-            <Input 
-              placeholder="Search for a race, car or racer" 
-              className="pl-10 w-80 bg-muted/50"
-            />
+          
+          {/* Informační panel s animovaným textem */}
+          <div className="flex-1 max-w-lg h-10 bg-yellow-100 border border-yellow-300 rounded-lg overflow-hidden relative">
+            <div className="h-full flex items-center">
+              <div className="animate-[scroll-left_15s_linear_infinite] text-yellow-800 font-medium whitespace-nowrap">
+                {currentInfo}
+              </div>
+            </div>
           </div>
         </div>
 
         <div className="flex items-center gap-4">
-          <Select defaultValue="vrakfest">
+          <Select value={userRole} onValueChange={onRoleChange}>
             <SelectTrigger className="w-40">
-              <SelectValue placeholder="Choose a car" />
+              <SelectValue placeholder="Vyberte roli" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="vrakfest">VrakFest Car</SelectItem>
-              <SelectItem value="other">Other Car</SelectItem>
+              <SelectItem value="admin">Administrátor</SelectItem>
+              <SelectItem value="user">Běžný uživatel</SelectItem>
             </SelectContent>
           </Select>
 
