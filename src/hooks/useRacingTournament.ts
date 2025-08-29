@@ -5,6 +5,7 @@ import { TournamentSettings } from '@/types/tournamentSettings';
 
 export const useRacingTournament = () => {
   const [racers, setRacers] = useState<Racer[]>(() => generateRealRacers());
+  const [demolitionDerbyRacers, setDemolitionDerbyRacers] = useState<string[]>([]);
   const [tournament, setTournament] = useState<Tournament>({
     currentRound: 1,
     currentCategory: 'do 1.6L',
@@ -152,9 +153,23 @@ export const useRacingTournament = () => {
     }));
   }, [racers]);
 
+  const addToDemolitionDerby = useCallback((racerId: string) => {
+    setDemolitionDerbyRacers(prev => {
+      if (!prev.includes(racerId)) {
+        return [...prev, racerId];
+      }
+      return prev;
+    });
+  }, []);
+
+  const removeFromDemolitionDerby = useCallback((racerId: string) => {
+    setDemolitionDerbyRacers(prev => prev.filter(id => id !== racerId));
+  }, []);
+
   return {
     racers,
     tournament,
+    demolitionDerbyRacers,
     addRacer,
     updateRacer,
     deleteRacer,
@@ -165,6 +180,8 @@ export const useRacingTournament = () => {
     completeRace,
     resetTournament,
     getCurrentRaceGroup,
-    addRacersToGroup
+    addRacersToGroup,
+    addToDemolitionDerby,
+    removeFromDemolitionDerby
   };
 };

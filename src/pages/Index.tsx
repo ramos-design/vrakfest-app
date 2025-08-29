@@ -27,6 +27,7 @@ const Index = () => {
   const {
     racers,
     tournament,
+    demolitionDerbyRacers,
     addRacer,
     updateRacer,
     deleteRacer,
@@ -37,7 +38,9 @@ const Index = () => {
     completeRace,
     resetTournament,
     getCurrentRaceGroup,
-    addRacersToGroup
+    addRacersToGroup,
+    addToDemolitionDerby,
+    removeFromDemolitionDerby
   } = useRacingTournament();
 
   // Listen for redirect to tournament event
@@ -157,10 +160,13 @@ const Index = () => {
         return (
           <RacerOverview
             racers={racers}
+            demolitionDerbyRacers={demolitionDerbyRacers}
             onEdit={handleEditRacer}
             onDelete={deleteRacer}
             onDeactivate={deactivateRacer}
             onActivate={activateRacer}
+            onAddToDemolitionDerby={addToDemolitionDerby}
+            onRemoveFromDemolitionDerby={removeFromDemolitionDerby}
             onSave={handleSaveRacer}
             onCancel={handleCancelEdit}
             editingRacer={editingRacer}
