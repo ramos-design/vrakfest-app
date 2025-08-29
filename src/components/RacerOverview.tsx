@@ -39,7 +39,7 @@ export function RacerOverview({
   const categories: RacerCategory[] = ['do 1.6L', 'nad 1.6L', 'Ženy'];
   const [activeCategory, setActiveCategory] = useState<RacerCategory>('do 1.6L');
   const [isPanelOpen, setIsPanelOpen] = useState(false);
-  const [viewMode, setViewMode] = useState<'tournament' | 'all' | 'demolition-derby'>('tournament');
+  const [viewMode, setViewMode] = useState<'tournament' | 'all' | 'demolition-derby'>('all');
 
   const getRacersByCategory = (category: RacerCategory) => {
     let filteredRacers;
@@ -224,18 +224,18 @@ export function RacerOverview({
                 className="bg-card border border-border rounded-lg p-1"
               >
                 <ToggleGroupItem 
-                  value="tournament" 
-                  className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground text-sm px-3 py-2"
-                >
-                  <Trophy className="w-4 h-4 mr-2" />
-                  Aktuální turnaj
-                </ToggleGroupItem>
-                <ToggleGroupItem 
                   value="all" 
                   className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground text-sm px-3 py-2"
                 >
                   <Users className="w-4 h-4 mr-2" />
                   Všichni jezdci
+                </ToggleGroupItem>
+                <ToggleGroupItem 
+                  value="tournament" 
+                  className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground text-sm px-3 py-2"
+                >
+                  <Trophy className="w-4 h-4 mr-2" />
+                  Aktuální turnaj
                 </ToggleGroupItem>
                 <ToggleGroupItem 
                   value="demolition-derby" 
