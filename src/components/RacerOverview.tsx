@@ -47,7 +47,7 @@ export function RacerOverview({
       filteredRacers = racers.filter(racer => racer.category === category && racer.isActive);
     } else if (viewMode === 'demolition-derby') {
       filteredRacers = racers.filter(racer => 
-        racer.category === category && demolitionDerbyRacers.includes(racer.id)
+        racer.category === category && demolitionDerbyRacers?.includes(racer.id)
       );
     } else {
       filteredRacers = racers.filter(racer => racer.category === category);
@@ -146,8 +146,8 @@ export function RacerOverview({
                      </Button>
                    )}
 
-                   {/* Add to demolition derby - only in "all" view for racers not in demolition derby */}
-                   {viewMode === 'all' && !demolitionDerbyRacers.includes(racer.id) && (
+                    {/* Add to demolition derby - only in "all" view for racers not in demolition derby */}
+                    {viewMode === 'all' && !demolitionDerbyRacers?.includes(racer.id) && (
                      <Button
                        variant="ghost"
                        size="sm"
