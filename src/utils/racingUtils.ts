@@ -189,6 +189,6 @@ export const generateRealRacers = (): Racer[] => {
     vehicleType: data.vehicleType,
     category: data.category,
     points: data.points,
-    isActive: true
+    isActive: false
   }));
 };
