@@ -100,7 +100,9 @@ export function RacerOverview({
             <TableHead className="text-muted-foreground">Startovní číslo</TableHead>
             <TableHead className="text-muted-foreground">Jméno</TableHead>
             <TableHead className="text-muted-foreground">Vozidlo</TableHead>
-            <TableHead className="text-muted-foreground text-center">Body</TableHead>
+            {viewMode !== 'demolition-derby' && (
+              <TableHead className="text-muted-foreground text-center">Body</TableHead>
+            )}
             <TableHead className="text-muted-foreground">Akce</TableHead>
           </TableRow>
         </TableHeader>
@@ -116,9 +118,11 @@ export function RacerOverview({
                 {racer.firstName} {racer.lastName}
               </TableCell>
               <TableCell className="text-muted-foreground">{racer.vehicleType}</TableCell>
-              <TableCell className="text-center">
-                <span className="font-bold text-foreground">{racer.points}</span>
-              </TableCell>
+              {viewMode !== 'demolition-derby' && (
+                <TableCell className="text-center">
+                  <span className="font-bold text-foreground">{racer.points}</span>
+                </TableCell>
+              )}
                <TableCell>
                  <div className="flex gap-1">
                    {/* Edit button - not available in demolition derby */}
@@ -174,7 +178,7 @@ export function RacerOverview({
           ))}
             {categoryRacers.length === 0 && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                <TableCell colSpan={viewMode === 'demolition-derby' ? 4 : 5} className="text-center text-muted-foreground py-8">
                   {viewMode === 'tournament' 
                     ? 'V této kategorii nejsou žádní aktivní jezdci'
                     : viewMode === 'demolition-derby'
