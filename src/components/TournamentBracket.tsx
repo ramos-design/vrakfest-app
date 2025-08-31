@@ -107,13 +107,15 @@ export const TournamentBracket = ({
     return (
       <Card className="shadow-card">
         <CardHeader>
-          <CardTitle className="racing-gradient bg-clip-text text-transparent">
-            VrakFest závodní turnaj
-          </CardTitle>
-          <div className="bg-yellow-100 border border-yellow-300 rounded-lg p-3 mt-4">
-            <p className="text-yellow-800 font-medium text-center">
-              📍 {getTrackName()}
-            </p>
+          <div className="flex items-center justify-between">
+            <CardTitle className="racing-gradient bg-clip-text text-transparent">
+              VrakFest závodní turnaj
+            </CardTitle>
+            <div className="racing-gradient rounded-lg px-3 py-1">
+              <p className="text-black font-medium text-sm">
+                📍 {getTrackName()}
+              </p>
+            </div>
           </div>
         </CardHeader>
         <CardContent className="text-center py-12">
@@ -156,21 +158,23 @@ export const TournamentBracket = ({
   return (
     <Card className="shadow-card">
       <CardHeader>
-        <div className="flex items-center gap-4">
-          <CardTitle className="racing-gradient bg-clip-text text-transparent text-2xl">
-            VrakFest závodní turnaj
-          </CardTitle>
-          <Badge variant="outline" className="text-base px-3 py-1">
-            Kolo {tournament.currentRound}
-          </Badge>
-          <Badge className={`${getCategoryBadgeColor(tournament.currentCategory)} text-white text-base px-3 py-1`}>
-            {tournament.currentCategory}
-          </Badge>
-        </div>
-        <div className="bg-yellow-100 border border-yellow-300 rounded-lg p-3 mt-4">
-          <p className="text-yellow-800 font-medium text-center">
-            📍 {getTrackName()}
-          </p>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-4">
+            <CardTitle className="racing-gradient bg-clip-text text-transparent text-2xl">
+              VrakFest závodní turnaj
+            </CardTitle>
+            <Badge variant="outline" className="text-base px-3 py-1">
+              Kolo {tournament.currentRound}
+            </Badge>
+            <Badge className={`${getCategoryBadgeColor(tournament.currentCategory)} text-white text-base px-3 py-1`}>
+              {tournament.currentCategory}
+            </Badge>
+          </div>
+          <div className="racing-gradient rounded-lg px-3 py-1">
+            <p className="text-black font-medium text-sm">
+              📍 {getTrackName()}
+            </p>
+          </div>
         </div>
       </CardHeader>
       
