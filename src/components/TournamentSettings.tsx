@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Settings, Users, Trophy, Target } from 'lucide-react';
+import { Settings, Users, Trophy, Target, MapPin, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -7,19 +7,30 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { TournamentSettings as ITournamentSettings, defaultTournamentSettings } from '@/types/tournamentSettings';
-import { RacerCategory } from '@/types/racing';
+import { TournamentSettings as ITournamentSettings, defaultTournamentSettings, TrackOption } from '@/types/tournamentSettings';
+import { RacerCategory, Racer } from '@/types/racing';
 import { getCategoryBadgeColor } from '@/utils/racingUtils';
+import { TrackSelection } from '@/components/TrackSelection';
+import { AddRacersDialog } from '@/components/AddRacersDialog';
 
 interface TournamentSettingsProps {
   settings: ITournamentSettings;
   onSettingsChange: (settings: ITournamentSettings) => void;
   disabled?: boolean;
+  availableRacers?: Racer[];
+  onAddRacer?: (racerId: string) => void;
 }
 
-export const TournamentSettings = ({ settings, onSettingsChange, disabled = false }: TournamentSettingsProps) => {
+export const TournamentSettings = ({ 
+  settings, 
+  onSettingsChange, 
+  disabled = false, 
+  availableRacers = [], 
+  onAddRacer 
+}: TournamentSettingsProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [localSettings, setLocalSettings] = useState<ITournamentSettings>(settings);
+  const [showAddRacers, setShowAddRacers] = useState(false);
 
   const categories: RacerCategory[] = ['do 1.6L', 'nad 1.6L', 'Ženy'];
 
@@ -40,6 +51,19 @@ export const TournamentSettings = ({ settings, onSettingsChange, disabled = fals
         ? prev.enabledCategories.filter(c => c !== category)
         : [...prev.enabledCategories, category]
     }));
+  };
+
+  const handleTrackSelect = (track: TrackOption) => {
+    setLocalSettings(prev => ({
+      ...prev,
+      selectedTrack: track
+    }));
+  };
+
+  const handleAddRacer = (racerId: string) => {
+    if (onAddRacer) {
+      onAddRacer(racerId);
+    }
   };
 
   return (
@@ -64,6 +88,48 @@ export const TournamentSettings = ({ settings, onSettingsChange, disabled = fals
         </DialogHeader>
 
         <div className="space-y-6">
+          {/* Výběr tratě */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <MapPin className="w-5 h-5 text-primary" />
+                Výběr tratě
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <TrackSelection 
+                selectedTrack={localSettings.selectedTrack}
+                onTrackSelect={handleTrackSelect}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Přidání jezdců */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <UserPlus className="w-5 h-5 text-primary" />
+                Správa jezdců
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  Přidejte jezdce do turnaje z celkového seznamu registrovaných jezdců.
+                </p>
+                <Button 
+                  onClick={() => setShowAddRacers(true)}
+                  variant="outline"
+                  className="w-full"
+                  disabled={availableRacers.length === 0}
+                >
+                  <UserPlus className="w-4 h-4 mr-2" />
+                  Přidat jezdce do turnaje ({availableRacers.length} dostupných)
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Počet jezdců ve skupině */}
           <Card>
             <CardHeader className="pb-3">
@@ -199,6 +265,13 @@ export const TournamentSettings = ({ settings, onSettingsChange, disabled = fals
             </Button>
           </div>
         </div>
+
+        <AddRacersDialog
+          isOpen={showAddRacers}
+          onClose={() => setShowAddRacers(false)}
+          availableRacers={availableRacers}
+          onAddRacer={handleAddRacer}
+        />
       </DialogContent>
     </Dialog>
   );

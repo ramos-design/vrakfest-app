@@ -102,6 +102,10 @@ const Index = () => {
     setActiveTab('bazar');
   };
 
+  const handleAddRacerToTournament = (racerId: string) => {
+    activateRacer(racerId);
+  };
+
   const renderMainContent = () => {
     switch (activeTab) {
       case 'jezdci':
@@ -137,6 +141,7 @@ const Index = () => {
             onSettingsChange={handleSettingsChange}
             onAddRacersToGroup={addRacersToGroup}
             onSwitchToControl={handleViewControl}
+            onAddRacerToTournament={handleAddRacerToTournament}
           />
         );
       

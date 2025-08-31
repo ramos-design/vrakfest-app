@@ -18,6 +18,7 @@ interface TournamentBracketProps {
   onSettingsChange: (settings: ITournamentSettings) => void;
   onAddRacersToGroup: (groupId: string, racerIds: string[]) => void;
   onSwitchToControl: () => void;
+  onAddRacerToTournament: (racerId: string) => void;
 }
 
 export const TournamentBracket = ({ 
@@ -28,7 +29,8 @@ export const TournamentBracket = ({
   tournamentSettings, 
   onSettingsChange,
   onAddRacersToGroup,
-  onSwitchToControl
+  onSwitchToControl,
+  onAddRacerToTournament
 }: TournamentBracketProps) => {
   const [incompleteGroupDialog, setIncompleteGroupDialog] = useState<{
     isOpen: boolean;
@@ -36,12 +38,26 @@ export const TournamentBracket = ({
   }>({ isOpen: false, group: null });
 
   const activeRacers = racers.filter(r => r.isActive);
+  const availableRacers = racers.filter(r => !r.isActive);
   const currentCategoryGroups = tournament.groups.filter(g => 
     g.category === tournament.currentCategory && g.round === tournament.currentRound
   );
   
   const nextGroup = currentCategoryGroups.find(g => !g.hasStarted);
   const currentGroup = currentCategoryGroups.find(g => g.hasStarted && !g.isCompleted);
+
+  const getTrackName = () => {
+    switch (tournamentSettings.selectedTrack) {
+      case 'ostrava':
+        return 'Ostrava - Vřesinská strž';
+      case 'hrachovec':
+        return 'Hrachovec - areál Ekorema';
+      case 'branky':
+        return 'Branky na Moravě';
+      default:
+        return 'Ostrava - Vřesinská strž';
+    }
+  };
 
   // Find racers with 0 points for incomplete group dialog
   const getAvailableRacersForGroup = (group: RaceGroup) => {
@@ -92,8 +108,13 @@ export const TournamentBracket = ({
       <Card className="shadow-card">
         <CardHeader>
           <CardTitle className="racing-gradient bg-clip-text text-transparent">
-            Turnajový pavouk
+            VrakFest závodní turnaj
           </CardTitle>
+          <div className="bg-yellow-100 border border-yellow-300 rounded-lg p-3 mt-4">
+            <p className="text-yellow-800 font-medium text-center">
+              📍 {getTrackName()}
+            </p>
+          </div>
         </CardHeader>
         <CardContent className="text-center py-12">
           <div className="space-y-4">
@@ -118,6 +139,8 @@ export const TournamentBracket = ({
               <TournamentSettings 
                 settings={tournamentSettings}
                 onSettingsChange={onSettingsChange}
+                availableRacers={availableRacers}
+                onAddRacer={onAddRacerToTournament}
               />
               <Button onClick={onStartTournament} className="racing-gradient shadow-racing" size="lg">
                 <Play className="w-5 h-5 mr-2" />
@@ -135,7 +158,7 @@ export const TournamentBracket = ({
       <CardHeader>
         <div className="flex items-center gap-4">
           <CardTitle className="racing-gradient bg-clip-text text-transparent text-2xl">
-            Turnajový závod
+            VrakFest závodní turnaj
           </CardTitle>
           <Badge variant="outline" className="text-base px-3 py-1">
             Kolo {tournament.currentRound}
@@ -143,6 +166,11 @@ export const TournamentBracket = ({
           <Badge className={`${getCategoryBadgeColor(tournament.currentCategory)} text-white text-base px-3 py-1`}>
             {tournament.currentCategory}
           </Badge>
+        </div>
+        <div className="bg-yellow-100 border border-yellow-300 rounded-lg p-3 mt-4">
+          <p className="text-yellow-800 font-medium text-center">
+            📍 {getTrackName()}
+          </p>
         </div>
       </CardHeader>
       
