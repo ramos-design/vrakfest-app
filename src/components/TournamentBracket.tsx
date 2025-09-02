@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Play, Trophy, Clock } from 'lucide-react';
+import { Flag, Trophy, Clock } from 'lucide-react';
 import { RaceGroup, Tournament, Racer } from '@/types/racing';
 import { getCategoryBadgeColor, getCategoryColor } from '@/utils/racingUtils';
 import { TournamentSettings } from '@/components/TournamentSettings';
@@ -149,7 +149,7 @@ export const TournamentBracket = ({
 
             <div className="flex justify-center">
               <Button onClick={onStartTournament} className="racing-gradient shadow-racing" size="lg">
-                <Play className="w-5 h-5 mr-2" />
+                <Flag className="w-5 h-5 mr-2" />
                 Zahájit turnaj
               </Button>
             </div>
@@ -268,7 +268,7 @@ const RaceGroupCard = ({ group, tournament, isNext, isCurrentRace, onStartRace }
                 className="racing-gradient shadow-racing"
                 disabled={!isNext}
               >
-                <Play className="w-4 h-4 mr-2" />
+                <Flag className="w-4 h-4 mr-2" />
                 Start
               </Button>
             )}

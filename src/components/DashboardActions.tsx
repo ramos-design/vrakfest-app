@@ -1,4 +1,4 @@
-import { Play, Gauge, BarChart3, Car, ShoppingCart, Search, MessageSquare } from 'lucide-react';
+import { Flag, Gauge, BarChart3, Car, ShoppingCart, Search, MessageSquare } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 
 interface ActionCardProps {
@@ -56,7 +56,7 @@ interface DashboardActionsProps {
 
 export function DashboardActions({ onStartTournament, onViewControl, onViewTournament, onViewCommunication, onViewStatistics, onViewMarketplace, isTournamentActive = false }: DashboardActionsProps) {
   const actions = [
-    { icon: isTournamentActive ? Search : Play, label: isTournamentActive ? 'Průběh závodu' : 'Zahájit závod', isActive: isTournamentActive, onClick: isTournamentActive ? onViewTournament : onStartTournament, isStartButton: true },
+    { icon: isTournamentActive ? Search : Flag, label: isTournamentActive ? 'Průběh závodu' : 'Zahájit závod', isActive: isTournamentActive, onClick: isTournamentActive ? onViewTournament : onStartTournament, isStartButton: true },
     { icon: Gauge, label: 'Kontrola', isActive: false, onClick: onViewControl },
     { icon: BarChart3, label: 'Statistiky', isActive: false, onClick: onViewStatistics },
     { icon: Car, label: 'Demolition derby', isActive: false },
