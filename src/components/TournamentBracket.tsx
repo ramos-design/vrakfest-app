@@ -118,15 +118,15 @@ export const TournamentBracket = ({
             </div>
           </div>
         </CardHeader>
-        <CardContent className="text-center py-12">
-          <div className="space-y-4">
-            <Trophy className="w-16 h-16 mx-auto text-primary" />
-            <div>
+        <CardContent className="py-6">
+          <div className="space-y-6">
+            <div className="text-center">
+              <Trophy className="w-16 h-16 mx-auto text-primary mb-4" />
               <h3 className="text-xl font-semibold mb-2">Připraveno {activeRacers.length} jezdců</h3>
-              <p className="text-muted-foreground mb-2">
-                Skupiny po 6 jezdcích, celkem {Math.ceil(activeRacers.length / 6)} skupin
+              <p className="text-muted-foreground mb-4">
+                Skupiny po {tournamentSettings.racersPerGroup} jezdcích, celkem {Math.ceil(activeRacers.length / tournamentSettings.racersPerGroup)} skupin
               </p>
-              <div className="flex justify-center gap-2 mb-4">
+              <div className="flex justify-center gap-2 mb-6">
                 {['do 1.6L', 'nad 1.6L', 'Ženy'].map(category => {
                   const count = activeRacers.filter(r => r.category === category).length;
                   return (
@@ -137,13 +137,17 @@ export const TournamentBracket = ({
                 })}
               </div>
             </div>
-            <div className="flex justify-center gap-3">
-              <TournamentSettings 
-                settings={tournamentSettings}
-                onSettingsChange={onSettingsChange}
-                availableRacers={availableRacers}
-                onAddRacer={onAddRacerToTournament}
-              />
+
+            {/* Inline Tournament Settings */}
+            <TournamentSettings 
+              settings={tournamentSettings}
+              onSettingsChange={onSettingsChange}
+              availableRacers={availableRacers}
+              onAddRacer={onAddRacerToTournament}
+              inline={true}
+            />
+
+            <div className="flex justify-center">
               <Button onClick={onStartTournament} className="racing-gradient shadow-racing" size="lg">
                 <Play className="w-5 h-5 mr-2" />
                 Zahájit turnaj
