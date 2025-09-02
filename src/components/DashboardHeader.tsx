@@ -1,4 +1,4 @@
-import { Bell, User } from 'lucide-react';
+import { Bell, User, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -28,9 +28,9 @@ export function DashboardHeader({
           <SidebarTrigger className="p-2" />
           
           {/* Informační panel s animovaným textem */}
-          <div className="flex-1 max-w-lg h-10 bg-yellow-100 border border-yellow-300 rounded-lg overflow-hidden relative">
+          <div className="flex-1 max-w-lg h-10 bg-racing-yellow border border-racing-yellow/30 rounded-md overflow-hidden relative">
             <div className="h-full flex items-center">
-              <div className="animate-[scroll-left_15s_linear_infinite] text-yellow-800 font-medium whitespace-nowrap">
+              <div className="animate-[scroll-right_15s_linear_infinite] text-racing-black font-medium whitespace-nowrap">
                 {currentInfo}
               </div>
             </div>
@@ -53,13 +53,17 @@ export function DashboardHeader({
               {racerCount}/100
             </Badge>
             <Badge className="bg-green-600 text-white font-mono">
-              {activeRacerCount} active
+              {activeRacerCount} jezdců v závodě
             </Badge>
           </div>
 
           <Button variant="ghost" size="sm" className="relative">
             <Bell className="h-4 w-4" />
             <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></div>
+          </Button>
+
+          <Button variant="ghost" size="sm" title="Nastavení">
+            <Settings className="h-4 w-4" />
           </Button>
 
           <div className="flex items-center gap-2">

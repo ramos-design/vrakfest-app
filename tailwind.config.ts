@@ -101,12 +101,21 @@ export default {
 					'100%': {
 						transform: 'translateX(-100%)'
 					}
+				},
+				'scroll-right': {
+					'0%': {
+						transform: 'translateX(100%)'
+					},
+					'100%': {
+						transform: 'translateX(-100%)'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
-				'scroll-left': 'scroll-left 15s linear infinite'
+				'scroll-left': 'scroll-left 15s linear infinite',
+				'scroll-right': 'scroll-right 15s linear infinite'
 			}
 		}
 	},
