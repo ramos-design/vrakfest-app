@@ -48,7 +48,7 @@ export const Statistics = ({ racers, tournament }: StatisticsProps) => {
       <Tabs defaultValue={categories[0]} className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           {categories.map(category => (
-            <TabsTrigger key={category} value={category}>
+            <TabsTrigger key={category} value={category} className="data-[state=active]:bg-racing-yellow data-[state=active]:text-racing-black">
               {category}
             </TabsTrigger>
           ))}
@@ -115,7 +115,7 @@ export const Statistics = ({ racers, tournament }: StatisticsProps) => {
       <Tabs defaultValue={categories[0]} className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           {categories.map(category => (
-            <TabsTrigger key={category} value={category}>
+            <TabsTrigger key={category} value={category} className="data-[state=active]:bg-racing-yellow data-[state=active]:text-racing-black">
               {category}
             </TabsTrigger>
           ))}
