@@ -71,9 +71,10 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
             <img 
               src={vrakfestLogo} 
               alt="VrakFest Logo" 
-              className={`w-full h-auto max-h-16 object-contain transition-racing ${
+              className={`w-full h-auto object-cover transition-racing ${
                 isCollapsed ? 'hidden' : 'block'
               }`}
+              style={{ width: '100%', height: 'auto' }}
             />
             {isCollapsed && (
               <div className="w-8 h-8 racing-gradient rounded-lg flex items-center justify-center shadow-racing mx-auto">
