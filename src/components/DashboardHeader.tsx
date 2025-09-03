@@ -49,9 +49,6 @@ export function DashboardHeader({
           </Select>
 
           <div className="flex items-center gap-2">
-            <Badge variant="outline" className="font-mono">
-              {racerCount}/100
-            </Badge>
             <Badge className="bg-green-600 text-white font-mono">
               {activeRacerCount} jezdců v závodě
             </Badge>
