@@ -67,7 +67,7 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
     <Sidebar className={isCollapsed ? "w-14" : "w-60"}>
       <SidebarContent className="racing-card border-r border-racing-yellow/20">
         <div className="p-4">
-          <div className="mb-6">
+          <div className="mb-6 bg-racing-black/80 rounded-lg p-3">
             <img 
               src={vrakfestLogo} 
               alt="VrakFest Logo" 
