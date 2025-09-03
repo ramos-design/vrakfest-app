@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
+import vrakfestLogo from '@/assets/vrakfest-logo.png';
 import {
   Sidebar,
   SidebarContent,
@@ -66,14 +67,17 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
     <Sidebar className={isCollapsed ? "w-14" : "w-60"}>
       <SidebarContent className="racing-card border-r border-racing-yellow/20">
         <div className="p-4">
-          <div className="flex items-center gap-2 mb-6">
-            <div className="w-8 h-8 racing-gradient rounded-lg flex items-center justify-center shadow-racing">
-              <span className="text-racing-black font-bold text-sm">V</span>
-            </div>
-            {!isCollapsed && (
-              <div>
-                <h1 className="font-bold racing-gradient-text">VrakFest</h1>
-                <p className="text-xs text-muted-foreground">Racing System</p>
+          <div className="mb-6">
+            <img 
+              src={vrakfestLogo} 
+              alt="VrakFest Logo" 
+              className={`w-full h-auto max-h-16 object-contain transition-racing ${
+                isCollapsed ? 'hidden' : 'block'
+              }`}
+            />
+            {isCollapsed && (
+              <div className="w-8 h-8 racing-gradient rounded-lg flex items-center justify-center shadow-racing mx-auto">
+                <span className="text-racing-black font-bold text-sm">V</span>
               </div>
             )}
           </div>
