@@ -38,7 +38,8 @@ export const Statistics = ({ racers, tournament }: StatisticsProps) => {
       .sort((a, b) => b.tournamentPoints - a.tournamentPoints);
   };
 
-  const overallTop = activeRacers
+  // For overall views, use ALL racers (not just active ones) to show historical data
+  const overallTop = racers
     .sort((a, b) => b.points - a.points)
     .slice(0, 10);
 
@@ -121,12 +122,14 @@ export const Statistics = ({ racers, tournament }: StatisticsProps) => {
           ))}
         </TabsList>
         {categories.map(category => {
-          const categoryRacers = activeRacers
+          // For overall overview, show ALL racers (including inactive) to display historical data
+          const categoryRacers = racers
             .filter(r => r.category === category)
             .sort((a, b) => b.points - a.points);
           return (
             <TabsContent key={category} value={category}>
-              {categoryRacers.length > 0 ? (
+              {/* Always show table for overall overview, even if empty, to display historical data */}
+              {true ? (
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -137,7 +140,7 @@ export const Statistics = ({ racers, tournament }: StatisticsProps) => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {categoryRacers.map((racer, index) => (
+                    {categoryRacers.length > 0 ? categoryRacers.map((racer, index) => (
                       <TableRow key={racer.id} className="transition-racing hover:bg-muted/50">
                         <TableCell>
                           <div className="flex items-center">
@@ -163,14 +166,16 @@ export const Statistics = ({ racers, tournament }: StatisticsProps) => {
                           </Badge>
                         </TableCell>
                       </TableRow>
-                    ))}
+                    )) : (
+                      <TableRow>
+                        <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
+                          Žádní jezdci v této kategorii
+                        </TableCell>
+                      </TableRow>
+                    )}
                   </TableBody>
                 </Table>
-              ) : (
-                <div className="text-center py-8 text-muted-foreground">
-                  Žádní jezdci v této kategorii
-                </div>
-              )}
+              ) : null}
             </TabsContent>
           );
         })}
