@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Settings, Users, Trophy, Target, MapPin, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -34,6 +34,11 @@ export const TournamentSettings = ({
   const [localSettings, setLocalSettings] = useState<ITournamentSettings>(settings);
   const [showAddRacers, setShowAddRacers] = useState(false);
 
+  // Update local settings when props change
+  useEffect(() => {
+    setLocalSettings(settings);
+  }, [settings]);
+
   const categories: RacerCategory[] = ['do 1.6L', 'nad 1.6L', 'Ženy'];
 
   const handleSave = () => {
@@ -47,19 +52,24 @@ export const TournamentSettings = ({
   };
 
   const toggleCategory = (category: RacerCategory) => {
-    setLocalSettings(prev => ({
-      ...prev,
-      enabledCategories: prev.enabledCategories.includes(category)
-        ? prev.enabledCategories.filter(c => c !== category)
-        : [...prev.enabledCategories, category]
-    }));
+    const newCategories = localSettings.enabledCategories.includes(category)
+      ? localSettings.enabledCategories.filter(c => c !== category)
+      : [...localSettings.enabledCategories, category];
+    const newSettings = {
+      ...localSettings,
+      enabledCategories: newCategories
+    };
+    setLocalSettings(newSettings);
+    onSettingsChange(newSettings);
   };
 
   const handleTrackSelect = (track: TrackOption) => {
-    setLocalSettings(prev => ({
-      ...prev,
+    const newSettings = {
+      ...localSettings,
       selectedTrack: track
-    }));
+    };
+    setLocalSettings(newSettings);
+    onSettingsChange(newSettings);
   };
 
   const handleAddRacer = (racerId: string) => {
