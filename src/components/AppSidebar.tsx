@@ -72,7 +72,7 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
             </div>
             {!isCollapsed && (
               <div>
-                <h1 className="font-bold racing-gradient-text">VrakFest</h1>
+                <h1 className="font-bold text-xl racing-gradient-text">VrakFest</h1>
                 <p className="text-xs text-muted-foreground">Racing System</p>
               </div>
             )}
