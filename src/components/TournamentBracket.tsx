@@ -168,7 +168,7 @@ export const TournamentBracket = ({
               VrakFest závodní turnaj
             </CardTitle>
             <Badge variant="outline" className="text-base px-3 py-1">
-              Kolo {tournament.currentRound}
+              {tournament.currentRound <= 3 ? `Rozjezdy - Kolo ${tournament.currentRound}` : `Kolo ${tournament.currentRound}`}
             </Badge>
             <Badge className={`${getCategoryBadgeColor(tournament.currentCategory)} text-white text-base px-3 py-1`}>
               {tournament.currentCategory}
@@ -258,7 +258,9 @@ const RaceGroupCard = ({ group, tournament, isNext, isCurrentRace, onStartRace }
             <Badge className={`${getCategoryBadgeColor(group.category)} text-white`}>
               {group.category}
             </Badge>
-            <Badge variant="outline">Kolo {group.round}</Badge>
+            <Badge variant="outline">
+              {group.round <= 3 ? `Rozjezdy - Kolo ${group.round}` : `Kolo ${group.round}`}
+            </Badge>
           </div>
           <div className="flex items-center gap-2">
             {getStatusBadge()}

@@ -112,15 +112,49 @@ export const useRacingTournament = () => {
         return group;
       });
 
+      // Check if all groups in current round and category are completed
+      const currentRoundGroups = updatedGroups.filter(g => 
+        g.category === prev.currentCategory && g.round === prev.currentRound
+      );
+      const allCurrentRoundCompleted = currentRoundGroups.every(g => g.isCompleted);
+      
+      let newRound = prev.currentRound;
+      let newCategory = prev.currentCategory;
+      let newGroups = updatedGroups;
+
+      if (allCurrentRoundCompleted) {
+        // All groups in current round completed, advance to next round
+        newRound = prev.currentRound + 1;
+        console.log(`All groups in round ${prev.currentRound} completed, advancing to round ${newRound}`);
+        
+        // Get active racers for the next round
+        const activeRacersForNextRound = racers.filter(r => 
+          r.isActive && r.category === prev.currentCategory
+        );
+        
+        if (activeRacersForNextRound.length > 0) {
+          // Create new groups for the next round
+          const nextRoundGroups = createGroups(
+            activeRacersForNextRound, 
+            prev.currentCategory, 
+            newRound
+          );
+          newGroups = [...updatedGroups, ...nextRoundGroups];
+          console.log(`Created ${nextRoundGroups.length} groups for round ${newRound}`);
+        }
+      }
+
       const newTournamentState = { 
         ...prev, 
-        groups: updatedGroups
+        currentRound: newRound,
+        currentCategory: newCategory,
+        groups: newGroups
       };
       
       console.log('New tournament state:', newTournamentState);
       return newTournamentState;
     });
-  }, []);
+  }, [racers]);
 
   const resetTournament = useCallback(() => {
     setRacers(prev => prev.map(racer => ({ ...racer, points: 0, isActive: true })));
@@ -137,12 +171,15 @@ export const useRacingTournament = () => {
   }, [tournament.groups]);
 
   const addRacersToGroup = useCallback((groupId: string, racerIds: string[]) => {
+    console.log('Adding racers to group:', { groupId, racerIds });
+    
     setTournament(prev => ({
       ...prev,
       groups: prev.groups.map(group => {
         if (group.id === groupId) {
           // Find the racers to add
           const racersToAdd = racers.filter(r => racerIds.includes(r.id));
+          console.log('Racers to add:', racersToAdd);
           return {
             ...group,
             racers: [...group.racers, ...racersToAdd]
@@ -151,6 +188,11 @@ export const useRacingTournament = () => {
         return group;
       })
     }));
+    
+    // Also mark these racers as active in the tournament
+    setRacers(prev => prev.map(racer => 
+      racerIds.includes(racer.id) ? { ...racer, isActive: true } : racer
+    ));
   }, [racers]);
 
   const addToDemolitionDerby = useCallback((racerId: string) => {
