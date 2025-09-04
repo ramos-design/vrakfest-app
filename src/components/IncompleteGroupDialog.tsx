@@ -15,6 +15,7 @@ interface IncompleteGroupDialogProps {
   availableRacers: Racer[];
   onContinueWithCurrentSize: () => void;
   onAddRacersAndStart: (racerIds: string[]) => void;
+  minimumRacers?: number;
 }
 
 export const IncompleteGroupDialog = ({
@@ -24,12 +25,16 @@ export const IncompleteGroupDialog = ({
   targetGroupSize,
   availableRacers,
   onContinueWithCurrentSize,
-  onAddRacersAndStart
+  onAddRacersAndStart,
+  minimumRacers = 5
 }: IncompleteGroupDialogProps) => {
   const [selectedRacerIds, setSelectedRacerIds] = useState<string[]>([]);
   
   const missingRacers = targetGroupSize - group.racers.length;
   const maxSelectableRacers = Math.min(missingRacers, availableRacers.length);
+  const canContinueWithCurrentSize = group.racers.length >= minimumRacers;
+  const racersNeededToMeetMinimum = Math.max(0, minimumRacers - group.racers.length);
+  const willMeetMinimumWithSelection = group.racers.length + selectedRacerIds.length >= minimumRacers;
 
   const toggleRacer = (racerId: string) => {
     setSelectedRacerIds(prev => 
@@ -63,18 +68,23 @@ export const IncompleteGroupDialog = ({
         </DialogHeader>
 
         <div className="space-y-6">
-          <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+          <div className={`${!canContinueWithCurrentSize ? 'bg-red-50 border-red-200' : 'bg-orange-50 border-orange-200'} border rounded-lg p-4`}>
             <div className="flex items-center gap-3 mb-3">
-              <h3 className="font-semibold text-orange-800">
+              <h3 className={`font-semibold ${!canContinueWithCurrentSize ? 'text-red-800' : 'text-orange-800'}`}>
                 Skupina {group.id.split('group')[1]}
               </h3>
               <Badge className={`${getCategoryBadgeColor(group.category)} text-white`}>
                 {group.category}
               </Badge>
             </div>
-            <p className="text-orange-700">
+            <p className={!canContinueWithCurrentSize ? 'text-red-700' : 'text-orange-700'}>
               Ve skupině je pouze <strong>{group.racers.length} jezdců</strong> z doporučených <strong>{targetGroupSize} jezdců</strong>.
-              Chybí ještě <strong>{missingRacers} jezdců</strong>.
+              {!canContinueWithCurrentSize && (
+                <><br /><strong>⚠️ Minimálně {minimumRacers} jezdců je vyžadováno pro spuštění závodu!</strong></>
+              )}
+              {racersNeededToMeetMinimum > 0 && (
+                <><br />Chybí ještě <strong>{racersNeededToMeetMinimum} jezdců</strong> pro dosažení minima.</>
+              )}
             </p>
           </div>
 
@@ -121,9 +131,15 @@ export const IncompleteGroupDialog = ({
               </div>
 
               {selectedRacerIds.length > 0 && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                  <p className="text-blue-700">
+                <div className={`${willMeetMinimumWithSelection ? 'bg-green-50 border-green-200' : 'bg-blue-50 border-blue-200'} border rounded-lg p-3`}>
+                  <p className={willMeetMinimumWithSelection ? 'text-green-700' : 'text-blue-700'}>
                     Vybráno <strong>{selectedRacerIds.length}</strong> z <strong>{maxSelectableRacers}</strong> možných jezdců
+                    {willMeetMinimumWithSelection && (
+                      <><br />✅ <strong>Minimum {minimumRacers} jezdců bude splněno</strong></>
+                    )}
+                    {!willMeetMinimumWithSelection && racersNeededToMeetMinimum > 0 && (
+                      <><br />⚠️ Stále chybí <strong>{racersNeededToMeetMinimum - selectedRacerIds.length} jezdců</strong> pro minimum</>
+                    )}
                   </p>
                 </div>
               )}
@@ -139,19 +155,26 @@ export const IncompleteGroupDialog = ({
               variant="outline" 
               onClick={handleContinueWithCurrentSize}
               className="flex-1"
+              disabled={!canContinueWithCurrentSize}
             >
               <Play className="w-4 h-4 mr-2" />
-              Pokračovat s {group.racers.length} jezdci
+              {canContinueWithCurrentSize 
+                ? `Pokračovat s ${group.racers.length} jezdci`
+                : `Nelze - minimum ${minimumRacers} jezdců`
+              }
             </Button>
             
             {availableRacers.length > 0 && (
               <Button 
                 onClick={handleAddRacersAndStart}
                 className="racing-gradient shadow-racing flex-1"
-                disabled={selectedRacerIds.length === 0}
+                disabled={selectedRacerIds.length === 0 || !willMeetMinimumWithSelection}
               >
                 <UserPlus className="w-4 h-4 mr-2" />
-                Přidat {selectedRacerIds.length} jezdců a spustit
+                {willMeetMinimumWithSelection 
+                  ? `Přidat ${selectedRacerIds.length} jezdců a spustit`
+                  : `Vyberte alespoň ${racersNeededToMeetMinimum} jezdců`
+                }
               </Button>
             )}
           </div>

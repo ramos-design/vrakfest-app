@@ -222,6 +222,7 @@ export const TournamentBracket = ({
             availableRacers={getAvailableRacersForGroup(incompleteGroupDialog.group)}
             onContinueWithCurrentSize={handleContinueWithCurrentSize}
             onAddRacersAndStart={handleAddRacersAndStart}
+            minimumRacers={5}
           />
         )}
       </CardContent>
