@@ -6,6 +6,7 @@ import { TournamentSettings } from '@/types/tournamentSettings';
 export const useRacingTournament = () => {
   const [racers, setRacers] = useState<Racer[]>(() => generateRealRacers());
   const [demolitionDerbyRacers, setDemolitionDerbyRacers] = useState<string[]>([]);
+  const [tournamentSettings, setTournamentSettings] = useState<TournamentSettings | null>(null);
   const [tournament, setTournament] = useState<Tournament>({
     currentRound: 1,
     currentCategory: 'do 1.6L',
@@ -43,6 +44,11 @@ export const useRacingTournament = () => {
   const startTournament = useCallback((settings?: TournamentSettings) => {
     const activeRacers = racers.filter(r => r.isActive);
     if (activeRacers.length === 0) return;
+
+    // Store tournament settings
+    if (settings) {
+      setTournamentSettings(settings);
+    }
 
     // Use settings if provided, otherwise use default behavior
     const racersPerGroup = settings?.racersPerGroup || 6;
@@ -156,6 +162,10 @@ export const useRacingTournament = () => {
     });
   }, [racers]);
 
+  const updateTournamentSettings = useCallback((newSettings: TournamentSettings) => {
+    setTournamentSettings(newSettings);
+  }, []);
+
   const resetTournament = useCallback(() => {
     setRacers(prev => prev.map(racer => ({ ...racer, points: 0, isActive: true })));
     setTournament({
@@ -211,6 +221,7 @@ export const useRacingTournament = () => {
   return {
     racers,
     tournament,
+    tournamentSettings,
     demolitionDerbyRacers,
     addRacer,
     updateRacer,
@@ -224,6 +235,7 @@ export const useRacingTournament = () => {
     getCurrentRaceGroup,
     addRacersToGroup,
     addToDemolitionDerby,
-    removeFromDemolitionDerby
+    removeFromDemolitionDerby,
+    updateTournamentSettings
   };
 };

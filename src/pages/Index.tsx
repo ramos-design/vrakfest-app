@@ -22,11 +22,11 @@ import { TournamentSettings, defaultTournamentSettings } from '@/types/tournamen
 const Index = () => {
   const [activeTab, setActiveTab] = useState('jezdci');
   const [editingRacer, setEditingRacer] = useState<Racer | null>(null);
-  const [tournamentSettings, setTournamentSettings] = useState<TournamentSettings>(defaultTournamentSettings);
 
   const {
     racers,
     tournament,
+    tournamentSettings,
     demolitionDerbyRacers,
     addRacer,
     updateRacer,
@@ -40,7 +40,8 @@ const Index = () => {
     getCurrentRaceGroup,
     addRacersToGroup,
     addToDemolitionDerby,
-    removeFromDemolitionDerby
+    removeFromDemolitionDerby,
+    updateTournamentSettings
   } = useRacingTournament();
 
   // Listen for redirect to tournament event
@@ -79,11 +80,11 @@ const Index = () => {
 
   const handleStartTournament = () => {
     setActiveTab('turnaj');
-    startTournament(tournamentSettings);
+    startTournament(tournamentSettings || defaultTournamentSettings);
   };
 
   const handleSettingsChange = (settings: TournamentSettings) => {
-    setTournamentSettings(settings);
+    updateTournamentSettings(settings);
   };
 
   const handleViewControl = () => {
@@ -137,7 +138,7 @@ const Index = () => {
             racers={racers}
             onStartRace={startRace}
             onStartTournament={handleStartTournament}
-            tournamentSettings={tournamentSettings}
+            tournamentSettings={tournamentSettings || defaultTournamentSettings}
             onSettingsChange={handleSettingsChange}
             onAddRacersToGroup={addRacersToGroup}
             onSwitchToControl={handleViewControl}

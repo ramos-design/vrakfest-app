@@ -168,7 +168,7 @@ export const TournamentBracket = ({
               VrakFest závodní turnaj
             </CardTitle>
             <Badge variant="outline" className="text-base px-3 py-1">
-              {tournament.currentRound <= 3 ? `Rozjezdy - Kolo ${tournament.currentRound}` : `Kolo ${tournament.currentRound}`}
+              {tournament.currentRound <= tournamentSettings.numberOfQualifyingRounds ? `Rozjezdy - Kolo ${tournament.currentRound}` : `Kolo ${tournament.currentRound}`}
             </Badge>
             <Badge className={`${getCategoryBadgeColor(tournament.currentCategory)} text-white text-base px-3 py-1`}>
               {tournament.currentCategory}
@@ -202,6 +202,7 @@ export const TournamentBracket = ({
                 isNext={group === nextGroup}
                 isCurrentRace={group === currentGroup}
                 onStartRace={handleStartRace}
+                numberOfQualifyingRounds={tournamentSettings.numberOfQualifyingRounds}
               />
             ))}
         </div>
@@ -236,9 +237,10 @@ interface RaceGroupCardProps {
   isNext?: boolean;
   isCurrentRace?: boolean;
   onStartRace: (groupId: string) => void;
+  numberOfQualifyingRounds: number;
 }
 
-const RaceGroupCard = ({ group, tournament, isNext, isCurrentRace, onStartRace }: RaceGroupCardProps) => {
+const RaceGroupCard = ({ group, tournament, isNext, isCurrentRace, onStartRace, numberOfQualifyingRounds }: RaceGroupCardProps) => {
   const getStatusBadge = () => {
     if (group.isCompleted) return <Badge className="bg-green-600 text-white">Dokončeno</Badge>;
     if (group.hasStarted) return <Badge className="bg-yellow-600 text-white">Probíhá</Badge>;
@@ -260,7 +262,7 @@ const RaceGroupCard = ({ group, tournament, isNext, isCurrentRace, onStartRace }
               {group.category}
             </Badge>
             <Badge variant="outline">
-              {group.round <= 3 ? `Rozjezdy - Kolo ${group.round}` : `Kolo ${group.round}`}
+              {group.round <= numberOfQualifyingRounds ? `Rozjezdy - Kolo ${group.round}` : `Kolo ${group.round}`}
             </Badge>
           </div>
           <div className="flex items-center gap-2">
