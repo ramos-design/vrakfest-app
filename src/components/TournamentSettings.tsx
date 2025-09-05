@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Settings, Users, Trophy, Target, MapPin, UserPlus } from 'lucide-react';
+import { Settings, Users, Trophy, Target, MapPin, UserPlus, Hash } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -164,6 +164,40 @@ export const TournamentSettings = ({
                 />
                 <p className="text-sm text-muted-foreground">
                   Doporučeno: 4-8 jezdců na skupinu
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Počet rozjezdových kol */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Hash className="w-5 h-5 text-primary" />
+                Počet rozjezdových kol
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <Label htmlFor="numberOfQualifyingRounds">Počet kol označených jako "Rozjezdy"</Label>
+                <Input
+                  id="numberOfQualifyingRounds"
+                  type="number"
+                  min="1"
+                  max="10"
+                  value={localSettings.numberOfQualifyingRounds}
+                  onChange={(e) => {
+                    const newValue = Math.max(1, Math.min(10, parseInt(e.target.value) || 3));
+                    const newSettings = {
+                      ...localSettings,
+                      numberOfQualifyingRounds: newValue
+                    };
+                    setLocalSettings(newSettings);
+                    onSettingsChange(newSettings);
+                  }}
+                />
+                <p className="text-sm text-muted-foreground">
+                  První {localSettings.numberOfQualifyingRounds} kola budou označena jako "Rozjezdy"
                 </p>
               </div>
             </CardContent>
@@ -390,6 +424,35 @@ export const TournamentSettings = ({
                   />
                   <p className="text-sm text-muted-foreground">
                     Doporučeno: 4-8 jezdců na skupinu
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Počet rozjezdových kol */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Hash className="w-5 h-5 text-primary" />
+                  Počet rozjezdových kol
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <Label htmlFor="numberOfQualifyingRounds-dialog">Počet kol označených jako "Rozjezdy"</Label>
+                  <Input
+                    id="numberOfQualifyingRounds-dialog"
+                    type="number"
+                    min="1"
+                    max="10"
+                    value={localSettings.numberOfQualifyingRounds}
+                    onChange={(e) => setLocalSettings(prev => ({
+                      ...prev,
+                      numberOfQualifyingRounds: Math.max(1, Math.min(10, parseInt(e.target.value) || 3))
+                    }))}
+                  />
+                  <p className="text-sm text-muted-foreground">
+                    První {localSettings.numberOfQualifyingRounds} kola budou označena jako "Rozjezdy"
                   </p>
                 </div>
               </CardContent>

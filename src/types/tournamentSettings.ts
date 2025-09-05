@@ -12,6 +12,7 @@ export interface TournamentSettings {
   pointSystem: PointSystem;
   enabledCategories: RacerCategory[];
   selectedTrack: TrackOption;
+  numberOfQualifyingRounds: number;
 }
 
 export const defaultTournamentSettings: TournamentSettings = {
@@ -21,5 +22,6 @@ export const defaultTournamentSettings: TournamentSettings = {
     maxPoints: 3
   },
   enabledCategories: ['do 1.6L', 'nad 1.6L', 'Ženy'],
-  selectedTrack: 'ostrava'
+  selectedTrack: 'ostrava',
+  numberOfQualifyingRounds: 3
 };
