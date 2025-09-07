@@ -18,7 +18,6 @@ export function EventForm({ event, onSave, onCancel }: EventFormProps) {
   const [formData, setFormData] = useState({
     name: '',
     date: '',
-    time: '',
     participantCount: 0,
     eventTypes: [] as EventType[],
     startTime: '',
@@ -33,7 +32,6 @@ export function EventForm({ event, onSave, onCancel }: EventFormProps) {
       setFormData({
         name: event.name,
         date: event.date,
-        time: event.time,
         participantCount: event.participantCount,
         eventTypes: event.eventTypes,
         startTime: event.startTime,
@@ -96,17 +94,6 @@ export function EventForm({ event, onSave, onCancel }: EventFormProps) {
                 type="date"
                 value={formData.date}
                 onChange={(e) => handleInputChange('date', e.target.value)}
-                required
-              />
-            </div>
-            
-            <div>
-              <Label htmlFor="time">Čas události</Label>
-              <Input
-                id="time"
-                type="time"
-                value={formData.time}
-                onChange={(e) => handleInputChange('time', e.target.value)}
                 required
               />
             </div>

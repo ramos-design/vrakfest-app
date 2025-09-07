@@ -99,7 +99,7 @@ export function Events() {
           </div>
           <div className="flex items-center gap-2">
             <Clock className={`h-4 w-4 ${isUpcoming ? 'text-racing-yellow' : 'text-racing-white/60'}`} />
-            <span className="text-sm text-muted-foreground">{event.time}</span>
+            <span className="text-sm text-muted-foreground">{event.startTime}</span>
           </div>
           <div className="flex items-center gap-2">
             <Users className={`h-4 w-4 ${isUpcoming ? 'text-racing-yellow' : 'text-racing-white/60'}`} />

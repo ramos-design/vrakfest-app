@@ -4,7 +4,6 @@ export interface Event {
   id: string;
   name: string;
   date: string;
-  time: string;
   participantCount: number;
   eventTypes: EventType[]; // Changed to array to support multiple types
   startTime: string;
