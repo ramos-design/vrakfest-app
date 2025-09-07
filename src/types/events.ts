@@ -1,4 +1,4 @@
-export type EventType = 'turnaj' | 'demolition-derby' | 'nejvetsi-skok' | 'hlavni-zavody';
+export type EventType = 'demolition-derby' | 'nejvetsi-skok' | 'hlavni-zavody';
 
 export interface Event {
   id: string;
@@ -6,7 +6,7 @@ export interface Event {
   date: string;
   time: string;
   participantCount: number;
-  eventType: EventType;
+  eventTypes: EventType[]; // Changed to array to support multiple types
   startTime: string;
   description: string;
   schedule: string;
@@ -16,7 +16,6 @@ export interface Event {
 }
 
 export const EVENT_TYPES: { value: EventType; label: string }[] = [
-  { value: 'turnaj', label: 'Turnaj' },
   { value: 'hlavni-zavody', label: 'Hlavní závody' },
   { value: 'demolition-derby', label: 'Demolition Derby' },
   { value: 'nejvetsi-skok', label: 'Největší skok' },

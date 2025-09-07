@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Calendar, Clock, Trophy, Users, Edit, Trash2, Plus, FileText, Clock3 } from 'lucide-react';
 import { useEvents } from '@/hooks/useEvents';
 import { EventForm } from '@/components/EventForm';
-import { Event, EVENT_TYPES } from '@/types/events';
+import { Event, EventType, EVENT_TYPES } from '@/types/events';
 
 export function Events() {
   const { getUpcomingEvents, getPastEvents, addEvent, updateEvent, deleteEvent } = useEvents();
@@ -46,8 +46,10 @@ export function Events() {
     setEditingEvent(null);
   };
 
-  const getEventTypeLabel = (eventType: string) => {
-    return EVENT_TYPES.find(type => type.value === eventType)?.label || eventType;
+  const getEventTypeLabel = (eventTypes: EventType[]) => {
+    return eventTypes.map(type => 
+      EVENT_TYPES.find(et => et.value === type)?.label || type
+    ).join(', ');
   };
 
   const renderEventCard = (event: Event, isUpcoming: boolean) => (
@@ -115,7 +117,7 @@ export function Events() {
           <div className="flex items-center gap-2">
             <Clock3 className={`h-4 w-4 ${isUpcoming ? 'text-racing-yellow' : 'text-racing-white/60'}`} />
             <span className="text-sm text-muted-foreground">
-              Začátek: {event.startTime} | {getEventTypeLabel(event.eventType)}
+              Začátek: {event.startTime} | {getEventTypeLabel(event.eventTypes)}
             </span>
           </div>
           {event.description && (

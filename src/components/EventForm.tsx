@@ -5,6 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Event, EventType, EVENT_TYPES } from '@/types/events';
 
 interface EventFormProps {
@@ -19,7 +20,7 @@ export function EventForm({ event, onSave, onCancel }: EventFormProps) {
     date: '',
     time: '',
     participantCount: 0,
-    eventType: 'turnaj' as EventType,
+    eventTypes: [] as EventType[],
     startTime: '',
     description: '',
     schedule: '',
@@ -34,7 +35,7 @@ export function EventForm({ event, onSave, onCancel }: EventFormProps) {
         date: event.date,
         time: event.time,
         participantCount: event.participantCount,
-        eventType: event.eventType,
+        eventTypes: event.eventTypes,
         startTime: event.startTime,
         description: event.description,
         schedule: event.schedule,
@@ -49,8 +50,22 @@ export function EventForm({ event, onSave, onCancel }: EventFormProps) {
     onSave(formData);
   };
 
-  const handleInputChange = (field: string, value: string | number) => {
+  const handleInputChange = (field: string, value: string | number | EventType[]) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleEventTypeChange = (eventType: EventType, checked: boolean) => {
+    if (checked) {
+      setFormData(prev => ({
+        ...prev,
+        eventTypes: [...prev.eventTypes, eventType]
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        eventTypes: prev.eventTypes.filter(type => type !== eventType)
+      }));
+    }
   };
 
   return (
@@ -109,19 +124,21 @@ export function EventForm({ event, onSave, onCancel }: EventFormProps) {
             </div>
             
             <div>
-              <Label htmlFor="eventType">Typ soutěže</Label>
-              <Select value={formData.eventType} onValueChange={(value: EventType) => handleInputChange('eventType', value)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {EVENT_TYPES.map((type) => (
-                    <SelectItem key={type.value} value={type.value}>
+              <Label htmlFor="eventTypes">Typy soutěží (můžete vybrat více)</Label>
+              <div className="space-y-2 mt-2">
+                {EVENT_TYPES.map((type) => (
+                  <div key={type.value} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={type.value}
+                      checked={formData.eventTypes.includes(type.value)}
+                      onCheckedChange={(checked) => handleEventTypeChange(type.value, checked as boolean)}
+                    />
+                    <Label htmlFor={type.value} className="text-sm font-normal">
                       {type.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                    </Label>
+                  </div>
+                ))}
+              </div>
             </div>
             
             <div>
