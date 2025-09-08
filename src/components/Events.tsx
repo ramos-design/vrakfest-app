@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Calendar, Clock, Trophy, Users, Edit, Trash2, Plus, FileText, Flag, Eye, Award } from 'lucide-react';
+import { Calendar, Clock, Trophy, Users, Edit, Trash2, Plus, FileText, Flag, Eye, Award, ArrowLeft } from 'lucide-react';
 import { useEvents } from '@/hooks/useEvents';
 import { EventForm } from '@/components/EventForm';
 import { Event, EventType, EVENT_TYPES, EventParticipant } from '@/types/events';
@@ -12,6 +12,7 @@ export function Events() {
   const { getUpcomingEvents, getPastEvents, addEvent, updateEvent, deleteEvent } = useEvents();
   const [showForm, setShowForm] = useState(false);
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 
   const upcomingEvents = getUpcomingEvents();
   const pastEvents = getPastEvents();
@@ -53,9 +54,12 @@ export function Events() {
     ).join(', ');
   };
 
-  const handleViewEventDetails = (eventId: string) => {
-    // TODO: Navigate to detailed event view
-    console.log('Viewing details for event:', eventId);
+  const handleViewEventDetails = (event: Event) => {
+    setSelectedEvent(event);
+  };
+
+  const handleBackToEvents = () => {
+    setSelectedEvent(null);
   };
 
   const getParticipantByResult = (participants: EventParticipant[], participantId: string) => {
@@ -149,6 +153,17 @@ export function Events() {
               {getEventTypeLabel(event.eventTypes)}
             </span>
           </div>
+          <div className="flex justify-end">
+            <Button 
+              size="sm" 
+              variant="outline" 
+              onClick={() => handleViewEventDetails(event)}
+              className="h-7 text-xs"
+            >
+              <Eye className="h-3 w-3 mr-1" />
+              Zobrazit detail
+            </Button>
+          </div>
         </div>
 
         {event.schedule && (
@@ -159,110 +174,161 @@ export function Events() {
             </div>
           </div>
         )}
-
-        {/* Participants Table */}
-        <div className="pt-4 border-t border-muted/20">
-          <div className="flex items-center justify-between mb-3">
-            <h4 className="text-sm font-semibold">Účastníci ({event.participants.length})</h4>
-            <Button 
-              size="sm" 
-              variant="outline" 
-              onClick={() => handleViewEventDetails(event.id)}
-              className="h-7 text-xs"
-            >
-              <Eye className="h-3 w-3 mr-1" />
-              Detail
-            </Button>
-          </div>
-          <div className="max-h-40 overflow-y-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="text-xs">#</TableHead>
-                  <TableHead className="text-xs">Jméno</TableHead>
-                  <TableHead className="text-xs">Vůz</TableHead>
-                  <TableHead className="text-xs">Kategorie</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {event.participants.slice(0, 5).map((participant) => (
-                  <TableRow key={participant.id}>
-                    <TableCell className="text-xs">{participant.startNumber}</TableCell>
-                    <TableCell className="text-xs">{participant.firstName} {participant.lastName}</TableCell>
-                    <TableCell className="text-xs">{participant.vehicleType}</TableCell>
-                    <TableCell className="text-xs">{participant.category}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-            {event.participants.length > 5 && (
-              <p className="text-xs text-muted-foreground text-center mt-2">
-                ... a {event.participants.length - 5} dalších účastníků
-              </p>
-            )}
-          </div>
-        </div>
-
-        {/* Results Table (only for completed events) */}
-        {event.status === 'completed' && event.results && (
-          <div className="pt-4 border-t border-muted/20">
-            <div className="flex items-center justify-between mb-3">
-              <h4 className="text-sm font-semibold flex items-center gap-2">
-                <Award className="h-4 w-4 text-racing-yellow" />
-                Výsledky
-              </h4>
-              <Button 
-                size="sm" 
-                variant="outline" 
-                onClick={() => handleViewEventDetails(event.id)}
-                className="h-7 text-xs"
-              >
-                <Trophy className="h-3 w-3 mr-1" />
-                Bodování
-              </Button>
-            </div>
-            <div className="max-h-40 overflow-y-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="text-xs">Pozice</TableHead>
-                    <TableHead className="text-xs">Jezdec</TableHead>
-                    <TableHead className="text-xs">Body</TableHead>
-                    <TableHead className="text-xs">Čas</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {event.results.slice(0, 5).map((result) => {
-                    const participant = getParticipantByResult(event.participants, result.participantId);
-                    return (
-                      <TableRow key={result.participantId}>
-                        <TableCell className="text-xs font-medium">
-                          {result.position === 1 && <span className="text-racing-yellow">🏆</span>}
-                          {result.position === 2 && <span className="text-gray-400">🥈</span>}
-                          {result.position === 3 && <span className="text-amber-600">🥉</span>}
-                          {result.position}
-                        </TableCell>
-                        <TableCell className="text-xs">
-                          {participant ? `${participant.firstName} ${participant.lastName}` : 'Neznámý'}
-                        </TableCell>
-                        <TableCell className="text-xs">{result.points}</TableCell>
-                        <TableCell className="text-xs">{result.time || '-'}</TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-              {event.results.length > 5 && (
-                <p className="text-xs text-muted-foreground text-center mt-2">
-                  ... kompletní výsledky v detailu události
-                </p>
-              )}
-            </div>
-          </div>
-        )}
       </CardContent>
     </Card>
   );
+
+  const renderEventDetail = (event: Event) => (
+    <div className="space-y-6">
+      <div className="flex items-center gap-4">
+        <Button 
+          variant="outline" 
+          onClick={handleBackToEvents}
+          className="h-10 w-10 p-0"
+        >
+          <ArrowLeft className="h-4 w-4" />
+        </Button>
+        <h1 className="text-3xl font-bold racing-gradient-text">{event.name}</h1>
+      </div>
+
+      <Card className="racing-card border-racing-yellow/20">
+        <CardHeader>
+          <CardTitle className="racing-gradient-text">{event.name}</CardTitle>
+          {event.description && (
+            <p className="text-muted-foreground">
+              {event.description}
+            </p>
+          )}
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="flex items-center gap-2">
+              <Calendar className="h-4 w-4 text-racing-yellow" />
+              <span className="text-sm text-muted-foreground">{formatDate(event.date)}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Clock className="h-4 w-4 text-racing-yellow" />
+              <span className="text-sm text-muted-foreground">{event.startTime}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Users className="h-4 w-4 text-racing-yellow" />
+              <span className="text-sm text-muted-foreground">{event.participantCount} účastníků</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Trophy className="h-4 w-4 text-racing-yellow" />
+              <span className="text-sm text-muted-foreground">
+                {event.winner || event.prize || 'Není stanoveno'}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 pt-2 border-t border-muted/20">
+            <Flag className="h-4 w-4 text-racing-yellow" />
+            <span className="text-sm text-muted-foreground">
+              {getEventTypeLabel(event.eventTypes)}
+            </span>
+          </div>
+
+          {event.schedule && (
+            <div className="pt-2 border-t border-muted/20">
+              <h4 className="text-sm font-medium mb-1">Harmonogram:</h4>
+              <div className="text-sm text-muted-foreground whitespace-pre-line">
+                {event.schedule}
+              </div>
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-muted/20">
+            <Button variant="outline" className="h-12">
+              <Users className="h-4 w-4 mr-2" />
+              Přehled jezdců
+            </Button>
+            <Button variant="outline" className="h-12">
+              <Trophy className="h-4 w-4 mr-2" />
+              Bodové pořadí
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Participants Table */}
+      <Card className="racing-card">
+        <CardHeader>
+          <CardTitle className="text-xl">Účastníci ({event.participants.length})</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>#</TableHead>
+                <TableHead>Jméno</TableHead>
+                <TableHead>Vůz</TableHead>
+                <TableHead>Kategorie</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {event.participants.map((participant) => (
+                <TableRow key={participant.id}>
+                  <TableCell>{participant.startNumber}</TableCell>
+                  <TableCell>{participant.firstName} {participant.lastName}</TableCell>
+                  <TableCell>{participant.vehicleType}</TableCell>
+                  <TableCell>{participant.category}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      {/* Results Table (only for completed events) */}
+      {event.status === 'completed' && event.results && (
+        <Card className="racing-card">
+          <CardHeader>
+            <CardTitle className="text-xl flex items-center gap-2">
+              <Award className="h-5 w-5 text-racing-yellow" />
+              Výsledky
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Pozice</TableHead>
+                  <TableHead>Jezdec</TableHead>
+                  <TableHead>Body</TableHead>
+                  <TableHead>Čas</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {event.results.map((result) => {
+                  const participant = getParticipantByResult(event.participants, result.participantId);
+                  return (
+                    <TableRow key={result.participantId}>
+                      <TableCell className="font-medium">
+                        {result.position === 1 && <span className="text-racing-yellow mr-2">🏆</span>}
+                        {result.position === 2 && <span className="text-gray-400 mr-2">🥈</span>}
+                        {result.position === 3 && <span className="text-amber-600 mr-2">🥉</span>}
+                        {result.position}
+                      </TableCell>
+                      <TableCell>
+                        {participant ? `${participant.firstName} ${participant.lastName}` : 'Neznámý'}
+                      </TableCell>
+                      <TableCell>{result.points}</TableCell>
+                      <TableCell>{result.time || '-'}</TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+
+  if (selectedEvent) {
+    return renderEventDetail(selectedEvent);
+  }
 
   if (showForm) {
     return (
