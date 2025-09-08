@@ -52,13 +52,32 @@ export function Events() {
     ).join(', ');
   };
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const months = [
+      'ledna', 'února', 'března', 'dubna', 'května', 'června',
+      'července', 'srpna', 'září', 'října', 'listopadu', 'prosince'
+    ];
+    const day = date.getDate();
+    const month = months[date.getMonth()];
+    const year = date.getFullYear();
+    return `${day}. ${month} ${year}`;
+  };
+
   const renderEventCard = (event: Event, isUpcoming: boolean) => (
     <Card key={event.id} className={`racing-card ${isUpcoming ? 'border-racing-yellow/20' : 'border-racing-white/10'}`}>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className={isUpcoming ? 'racing-gradient-text' : 'text-racing-white'}>
-            {event.name}
-          </CardTitle>
+          <div className="flex-1">
+            <CardTitle className={isUpcoming ? 'racing-gradient-text' : 'text-racing-white'}>
+              {event.name}
+            </CardTitle>
+            {event.description && (
+              <p className="text-sm text-muted-foreground mt-1">
+                {event.description}
+              </p>
+            )}
+          </div>
           <div className="flex items-center gap-2">
             <Badge 
               variant={isUpcoming ? 'secondary' : 'outline'} 
@@ -95,7 +114,7 @@ export function Events() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="flex items-center gap-2">
             <Calendar className={`h-4 w-4 ${isUpcoming ? 'text-racing-yellow' : 'text-racing-white/60'}`} />
-            <span className="text-sm text-muted-foreground">{event.date}</span>
+            <span className="text-sm text-muted-foreground">{formatDate(event.date)}</span>
           </div>
           <div className="flex items-center gap-2">
             <Clock className={`h-4 w-4 ${isUpcoming ? 'text-racing-yellow' : 'text-racing-white/60'}`} />
@@ -120,14 +139,6 @@ export function Events() {
               Začátek: {event.startTime} | {getEventTypeLabel(event.eventTypes)}
             </span>
           </div>
-          {event.description && (
-            <div className="flex items-center gap-2">
-              <FileText className={`h-4 w-4 ${isUpcoming ? 'text-racing-yellow' : 'text-racing-white/60'}`} />
-              <span className="text-sm text-muted-foreground truncate">
-                {event.description}
-              </span>
-            </div>
-          )}
         </div>
 
         {event.schedule && (
@@ -164,7 +175,7 @@ export function Events() {
 
       <div>
         <h2 className="text-2xl font-bold racing-gradient-text mb-4">Nadcházející události</h2>
-        <div className="grid gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {upcomingEvents.length > 0 ? (
             upcomingEvents.map((event) => renderEventCard(event, true))
           ) : (
@@ -179,7 +190,7 @@ export function Events() {
 
       <div>
         <h2 className="text-2xl font-bold racing-gradient-text mb-4">Proběhlé události</h2>
-        <div className="grid gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {pastEvents.length > 0 ? (
             pastEvents.map((event) => renderEventCard(event, false))
           ) : (
