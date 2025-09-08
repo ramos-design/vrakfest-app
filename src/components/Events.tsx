@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calendar, Clock, Trophy, Users, Edit, Trash2, Plus, FileText, Clock3 } from 'lucide-react';
+import { Calendar, Clock, Trophy, Users, Edit, Trash2, Plus, FileText, Flag } from 'lucide-react';
 import { useEvents } from '@/hooks/useEvents';
 import { EventForm } from '@/components/EventForm';
 import { Event, EventType, EVENT_TYPES } from '@/types/events';
@@ -134,9 +134,9 @@ export function Events() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-muted/20">
           <div className="flex items-center gap-2">
-            <Clock3 className={`h-4 w-4 ${isUpcoming ? 'text-racing-yellow' : 'text-racing-white/60'}`} />
+            <Flag className={`h-4 w-4 ${isUpcoming ? 'text-racing-yellow' : 'text-racing-white/60'}`} />
             <span className="text-sm text-muted-foreground">
-              Začátek: {event.startTime} | {getEventTypeLabel(event.eventTypes)}
+              {getEventTypeLabel(event.eventTypes)}
             </span>
           </div>
         </div>
