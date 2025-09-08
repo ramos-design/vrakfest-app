@@ -1,5 +1,13 @@
 import { useState } from 'react';
-import { Event } from '@/types/events';
+import { Event, EventParticipant } from '@/types/events';
+
+// Mock participants data
+const mockParticipants: EventParticipant[] = [
+  { id: '1', firstName: 'Jan', lastName: 'Novák', startNumber: 1, vehicleType: 'BMW E30', category: 'nad 1.6L' },
+  { id: '2', firstName: 'Petr', lastName: 'Svoboda', startNumber: 2, vehicleType: 'VW Golf', category: 'do 1.6L' },
+  { id: '3', firstName: 'Anna', lastName: 'Krásná', startNumber: 3, vehicleType: 'Škoda Octavia', category: 'Ženy' },
+  { id: '4', firstName: 'Tomáš', lastName: 'Dvořák', startNumber: 4, vehicleType: 'Audi A4', category: 'nad 1.6L' },
+];
 
 export function useEvents() {
   const [events, setEvents] = useState<Event[]>([
@@ -13,7 +21,8 @@ export function useEvents() {
       description: 'Největší závodní událost roku',
       schedule: '18:00 - Registrace\n19:00 - Rozjezdy\n20:30 - Finálové jízdy\n22:00 - Vyhlášení výsledků',
       status: 'upcoming',
-      prize: '50,000 Kč'
+      prize: '50,000 Kč',
+      participants: mockParticipants
     },
     {
       id: '2',
@@ -25,7 +34,8 @@ export function useEvents() {
       description: 'Jarní pohár v závodech',
       schedule: '16:30 - Registrace\n17:30 - Závody\n19:00 - Vyhlášení',
       status: 'upcoming',
-      prize: '30,000 Kč'
+      prize: '30,000 Kč',
+      participants: mockParticipants.slice(0, 3)
     },
     {
       id: '3',
@@ -38,7 +48,14 @@ export function useEvents() {
       schedule: 'Závod proběhl podle plánu',
       status: 'completed',
       winner: 'Jan Novák',
-      prize: '40,000 Kč'
+      prize: '40,000 Kč',
+      participants: mockParticipants,
+      results: [
+        { participantId: '1', position: 1, points: 25, time: '2:45.123' },
+        { participantId: '2', position: 2, points: 18, time: '2:47.456' },
+        { participantId: '3', position: 3, points: 15, time: '2:48.789' },
+        { participantId: '4', position: 4, points: 12, time: '2:50.234' },
+      ]
     }
   ]);
 
@@ -46,6 +63,7 @@ export function useEvents() {
     const newEvent: Event = {
       ...eventData,
       id: Date.now().toString(),
+      participants: eventData.participants || [],
     };
     setEvents(prev => [...prev, newEvent]);
   };

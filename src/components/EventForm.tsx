@@ -45,7 +45,10 @@ export function EventForm({ event, onSave, onCancel }: EventFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData);
+    onSave({
+      ...formData,
+      participants: []
+    });
   };
 
   const handleInputChange = (field: string, value: string | number | EventType[]) => {
