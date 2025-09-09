@@ -90,6 +90,38 @@ export const TournamentSettings = ({
       <div className="grid grid-cols-2 gap-6">
         {/* Levá strana */}
         <div className="space-y-6">
+          {/* Název turnaje */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Trophy className="w-5 h-5 text-primary" />
+                Název turnaje
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <Label htmlFor="tournamentName">Zadejte název turnaje</Label>
+                <Input
+                  id="tournamentName"
+                  type="text"
+                  placeholder="Název turnaje"
+                  value={localSettings.tournamentName}
+                  onChange={(e) => {
+                    const newSettings = {
+                      ...localSettings,
+                      tournamentName: e.target.value
+                    };
+                    setLocalSettings(newSettings);
+                    onSettingsChange(newSettings);
+                  }}
+                />
+                <p className="text-sm text-muted-foreground">
+                  Tento název se zobrazí v záhlaví turnaje
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Výběr tratě */}
           <Card>
             <CardHeader className="pb-3">

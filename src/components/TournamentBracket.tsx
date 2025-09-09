@@ -109,7 +109,7 @@ export const TournamentBracket = ({
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="racing-gradient bg-clip-text text-transparent">
-              VrakFest závodní turnaj
+              {tournamentSettings.tournamentName}
             </CardTitle>
             <div className="racing-gradient rounded-lg px-3 py-1">
               <p className="text-black font-medium text-sm">
@@ -165,7 +165,7 @@ export const TournamentBracket = ({
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-4">
             <CardTitle className="racing-gradient bg-clip-text text-transparent text-2xl">
-              VrakFest závodní turnaj
+              {tournamentSettings.tournamentName}
             </CardTitle>
             <Badge variant="outline" className="text-base px-3 py-1">
               {tournament.currentRound <= tournamentSettings.numberOfQualifyingRounds ? `Rozjezdy - Kolo ${tournament.currentRound}` : `Kolo ${tournament.currentRound}`}

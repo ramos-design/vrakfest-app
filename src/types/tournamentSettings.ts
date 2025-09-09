@@ -8,6 +8,7 @@ export interface PointSystem {
 export type TrackOption = 'ostrava' | 'hrachovec' | 'branky';
 
 export interface TournamentSettings {
+  tournamentName: string;
   racersPerGroup: number;
   pointSystem: PointSystem;
   enabledCategories: RacerCategory[];
@@ -16,6 +17,7 @@ export interface TournamentSettings {
 }
 
 export const defaultTournamentSettings: TournamentSettings = {
+  tournamentName: 'VrakFest závodní turnaj',
   racersPerGroup: 6,
   pointSystem: {
     minPoints: 0,
