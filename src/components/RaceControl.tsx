@@ -178,13 +178,13 @@ export const RaceControl = ({ currentGroup, onCompleteRace }: RaceControlProps) 
                   key={racer.id} 
                   className={`flex items-center gap-4 p-4 rounded-lg cursor-pointer transition-colors ${
                     isFinished 
-                      ? 'bg-green-100 border-2 border-green-300' 
+                      ? 'bg-green-50 border-2 border-green-200 text-black' 
                       : 'bg-muted/30 hover:bg-muted/50'
                   }`}
                   onClick={() => !isFinished && handleRacerFinish(racer.id)}
                 >
                   <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="font-mono">
+                    <Badge variant="outline" className={`font-mono ${isFinished ? 'border-black text-black' : ''}`}>
                       #{index + 1}
                     </Badge>
                     {isFinished && (
@@ -196,15 +196,15 @@ export const RaceControl = ({ currentGroup, onCompleteRace }: RaceControlProps) 
                   </div>
                   
                   <div className="flex-1">
-                    <p className="font-medium">
+                    <p className={`font-medium ${isFinished ? 'text-black' : ''}`}>
                       {racer.firstName} {racer.lastName}
                     </p>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <div className={`flex items-center gap-2 text-sm ${isFinished ? 'text-gray-700' : 'text-muted-foreground'}`}>
                       <span>#{racer.startNumber}</span>
                       <span>•</span>
                       <span>{racer.vehicleType}</span>
                       <span>•</span>
-                      <Badge variant="secondary" className="font-mono">
+                      <Badge variant="secondary" className={`font-mono ${isFinished ? 'bg-gray-200 text-black' : ''}`}>
                         {racer.points}b celkem
                       </Badge>
                       {isFinished && (
@@ -219,7 +219,7 @@ export const RaceControl = ({ currentGroup, onCompleteRace }: RaceControlProps) 
                   </div>
                   
                   <div className="flex items-center gap-2">
-                    <Label htmlFor={`points-${racer.id}`} className="text-sm">
+                    <Label htmlFor={`points-${racer.id}`} className={`text-sm ${isFinished ? 'text-black' : ''}`}>
                       Body (0-3):
                     </Label>
                     <Input
@@ -229,7 +229,7 @@ export const RaceControl = ({ currentGroup, onCompleteRace }: RaceControlProps) 
                       max="3"
                       value={points[racer.id] || ''}
                       onChange={(e) => handlePointsChange(racer.id, e.target.value)}
-                      className="w-20 text-center font-mono"
+                      className={`w-20 text-center font-mono ${isFinished ? 'bg-white border-gray-300 text-black' : ''}`}
                     />
                     
                     <div className="flex items-center space-x-2">
@@ -237,8 +237,9 @@ export const RaceControl = ({ currentGroup, onCompleteRace }: RaceControlProps) 
                         id={`advances-${racer.id}`}
                         checked={advances[racer.id] !== undefined ? advances[racer.id] : true}
                         onCheckedChange={(checked) => handleAdvancesChange(racer.id, checked as boolean)}
+                        className={isFinished ? 'border-black data-[state=checked]:bg-green-600' : ''}
                       />
-                      <Label htmlFor={`advances-${racer.id}`} className="text-sm">
+                      <Label htmlFor={`advances-${racer.id}`} className={`text-sm ${isFinished ? 'text-black' : ''}`}>
                         Postupuje
                       </Label>
                     </div>
