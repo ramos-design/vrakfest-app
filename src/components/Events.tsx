@@ -5,11 +5,14 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Calendar, Clock, Trophy, Users, Edit, Trash2, Plus, FileText, Flag, Eye, Award, ArrowLeft } from 'lucide-react';
 import { useEvents } from '@/hooks/useEvents';
+import { useRacingTournament } from '@/hooks/useRacingTournament';
 import { EventForm } from '@/components/EventForm';
 import { Event, EventType, EVENT_TYPES, EventParticipant } from '@/types/events';
+import { Racer } from '@/types/racing';
 
 export function Events() {
   const { getUpcomingEvents, getPastEvents, addEvent, updateEvent, deleteEvent } = useEvents();
+  const { racers } = useRacingTournament();
   const [showForm, setShowForm] = useState(false);
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
@@ -64,6 +67,16 @@ export function Events() {
 
   const getParticipantByResult = (participants: EventParticipant[], participantId: string) => {
     return participants.find(p => p.id === participantId);
+  };
+
+  const getEventRacers = (event: Event): (EventParticipant | Racer)[] => {
+    if (event.status === 'upcoming') {
+      // For upcoming events, show all active racers with current points
+      return racers.filter(racer => racer.isActive);
+    } else {
+      // For completed events, show only participants who actually participated
+      return event.participants;
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -238,12 +251,8 @@ export function Events() {
             </div>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-muted/20">
-            <Button variant="outline" className="h-12">
-              <Users className="h-4 w-4 mr-2" />
-              Přehled jezdců
-            </Button>
-            <Button variant="outline" className="h-12">
+          <div className="flex justify-center pt-4 border-t border-muted/20">
+            <Button variant="outline" className="h-12 min-w-[200px]">
               <Trophy className="h-4 w-4 mr-2" />
               Bodové pořadí
             </Button>
@@ -251,10 +260,12 @@ export function Events() {
         </CardContent>
       </Card>
 
-      {/* Participants Table */}
+      {/* Racers Table */}
       <Card className="racing-card">
         <CardHeader>
-          <CardTitle className="text-xl">Účastníci ({event.participants.length})</CardTitle>
+          <CardTitle className="text-xl">
+            {event.status === 'upcoming' ? 'Přihlášení jezdci' : 'Účastníci'} ({getEventRacers(event).length})
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
@@ -264,15 +275,19 @@ export function Events() {
                 <TableHead>Jméno</TableHead>
                 <TableHead>Vůz</TableHead>
                 <TableHead>Kategorie</TableHead>
+                <TableHead>Body</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {event.participants.map((participant) => (
-                <TableRow key={participant.id}>
-                  <TableCell>{participant.startNumber}</TableCell>
-                  <TableCell>{participant.firstName} {participant.lastName}</TableCell>
-                  <TableCell>{participant.vehicleType}</TableCell>
-                  <TableCell>{participant.category}</TableCell>
+              {getEventRacers(event).map((racer) => (
+                <TableRow key={racer.id}>
+                  <TableCell>{'startNumber' in racer ? racer.startNumber : '-'}</TableCell>
+                  <TableCell>{racer.firstName} {racer.lastName}</TableCell>
+                  <TableCell>{racer.vehicleType}</TableCell>
+                  <TableCell>{racer.category}</TableCell>
+                  <TableCell>
+                    {('points' in racer) ? racer.points : '-'}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
