@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
-import { RaceGroup, Racer } from '@/types/racing';
+import { RaceGroup, Racer, Tournament } from '@/types/racing';
 import { getCategoryBadgeColor } from '@/utils/racingUtils';
 
 interface IncompleteGroupDialogProps {
@@ -16,6 +16,7 @@ interface IncompleteGroupDialogProps {
   onContinueWithCurrentSize: () => void;
   onAddRacersAndStart: (racerIds: string[]) => void;
   minimumRacers?: number;
+  tournament: Tournament;
 }
 
 export const IncompleteGroupDialog = ({
@@ -26,7 +27,8 @@ export const IncompleteGroupDialog = ({
   availableRacers,
   onContinueWithCurrentSize,
   onAddRacersAndStart,
-  minimumRacers = 5
+  minimumRacers = 5,
+  tournament
 }: IncompleteGroupDialogProps) => {
   const [selectedRacerIds, setSelectedRacerIds] = useState<string[]>([]);
   
@@ -35,6 +37,14 @@ export const IncompleteGroupDialog = ({
   const canContinueWithCurrentSize = group.racers.length >= minimumRacers;
   const racersNeededToMeetMinimum = Math.max(0, minimumRacers - group.racers.length);
   const willMeetMinimumWithSelection = group.racers.length + selectedRacerIds.length >= minimumRacers;
+
+  // Check if a racer has already participated in other groups
+  const hasRacerParticipated = (racerId: string) => {
+    return tournament.groups.some(g => 
+      g.id !== group.id && 
+      g.racers.some(gr => gr.id === racerId)
+    );
+  };
 
   const toggleRacer = (racerId: string) => {
     setSelectedRacerIds(prev => 
@@ -98,37 +108,47 @@ export const IncompleteGroupDialog = ({
                 </Badge>
               </div>
               
-              <div className="max-h-60 overflow-y-auto space-y-2 border rounded-lg p-3">
-                {availableRacers.map(racer => (
-                  <div key={racer.id} className="flex items-center space-x-3 p-2 rounded border bg-muted/30">
-                    <Checkbox
-                      id={`racer-${racer.id}`}
-                      checked={selectedRacerIds.includes(racer.id)}
-                      onCheckedChange={() => toggleRacer(racer.id)}
-                      disabled={!selectedRacerIds.includes(racer.id) && selectedRacerIds.length >= maxSelectableRacers}
-                    />
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="font-mono">
-                          #{racer.startNumber}
-                        </Badge>
-                        <span className="font-medium">
-                          {racer.firstName} {racer.lastName}
-                        </span>
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        {racer.vehicleType}
-                      </div>
-                    </div>
-                    <Badge className={`${getCategoryBadgeColor(racer.category)} text-white`}>
-                      {racer.category}
-                    </Badge>
-                    <Badge variant="secondary" className="font-mono">
-                      {racer.points}b
-                    </Badge>
-                  </div>
-                ))}
-              </div>
+                <div className="max-h-60 overflow-y-auto space-y-2 border rounded-lg p-3">
+                 {availableRacers.map(racer => {
+                   const alreadyParticipated = hasRacerParticipated(racer.id);
+                   return (
+                     <div key={racer.id} className={`flex items-center space-x-3 p-2 rounded border ${
+                       alreadyParticipated ? 'bg-orange-50 border-orange-200' : 'bg-muted/30'
+                     }`}>
+                       <Checkbox
+                         id={`racer-${racer.id}`}
+                         checked={selectedRacerIds.includes(racer.id)}
+                         onCheckedChange={() => toggleRacer(racer.id)}
+                         disabled={!selectedRacerIds.includes(racer.id) && selectedRacerIds.length >= maxSelectableRacers}
+                       />
+                       <div className="flex-1">
+                         <div className="flex items-center gap-2">
+                           <Badge variant="outline" className="font-mono">
+                             #{racer.startNumber}
+                           </Badge>
+                           <span className={`font-medium ${alreadyParticipated ? 'text-orange-800' : ''}`}>
+                             {racer.firstName} {racer.lastName}
+                           </span>
+                           {alreadyParticipated && (
+                             <Badge variant="outline" className="text-orange-600 border-orange-300 text-xs">
+                               Již jel
+                             </Badge>
+                           )}
+                         </div>
+                         <div className={`text-sm ${alreadyParticipated ? 'text-orange-600' : 'text-muted-foreground'}`}>
+                           {racer.vehicleType}
+                         </div>
+                       </div>
+                       <Badge className={`${getCategoryBadgeColor(racer.category)} text-white`}>
+                         {racer.category}
+                       </Badge>
+                       <Badge variant="secondary" className="font-mono">
+                         {racer.points}b
+                       </Badge>
+                     </div>
+                   );
+                 })}
+               </div>
 
               {selectedRacerIds.length > 0 && (
                 <div className={`${willMeetMinimumWithSelection ? 'bg-green-50 border-green-200' : 'bg-blue-50 border-blue-200'} border rounded-lg p-3`}>
@@ -164,7 +184,7 @@ export const IncompleteGroupDialog = ({
               }
             </Button>
             
-            {availableRacers.length > 0 && (
+            {(canContinueWithCurrentSize || availableRacers.length > 0) && (
               <Button 
                 onClick={handleAddRacersAndStart}
                 className="racing-gradient shadow-racing flex-1"

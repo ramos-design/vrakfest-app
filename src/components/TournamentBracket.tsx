@@ -61,12 +61,24 @@ export const TournamentBracket = ({
 
   // Find available racers for incomplete group dialog
   const getAvailableRacersForGroup = (group: RaceGroup) => {
-    return racers.filter(r => 
+    // First try to get fresh racers (not in other groups)
+    const freshRacers = racers.filter(r => 
       r.isActive && 
       r.category === group.category &&
       !group.racers.some(gr => gr.id === r.id) && // Not already in this group
       !tournament.groups.some(g => g.id !== group.id && g.racers.some(gr => gr.id === r.id)) // Not in other groups
     );
+
+    // If no fresh racers available, allow all racers from same category (except those already in this group)
+    if (freshRacers.length === 0) {
+      return racers.filter(r => 
+        r.isActive && 
+        r.category === group.category &&
+        !group.racers.some(gr => gr.id === r.id) // Not already in this group
+      );
+    }
+
+    return freshRacers;
   };
 
   const handleStartRace = (groupId: string) => {
@@ -224,6 +236,7 @@ export const TournamentBracket = ({
             onContinueWithCurrentSize={handleContinueWithCurrentSize}
             onAddRacersAndStart={handleAddRacersAndStart}
             minimumRacers={5}
+            tournament={tournament}
           />
         )}
       </CardContent>
