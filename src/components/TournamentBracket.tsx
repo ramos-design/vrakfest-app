@@ -59,13 +59,13 @@ export const TournamentBracket = ({
     }
   };
 
-  // Find racers with 0 points for incomplete group dialog
+  // Find available racers for incomplete group dialog
   const getAvailableRacersForGroup = (group: RaceGroup) => {
     return racers.filter(r => 
-      r.points === 0 && 
       r.isActive && 
       r.category === group.category &&
-      !group.racers.some(gr => gr.id === r.id) // Not already in this group
+      !group.racers.some(gr => gr.id === r.id) && // Not already in this group
+      !tournament.groups.some(g => g.id !== group.id && g.racers.some(gr => gr.id === r.id)) // Not in other groups
     );
   };
 

@@ -92,7 +92,7 @@ export const IncompleteGroupDialog = ({
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <UserPlus className="w-5 h-5 text-blue-600" />
-                <h4 className="font-semibold">Dostupní jezdci s 0 body</h4>
+                <h4 className="font-semibold">Dostupní jezdci ze stejné kategorie</h4>
                 <Badge variant="outline">
                   {availableRacers.length} dostupných
                 </Badge>
