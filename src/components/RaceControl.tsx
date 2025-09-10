@@ -22,27 +22,35 @@ export const RaceControl = ({ currentGroup, onCompleteRace }: RaceControlProps) 
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [finishOrder, setFinishOrder] = useState<{ [racerId: string]: { position: number; time: number } }>({});
   const [isCrashActive, setIsCrashActive] = useState<boolean>(false);
+  const [elapsedTime, setElapsedTime] = useState<number>(0);
+  const [lastUpdateTime, setLastUpdateTime] = useState<number | null>(null);
   
   // Timer effect
   useEffect(() => {
     let interval: NodeJS.Timeout;
     
-    if (currentGroup?.hasStarted && raceStartTime && !isPaused && !isCrashActive) {
+    if (currentGroup?.hasStarted && lastUpdateTime && !isPaused && !isCrashActive) {
       interval = setInterval(() => {
-        setCurrentTime(Date.now() - raceStartTime);
+        const now = Date.now();
+        const timeDiff = now - lastUpdateTime;
+        setElapsedTime(prev => prev + timeDiff);
+        setCurrentTime(prev => prev + timeDiff);
+        setLastUpdateTime(now);
       }, 100);
     }
     
     return () => clearInterval(interval);
-  }, [raceStartTime, isPaused, isCrashActive, currentGroup?.hasStarted]);
+  }, [lastUpdateTime, isPaused, isCrashActive, currentGroup?.hasStarted]);
 
   // Auto-start timer when race starts
   useEffect(() => {
-    if (currentGroup?.hasStarted && !raceStartTime) {
-      setRaceStartTime(Date.now());
+    if (currentGroup?.hasStarted && !lastUpdateTime) {
+      const now = Date.now();
+      setLastUpdateTime(now);
+      setElapsedTime(0);
       setCurrentTime(0);
     }
-  }, [currentGroup?.hasStarted, raceStartTime]);
+  }, [currentGroup?.hasStarted, lastUpdateTime]);
 
   const formatTime = (milliseconds: number) => {
     const totalSeconds = Math.floor(milliseconds / 1000);
@@ -64,11 +72,18 @@ export const RaceControl = ({ currentGroup, onCompleteRace }: RaceControlProps) 
   };
 
   const handleCrashToggle = () => {
-    setIsCrashActive(!isCrashActive);
+    if (!isCrashActive) {
+      // Aktivujem boudu - timer se zastaví automaticky
+      setIsCrashActive(true);
+    } else {
+      // Ukončujem boudu - obnovím timer
+      setIsCrashActive(false);
+      setLastUpdateTime(Date.now());
+    }
   };
 
   const handleCompleteRace = () => {
-    if (!currentGroup) return;
+    if (!currentGroup || isCrashActive) return; // Zabránit ukončení během boudy
     
     const results: RaceResult[] = currentGroup.racers.map(racer => ({
       racerId: racer.id,
@@ -81,6 +96,8 @@ export const RaceControl = ({ currentGroup, onCompleteRace }: RaceControlProps) 
     setAdvances({});
     setRaceStartTime(null);
     setCurrentTime(0);
+    setElapsedTime(0);
+    setLastUpdateTime(null);
     setFinishOrder({});
     setIsCrashActive(false);
     
