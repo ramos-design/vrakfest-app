@@ -58,7 +58,7 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
     { id: 'komunikace', label: 'Komunikace', icon: MessageSquare },
     { id: 'pravidla', label: 'Pravidla závodu', icon: BookOpen },
     { id: 'log-akci', label: 'Log akcí', icon: Activity },
-    { id: 'bazar', label: 'Bazar', icon: ShoppingCart },
+    { id: 'bazar', label: 'Obchod', icon: ShoppingCart },
     { id: 'settings', label: 'Nastavení', icon: Settings },
   ];
 

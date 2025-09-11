@@ -61,7 +61,7 @@ export function DashboardActions({ onStartTournament, onViewControl, onViewTourn
     { icon: BarChart3, label: 'Statistiky', isActive: false, onClick: onViewStatistics },
     { icon: Car, label: 'Demolition derby', isActive: false },
     { icon: MessageSquare, label: 'Komunikace', isActive: false, onClick: onViewCommunication },
-    { icon: ShoppingCart, label: 'Bazar', isActive: false, onClick: onViewMarketplace },
+    { icon: ShoppingCart, label: 'Obchod', isActive: false, onClick: onViewMarketplace },
   ];
 
   return (
