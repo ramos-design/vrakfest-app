@@ -65,9 +65,9 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
   return (
     <Sidebar className={isCollapsed ? "w-14" : "w-60"} collapsible="icon" variant="sidebar">
       <SidebarContent className="racing-card border-r border-racing-yellow/20">
-        <div className="p-3 md:p-4">
-          <div className="flex items-center gap-2 mb-4 md:mb-6">
-            <div className="w-8 h-8 racing-gradient rounded-lg flex items-center justify-center shadow-racing">
+        <div className={isCollapsed ? "p-2 flex justify-center" : "p-3 md:p-4"}>
+          <div className={isCollapsed ? "flex flex-col items-center gap-1" : "flex items-center gap-2 mb-4 md:mb-6"}>
+            <div className="w-8 h-8 racing-gradient rounded-lg flex items-center justify-center shadow-racing flex-shrink-0">
               <span className="text-racing-black font-bold text-sm">V</span>
             </div>
             {!isCollapsed && (
@@ -82,14 +82,14 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
         <SidebarGroup>
           {!isCollapsed && <SidebarGroupLabel className="text-muted-foreground px-3 md:px-4 text-sm">Menu</SidebarGroupLabel>}
           <SidebarGroupContent>
-            <SidebarMenu className="px-1 md:px-2">
+            <SidebarMenu className={isCollapsed ? "px-1 space-y-2" : "px-1 md:px-2"}>
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.id}>
                   {item.id === 'settings' ? (
                     <Dialog open={isEventSettingsOpen} onOpenChange={setIsEventSettingsOpen}>
                       <DialogTrigger asChild>
                         <SidebarMenuButton
-                          className={`w-full justify-start gap-2 md:gap-3 rounded-lg px-2 md:px-3 py-2 transition-racing text-sm ${
+                          className={`w-full ${isCollapsed ? 'justify-center p-2' : 'justify-start gap-2 md:gap-3 px-2 md:px-3'} rounded-lg py-2 transition-racing text-sm ${
                             activeTab === item.id
                               ? 'racing-gradient shadow-racing text-racing-black font-medium'
                               : 'text-muted-foreground hover:bg-muted/50 hover:text-racing-white'
@@ -144,7 +144,7 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
                   ) : (
                     <SidebarMenuButton
                       onClick={() => onTabChange(item.id)}
-                      className={`w-full justify-start gap-2 md:gap-3 rounded-lg px-2 md:px-3 py-2 transition-racing text-sm ${
+                      className={`w-full ${isCollapsed ? 'justify-center p-2' : 'justify-start gap-2 md:gap-3 px-2 md:px-3'} rounded-lg py-2 transition-racing text-sm ${
                         activeTab === item.id
                           ? 'racing-gradient shadow-racing text-racing-black font-medium'
                           : 'text-muted-foreground hover:bg-muted/50 hover:text-racing-white'
