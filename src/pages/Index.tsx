@@ -111,8 +111,8 @@ const Index = () => {
     switch (activeTab) {
       case 'jezdci':
         return (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 md:gap-6">
+            <div className="xl:col-span-2 order-2 xl:order-1">
               <RacerTable
                 racers={activeRacers}
                 onEdit={handleEditRacer}
@@ -121,7 +121,7 @@ const Index = () => {
               />
             </div>
             
-            <div className="space-y-6">              
+            <div className="space-y-4 md:space-y-6 order-1 xl:order-2">              
               <DashboardStats
                 racerCount={racers.length}
                 activeRacerCount={activeRacers.length}
@@ -196,8 +196,8 @@ const Index = () => {
       
       default:
         return (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 md:gap-6">
+            <div className="xl:col-span-2 order-2 xl:order-1">
               <RacerTable
                 racers={activeRacers}
                 onEdit={handleEditRacer}
@@ -206,7 +206,7 @@ const Index = () => {
               />
             </div>
             
-            <div className="space-y-6">              
+            <div className="space-y-4 md:space-y-6 order-1 xl:order-2">              
               <DashboardStats
                 racerCount={racers.length}
                 activeRacerCount={activeRacers.length}
@@ -219,11 +219,11 @@ const Index = () => {
   };
 
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={false}>
       <div className="min-h-screen flex w-full bg-background">
         <AppSidebar activeTab={activeTab} onTabChange={setActiveTab} />
         
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col min-w-0">
           <DashboardHeader
             racerCount={racers.length}
             activeRacerCount={activeRacers.length}
@@ -233,8 +233,8 @@ const Index = () => {
             onRoleChange={(role) => console.log('Role changed to:', role)}
           />
           
-          <main className="flex-1 p-6 overflow-auto">
-            <div className="space-y-6">
+          <main className="flex-1 p-3 md:p-6 overflow-auto">
+            <div className="space-y-4 md:space-y-6">
               <DashboardActions 
                 onStartTournament={handleStartTournament}
                 onViewTournament={handleViewTournament}

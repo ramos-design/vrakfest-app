@@ -23,20 +23,20 @@ function ActionCard({ icon: Icon, label, isActive = false, onClick, isStartButto
 
   return (
     <Card 
-      className={`p-6 cursor-pointer border-0 transition-all duration-300 ease-out transform hover:scale-105 ${getCardStyles()}`}
+      className={`p-3 md:p-6 cursor-pointer border-0 transition-all duration-300 ease-out transform hover:scale-105 ${getCardStyles()}`}
       onClick={onClick}
     >
-      <div className="flex flex-col items-center gap-3">
-        <div className={`w-12 h-12 rounded-lg flex items-center justify-center transition-all duration-300 ${
+      <div className="flex flex-col items-center gap-2 md:gap-3">
+        <div className={`w-8 h-8 md:w-12 md:h-12 rounded-lg flex items-center justify-center transition-all duration-300 ${
           isStartButton 
             ? 'bg-white/20' 
             : isActive 
               ? 'bg-racing-black' 
               : 'bg-white/20 group-hover:bg-racing-black/10'
         }`}>
-          <Icon className={`h-6 w-6 transition-colors duration-300 text-white`} />
+          <Icon className={`h-4 w-4 md:h-6 md:w-6 transition-colors duration-300 text-white`} />
         </div>
-        <span className={`font-medium text-sm transition-colors duration-300 ${
+        <span className={`font-medium text-xs md:text-sm text-center transition-colors duration-300 ${
           isStartButton ? 'text-white' : isActive ? 'text-racing-black' : 'text-white'
         }`}>{label}</span>
       </div>
@@ -65,7 +65,7 @@ export function DashboardActions({ onStartTournament, onViewControl, onViewTourn
   ];
 
   return (
-    <div className="grid grid-cols-6 gap-4">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 md:gap-4">
       {actions.map((action, index) => (
         <ActionCard
           key={index}
