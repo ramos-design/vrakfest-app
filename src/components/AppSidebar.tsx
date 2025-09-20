@@ -89,7 +89,7 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
                     <Dialog open={isEventSettingsOpen} onOpenChange={setIsEventSettingsOpen}>
                       <DialogTrigger asChild>
                         <SidebarMenuButton
-                          className={`w-full ${isCollapsed ? 'justify-center p-3 mx-1' : 'justify-start gap-2 md:gap-3 px-2 md:px-3'} rounded-lg py-2 transition-racing text-sm ${
+                          className={`${isCollapsed ? 'mx-auto h-10 w-10 justify-center p-0' : 'w-full justify-start gap-2 md:gap-3 px-2 md:px-3 py-2'} rounded-lg transition-racing text-sm ${
                             activeTab === item.id
                               ? 'racing-gradient shadow-racing text-racing-black font-medium'
                               : 'text-muted-foreground hover:bg-muted/50 hover:text-racing-white'
@@ -144,7 +144,7 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
                   ) : (
                     <SidebarMenuButton
                       onClick={() => onTabChange(item.id)}
-                      className={`w-full ${isCollapsed ? 'justify-center p-3 mx-1' : 'justify-start gap-2 md:gap-3 px-2 md:px-3'} rounded-lg py-2 transition-racing text-sm ${
+                      className={`${isCollapsed ? 'mx-auto h-10 w-10 justify-center p-0' : 'w-full justify-start gap-2 md:gap-3 px-2 md:px-3 py-2'} rounded-lg transition-racing text-sm ${
                         activeTab === item.id
                           ? 'racing-gradient shadow-racing text-racing-black font-medium'
                           : 'text-muted-foreground hover:bg-muted/50 hover:text-racing-white'
