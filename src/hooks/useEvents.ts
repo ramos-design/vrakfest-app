@@ -12,50 +12,64 @@ const mockParticipants: EventParticipant[] = [
 export function useEvents() {
   const [events, setEvents] = useState<Event[]>([
     {
-      id: '1',
-      name: 'VrakFest Championship 2024',
-      date: '2024-12-31',
-      participantCount: 24,
+      id: '2026-1',
+      name: 'VrakFest Ostrava',
+      date: '2026-04-04',
+      participantCount: 80,
       eventTypes: ['hlavni-zavody', 'demolition-derby'],
-      startTime: '18:00',
-      description: 'Největší závodní událost roku',
-      schedule: '18:00 - Registrace\n19:00 - Rozjezdy\n20:30 - Finálové jízdy\n22:00 - Vyhlášení výsledků',
+      startTime: '09:30',
+      location: 'Vřesinská strž',
+      description: 'První závod sezóny 2026 na legendární Vřesinské strži. Kvalifikační jízdy, eliminace a totální destrukce v závěrečném Demolition Derby.',
+      schedule: '09:30 - Start Vrakfest Race\n15:30 - Semifinále Vrakfest Race\n16:00 - Finále Vrakfest Race\n17:30 - Demolition Derby\n18:00 - Vyhlášení výsledků',
       status: 'upcoming',
-      prize: '50,000 Kč',
-      participants: mockParticipants
-    },
-    {
-      id: '2',
-      name: 'Spring Racing Cup',
-      date: '2025-03-15',
-      participantCount: 18,
-      eventTypes: ['hlavni-zavody'],
-      startTime: '16:30',
-      description: 'Jarní pohár v závodech',
-      schedule: '16:30 - Registrace\n17:30 - Závody\n19:00 - Vyhlášení',
-      status: 'upcoming',
-      prize: '30,000 Kč',
-      participants: mockParticipants.slice(0, 3)
-    },
-    {
-      id: '3',
-      name: 'Winter Championship 2023',
-      date: '2023-12-20',
-      participantCount: 32,
-      eventTypes: ['hlavni-zavody'],
-      startTime: '19:00',
-      description: 'Zimní mistrovství',
-      schedule: 'Závod proběhl podle plánu',
-      status: 'completed',
-      winner: 'Jan Novák',
-      prize: '40,000 Kč',
+      prize: 'Trofej Vrakfest Champion 2026',
       participants: mockParticipants,
-      results: [
-        { participantId: '1', position: 1, points: 25, time: '2:45.123' },
-        { participantId: '2', position: 2, points: 18, time: '2:47.456' },
-        { participantId: '3', position: 3, points: 15, time: '2:48.789' },
-        { participantId: '4', position: 4, points: 12, time: '2:50.234' },
-      ]
+      imageUrl: '/events/championship.png'
+    },
+    {
+      id: '2026-2',
+      name: 'VrakFest Hrachovec',
+      date: '2026-06-27',
+      participantCount: 45,
+      eventTypes: ['hlavni-zavody'],
+      startTime: '10:00',
+      location: 'Areál Ekorema',
+      description: 'Letní závod v areálu Ekorema v Hrachovci. Připravte se na rychlou trať a skvělou atmosféru.',
+      schedule: '10:00 - Technické přejímky\n11:00 - Start rozjížděk\n15:00 - Hlavní závod\n17:00 - Vyhlášení',
+      status: 'upcoming',
+      prize: 'Pohár Ekorema',
+      participants: mockParticipants.slice(0, 3),
+      imageUrl: '/events/spring.png'
+    },
+    {
+      id: '2026-3',
+      name: 'VrakFest Překvapení',
+      date: '2026-08-22',
+      participantCount: 50,
+      eventTypes: ['hlavni-zavody'],
+      startTime: '10:00',
+      location: 'Nové místo',
+      description: 'Zcela nová lokalita pro letošní sezónu. Budete překvapeni profilem tratě i prostředím.',
+      schedule: 'Bude upřesněno před konáním akce.',
+      status: 'upcoming',
+      prize: 'Putovní pohár',
+      participants: mockParticipants.slice(0, 2),
+      imageUrl: '/events/winter.png'
+    },
+    {
+      id: '2026-4',
+      name: 'VrakFest Ostrava II.',
+      date: '2026-10-24',
+      participantCount: 80,
+      eventTypes: ['hlavni-zavody', 'demolition-derby'],
+      startTime: '09:30',
+      location: 'Vřesinská strž',
+      description: 'Závěrečný závod sezóny 2026. Rozhodující bitva o body do celkového pořadí a finální destrukce roku.',
+      schedule: '09:30 - Start programu\n14:00 - Finálové jízdy\n16:30 - Sezónní vyhlášení\n17:30 - Poslední derby roku',
+      status: 'upcoming',
+      prize: 'Celosezónní pohár',
+      participants: mockParticipants,
+      imageUrl: '/events/championship.png'
     }
   ]);
 
@@ -69,7 +83,7 @@ export function useEvents() {
   };
 
   const updateEvent = (id: string, eventData: Partial<Event>) => {
-    setEvents(prev => prev.map(event => 
+    setEvents(prev => prev.map(event =>
       event.id === id ? { ...event, ...eventData } : event
     ));
   };

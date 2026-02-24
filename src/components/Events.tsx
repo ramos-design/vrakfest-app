@@ -1,64 +1,31 @@
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Calendar, Clock, Trophy, Users, Edit, Trash2, Plus, FileText, Flag, Eye, Award, ArrowLeft } from 'lucide-react';
+import { Calendar, Clock, Trophy, Users, Flag, Eye, Award, ArrowLeft, MapPin, FileText } from 'lucide-react';
 import { useEvents } from '@/hooks/useEvents';
 import { useRacingTournament } from '@/hooks/useRacingTournament';
-import { EventForm } from '@/components/EventForm';
 import { Event, EventType, EVENT_TYPES, EventParticipant } from '@/types/events';
 import { Racer } from '@/types/racing';
 
 export function Events() {
-  const { getUpcomingEvents, getPastEvents, addEvent, updateEvent, deleteEvent } = useEvents();
+  const { getUpcomingEvents, getPastEvents } = useEvents();
   const { racers } = useRacingTournament();
-  const [showForm, setShowForm] = useState(false);
-  const [editingEvent, setEditingEvent] = useState<Event | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 
   const upcomingEvents = getUpcomingEvents();
   const pastEvents = getPastEvents();
 
-  const handleAddEvent = () => {
-    setEditingEvent(null);
-    setShowForm(true);
-  };
-
-  const handleEditEvent = (event: Event) => {
-    setEditingEvent(event);
-    setShowForm(true);
-  };
-
-  const handleDeleteEvent = (eventId: string) => {
-    if (window.confirm('Opravdu chcete smazat tuto událost?')) {
-      deleteEvent(eventId);
-    }
-  };
-
-  const handleSaveEvent = (eventData: Omit<Event, 'id'>) => {
-    if (editingEvent) {
-      updateEvent(editingEvent.id, eventData);
-    } else {
-      addEvent(eventData);
-    }
-    setShowForm(false);
-    setEditingEvent(null);
-  };
-
-  const handleCancelForm = () => {
-    setShowForm(false);
-    setEditingEvent(null);
-  };
-
   const getEventTypeLabel = (eventTypes: EventType[]) => {
-    return eventTypes.map(type => 
+    return eventTypes.map(type =>
       EVENT_TYPES.find(et => et.value === type)?.label || type
-    ).join(', ');
+    ).join(' • ');
   };
 
   const handleViewEventDetails = (event: Event) => {
     setSelectedEvent(event);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleBackToEvents = () => {
@@ -71,11 +38,9 @@ export function Events() {
 
   const getEventRacers = (event: Event): (EventParticipant | Racer)[] => {
     if (event.status === 'upcoming') {
-      // For upcoming events, show all active racers with current points
       return racers.filter(racer => racer.isActive);
     } else {
-      // For completed events, show only participants who actually participated
-      return event.participants;
+      return event.participants || [];
     }
   };
 
@@ -85,259 +50,221 @@ export function Events() {
       'ledna', 'února', 'března', 'dubna', 'května', 'června',
       'července', 'srpna', 'září', 'října', 'listopadu', 'prosince'
     ];
-    const day = date.getDate();
-    const month = months[date.getMonth()];
-    const year = date.getFullYear();
-    return `${day}. ${month} ${year}`;
+    return `${date.getDate()}. ${months[date.getMonth()]} ${date.getFullYear()}`;
   };
 
   const renderEventCard = (event: Event, isUpcoming: boolean) => (
-    <Card key={event.id} className={`racing-card ${isUpcoming ? 'border-racing-yellow/20' : 'border-racing-white/10'}`}>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div className="flex-1">
-            <CardTitle className={isUpcoming ? 'racing-gradient-text' : 'text-racing-white'}>
-              {event.name}
-            </CardTitle>
-            {event.description && (
-              <p className="text-sm text-muted-foreground mt-1">
-                {event.description}
-              </p>
-            )}
+    <div
+      key={event.id}
+      className="group relative bg-[#0a0a0a] border border-white/10 overflow-hidden hover:border-racing-yellow/40 transition-all duration-500 cursor-pointer"
+      onClick={() => handleViewEventDetails(event)}
+    >
+      {/* Background Image with Zoom effect */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src={event.imageUrl || '/placeholder-event.png'}
+          alt={event.name}
+          className="w-full h-full object-cover opacity-40 group-hover:scale-110 group-hover:opacity-60 transition-all duration-700"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/80 to-transparent"></div>
+      </div>
+
+      <div className="relative z-10 p-6 flex flex-col h-full min-h-[300px] justify-end">
+        <div className="absolute top-6 right-6">
+          <Badge
+            variant={isUpcoming ? 'secondary' : 'outline'}
+            className={`${isUpcoming
+              ? 'bg-racing-yellow text-black'
+              : 'border-white/20 text-white/60'
+              } font-tech uppercase text-[10px] tracking-widest px-3 py-1`}
+          >
+            {event.status === 'upcoming' ? 'NÁCHÁZEJÍCÍ' : 'UKONČENO'}
+          </Badge>
+        </div>
+
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 text-racing-yellow">
+            <Calendar className="h-4 w-4" />
+            <span className="font-tech text-xs tracking-wider uppercase font-bold">{formatDate(event.date)}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <Badge 
-              variant={isUpcoming ? 'secondary' : 'outline'} 
-              className={isUpcoming 
-                ? 'bg-racing-yellow/20 text-racing-yellow' 
-                : 'border-racing-white/20 text-racing-white'
-              }
-            >
-              {event.status === 'upcoming' ? 'Nadcházející' : 
-               event.status === 'completed' ? 'Dokončeno' : 'Zrušeno'}
-            </Badge>
-            <div className="flex gap-1">
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => handleEditEvent(event)}
-                className="h-8 w-8 p-0"
-              >
-                <Edit className="h-3 w-3" />
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => handleDeleteEvent(event.id)}
-                className="h-8 w-8 p-0 text-destructive hover:text-destructive"
-              >
-                <Trash2 className="h-3 w-3" />
-              </Button>
+
+          <h3 className="font-bebas text-4xl md:text-5xl text-white tracking-widest leading-none">
+            {event.name}
+          </h3>
+
+          <p className="text-white/60 font-tech text-sm line-clamp-2 max-w-lg mb-4">
+            {event.description}
+          </p>
+
+          <div className="flex flex-wrap items-center gap-y-2 gap-x-6 pt-4 border-t border-white/10">
+            <div className="flex items-center gap-2">
+              <Clock className="h-3 w-3 text-white/40" />
+              <span className="text-xs text-white/60 font-tech uppercase tracking-wide">{event.startTime}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Users className="h-3 w-3 text-white/40" />
+              <span className="text-xs text-white/60 font-tech uppercase tracking-wide">{event.participantCount} JEZDCŮ</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Trophy className="h-3 w-3 text-racing-yellow" />
+              <span className="text-xs text-racing-yellow font-tech uppercase tracking-wide">{event.prize || 'TROFEJ'}</span>
             </div>
           </div>
         </div>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="flex items-center gap-2">
-            <Calendar className={`h-4 w-4 ${isUpcoming ? 'text-racing-yellow' : 'text-racing-white/60'}`} />
-            <span className="text-sm text-muted-foreground">{formatDate(event.date)}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Clock className={`h-4 w-4 ${isUpcoming ? 'text-racing-yellow' : 'text-racing-white/60'}`} />
-            <span className="text-sm text-muted-foreground">{event.startTime}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Users className={`h-4 w-4 ${isUpcoming ? 'text-racing-yellow' : 'text-racing-white/60'}`} />
-            <span className="text-sm text-muted-foreground">{event.participantCount} účastníků</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Trophy className="h-4 w-4 text-racing-yellow" />
-            <span className="text-sm text-muted-foreground">
-              {event.winner || event.prize || 'Není stanoveno'}
-            </span>
-          </div>
-        </div>
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-muted/20">
-          <div className="flex items-center gap-2">
-            <Flag className={`h-4 w-4 ${isUpcoming ? 'text-racing-yellow' : 'text-racing-white/60'}`} />
-            <span className="text-sm text-muted-foreground">
-              {getEventTypeLabel(event.eventTypes)}
-            </span>
-          </div>
-          <div className="flex justify-end">
-            <Button 
-              size="sm" 
-              variant="outline" 
-              onClick={() => handleViewEventDetails(event)}
-              className="h-7 text-xs"
-            >
-              <Eye className="h-3 w-3 mr-1" />
-              Zobrazit detail
-            </Button>
-          </div>
-        </div>
-
-        {event.schedule && (
-          <div className="pt-2 border-t border-muted/20">
-            <h4 className="text-sm font-medium mb-1">Harmonogram:</h4>
-            <div className="text-sm text-muted-foreground whitespace-pre-line">
-              {event.schedule}
-            </div>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+      {/* Hover visual cue */}
+      <div className="absolute bottom-0 left-0 w-full h-1 bg-racing-yellow transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+    </div>
   );
 
   const renderEventDetail = (event: Event) => (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <Button 
-          variant="outline" 
-          onClick={handleBackToEvents}
-          className="h-10 w-10 p-0"
-        >
-          <ArrowLeft className="h-4 w-4" />
-        </Button>
-        <h1 className="text-3xl font-bold racing-gradient-text">{event.name}</h1>
+    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="relative h-[400px] md:h-[500px] w-full overflow-hidden border border-white/10">
+        <img
+          src={event.imageUrl || '/placeholder-event.png'}
+          alt={event.name}
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/60 to-transparent"></div>
+
+        <div className="absolute bottom-10 left-6 md:left-12 max-w-3xl">
+          <Button
+            variant="outline"
+            onClick={handleBackToEvents}
+            className="mb-8 border-white/20 text-white hover:bg-racing-yellow hover:text-black transition-all group"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
+            ZPĚT NA KALENDÁŘ
+          </Button>
+
+          <div className="flex items-center gap-3 mb-4">
+            <Badge className="bg-racing-yellow text-black font-tech text-[10px] tracking-widest px-3 py-1 uppercase">
+              {event.status === 'upcoming' ? 'V PŘÍPRAVĚ' : 'HISTORIE'}
+            </Badge>
+            <span className="text-white/40 font-tech text-xs tracking-widest uppercase">/ {getEventTypeLabel(event.eventTypes)}</span>
+          </div>
+
+          <h1 className="text-6xl md:text-8xl font-bebas text-white tracking-widest leading-none mb-6">
+            {event.name}
+          </h1>
+
+          <div className="flex flex-wrap items-center gap-6">
+            <div className="flex items-center gap-2">
+              <Calendar className="h-5 w-5 text-racing-yellow" />
+              <span className="font-tech text-sm text-white uppercase tracking-widest">{formatDate(event.date)}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Clock className="h-5 w-5 text-racing-yellow" />
+              <span className="font-tech text-sm text-white uppercase tracking-widest">{event.startTime}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <MapPin className="h-5 w-5 text-racing-yellow" />
+              <span className="font-tech text-sm text-white uppercase tracking-widest">{event.location || 'OSTRAVA - VŘESINSKÁ STRŽ'}</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <Card className="racing-card border-racing-yellow/20">
-        <CardHeader>
-          <CardTitle className="racing-gradient-text">{event.name}</CardTitle>
-          {event.description && (
-            <p className="text-muted-foreground">
-              {event.description}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        <div className="lg:col-span-2 space-y-12">
+          <section className="space-y-4">
+            <h2 className="font-bebas text-4xl text-white tracking-wider flex items-center gap-3">
+              <FileText className="h-6 w-6 text-racing-yellow" />
+              O UDÁLOSTI
+            </h2>
+            <p className="text-white/60 font-tech leading-relaxed border-l-2 border-racing-yellow/30 pl-6 py-2">
+              {event.description || "Tato událost přinese napínavé souboje, kde se utkají nejlepší jezdci z celého regionu. Přijďte zažít adrenalinovou atmosféru, kde jedinou jistotou je prach a zvuk motorů."}
             </p>
-          )}
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-racing-yellow" />
-              <span className="text-sm text-muted-foreground">{formatDate(event.date)}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-racing-yellow" />
-              <span className="text-sm text-muted-foreground">{event.startTime}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Users className="h-4 w-4 text-racing-yellow" />
-              <span className="text-sm text-muted-foreground">{event.participantCount} účastníků</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Trophy className="h-4 w-4 text-racing-yellow" />
-              <span className="text-sm text-muted-foreground">
-                {event.winner || event.prize || 'Není stanoveno'}
-              </span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 pt-2 border-t border-muted/20">
-            <Flag className="h-4 w-4 text-racing-yellow" />
-            <span className="text-sm text-muted-foreground">
-              {getEventTypeLabel(event.eventTypes)}
-            </span>
-          </div>
+          </section>
 
           {event.schedule && (
-            <div className="pt-2 border-t border-muted/20">
-              <h4 className="text-sm font-medium mb-1">Harmonogram:</h4>
-              <div className="text-sm text-muted-foreground whitespace-pre-line">
-                {event.schedule}
+            <section className="space-y-4">
+              <h2 className="font-bebas text-4xl text-white tracking-wider flex items-center gap-3">
+                <Clock className="h-6 w-6 text-racing-yellow" />
+                HARMONOGRAM
+              </h2>
+              <div className="bg-[#111] border border-white/5 p-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+                {event.schedule.split('\n').map((line, i) => (
+                  <div key={i} className="flex items-center gap-4 py-3 border-b border-white/5 last:border-0 hover:bg-white/5 transition-colors px-2">
+                    <span className="font-tech text-racing-yellow text-sm font-bold min-w-[60px]">{line.split(' - ')[0]}</span>
+                    <span className="font-tech text-white text-sm uppercase tracking-wider">{line.split(' - ')[1] || line}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Participants - More visual */}
+          <section className="space-y-4">
+            <h2 className="font-bebas text-4xl text-white tracking-wider flex items-center gap-3">
+              <Users className="h-6 w-6 text-racing-yellow" />
+              {event.status === 'upcoming' ? 'PŘIHLÁŠENÍ JEZDCI' : 'ÚČASTNÍCI'}
+            </h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              {getEventRacers(event).map((racer, idx) => (
+                <div key={racer.id} className="bg-[#111] border border-white/5 p-4 group hover:border-racing-yellow/30 transition-all text-center">
+                  <div className="w-12 h-12 bg-[#222] border border-white/10 mx-auto flex items-center justify-center font-bebas text-2xl text-racing-yellow mb-2 group-hover:bg-racing-yellow group-hover:text-black transition-colors">
+                    {'startNumber' in racer ? racer.startNumber : idx + 1}
+                  </div>
+                  <div className="font-tech text-[10px] text-white/40 uppercase tracking-widest mb-1">{racer.vehicleType}</div>
+                  <div className="font-bebas text-lg text-white group-hover:text-racing-yellow transition-colors">{racer.firstName} {racer.lastName}</div>
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
+
+        <div className="space-y-8">
+          {/* Action Card */}
+          <div className="bg-racing-yellow p-8">
+            <Trophy className="h-12 w-12 text-black mb-6" />
+            <h3 className="font-bebas text-4xl text-black mb-4 tracking-wider">ODTÁHNI SI VÍTĚZSTVÍ</h3>
+            <p className="text-black/70 font-tech text-sm mb-8 leading-relaxed">
+              Hlavní cena pro vítěze této události je stanovena na <span className="font-bold text-black">{event.prize || "Pohár Vrakfestu"}</span>.
+              Kdo ovládne Vřesinskou strž tentokrát?
+            </p>
+            <Button className="w-full bg-black text-white hover:bg-white hover:text-black font-bebas text-xl tracking-widest h-14 uppercase transition-all">
+              BODOVÉ POŘADÍ
+            </Button>
+          </div>
+
+          {/* Results Summary (if completed) */}
+          {event.status === 'completed' && event.results && (
+            <div className="bg-[#111] border border-white/5 p-8">
+              <h3 className="font-bebas text-3xl text-white mb-6 tracking-wider flex items-center gap-2">
+                <Award className="h-6 w-6 text-racing-yellow" />
+                VÝSLEDKY TOP 3
+              </h3>
+              <div className="space-y-6">
+                {event.results.slice(0, 3).map((result) => {
+                  const participant = getParticipantByResult(event.participants || [], result.participantId);
+                  const colors = [
+                    'text-racing-yellow', // 1st
+                    'text-gray-400',       // 2nd
+                    'text-amber-600'       // 3rd
+                  ];
+                  return (
+                    <div key={result.participantId} className="flex items-center gap-4 group">
+                      <div className={`font-bebas text-5xl ${colors[result.position - 1] || 'text-white/20'}`}>
+                        {result.position}.
+                      </div>
+                      <div>
+                        <div className="font-bebas text-xl text-white group-hover:text-racing-yellow transition-colors">
+                          {participant ? `${participant.firstName} ${participant.lastName}` : 'Neznámý'}
+                        </div>
+                        <div className="font-tech text-[10px] text-white/40 uppercase tracking-widest">
+                          {result.points} BODY • {result.time || "N/A"}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}
-
-          <div className="flex justify-center pt-4 border-t border-muted/20">
-            <Button variant="outline" className="h-12 min-w-[200px]">
-              <Trophy className="h-4 w-4 mr-2" />
-              Bodové pořadí
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Racers Table */}
-      <Card className="racing-card">
-        <CardHeader>
-          <CardTitle className="text-xl">
-            {event.status === 'upcoming' ? 'Přihlášení jezdci' : 'Účastníci'} ({getEventRacers(event).length})
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>#</TableHead>
-                <TableHead>Jméno</TableHead>
-                <TableHead>Vůz</TableHead>
-                <TableHead>Kategorie</TableHead>
-                <TableHead>Body</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {getEventRacers(event).map((racer) => (
-                <TableRow key={racer.id}>
-                  <TableCell>{'startNumber' in racer ? racer.startNumber : '-'}</TableCell>
-                  <TableCell>{racer.firstName} {racer.lastName}</TableCell>
-                  <TableCell>{racer.vehicleType}</TableCell>
-                  <TableCell>{racer.category}</TableCell>
-                  <TableCell>
-                    {('points' in racer) ? racer.points : '-'}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-
-      {/* Results Table (only for completed events) */}
-      {event.status === 'completed' && event.results && (
-        <Card className="racing-card">
-          <CardHeader>
-            <CardTitle className="text-xl flex items-center gap-2">
-              <Award className="h-5 w-5 text-racing-yellow" />
-              Výsledky
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Pozice</TableHead>
-                  <TableHead>Jezdec</TableHead>
-                  <TableHead>Body</TableHead>
-                  <TableHead>Čas</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {event.results.map((result) => {
-                  const participant = getParticipantByResult(event.participants, result.participantId);
-                  return (
-                    <TableRow key={result.participantId}>
-                      <TableCell className="font-medium">
-                        {result.position === 1 && <span className="text-racing-yellow mr-2">🏆</span>}
-                        {result.position === 2 && <span className="text-gray-400 mr-2">🥈</span>}
-                        {result.position === 3 && <span className="text-amber-600 mr-2">🥉</span>}
-                        {result.position}
-                      </TableCell>
-                      <TableCell>
-                        {participant ? `${participant.firstName} ${participant.lastName}` : 'Neznámý'}
-                      </TableCell>
-                      <TableCell>{result.points}</TableCell>
-                      <TableCell>{result.time || '-'}</TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      )}
+        </div>
+      </div>
     </div>
   );
 
@@ -345,54 +272,63 @@ export function Events() {
     return renderEventDetail(selectedEvent);
   }
 
-  if (showForm) {
-    return (
-      <EventForm
-        event={editingEvent || undefined}
-        onSave={handleSaveEvent}
-        onCancel={handleCancelForm}
-      />
-    );
-  }
-
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold racing-gradient-text">Správa událostí</h1>
-        <Button onClick={handleAddEvent} className="racing-button">
-          <Plus className="h-4 w-4 mr-2" />
-          Přidat událost
-        </Button>
-      </div>
-
-      <div>
-        <h2 className="text-2xl font-bold racing-gradient-text mb-4">Nadcházející události</h2>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {upcomingEvents.length > 0 ? (
-            upcomingEvents.map((event) => renderEventCard(event, true))
-          ) : (
-            <Card className="racing-card border-racing-yellow/20">
-              <CardContent className="text-center py-8">
-                <p className="text-muted-foreground">Žádné nadcházející události</p>
-              </CardContent>
-            </Card>
-          )}
+    <div className="space-y-12 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/5 pb-8">
+        <div>
+          <h1 className="font-bebas text-7xl md:text-8xl text-white tracking-wider leading-none">
+            KALENDÁŘ <span className="racing-gradient-text">AKCÍ</span>
+          </h1>
+          <p className="text-white/40 font-tech uppercase text-xs tracking-[0.3em] mt-4">
+            Kompletní přehled sezóny • Vřesinská strž
+          </p>
+        </div>
+        <div className="flex items-center gap-4 bg-white/5 border border-white/10 px-6 py-4">
+          <div className="text-right">
+            <span className="text-white/20 font-tech text-[10px] block uppercase">Celkem akcí</span>
+            <span className="font-bebas text-white text-3xl">{upcomingEvents.length + pastEvents.length}</span>
+          </div>
+          <div className="w-px h-10 bg-white/10 mx-2"></div>
+          <div>
+            <span className="text-racing-yellow font-tech text-[10px] block uppercase font-bold">Nejbližší</span>
+            <span className="font-bebas text-white text-3xl">{upcomingEvents[0]?.name.split(' ')[0] || "---"}</span>
+          </div>
         </div>
       </div>
 
-      <div>
-        <h2 className="text-2xl font-bold racing-gradient-text mb-4">Proběhlé události</h2>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {pastEvents.length > 0 ? (
-            pastEvents.map((event) => renderEventCard(event, false))
-          ) : (
-            <Card className="racing-card border-racing-white/10">
-              <CardContent className="text-center py-8">
-                <p className="text-muted-foreground">Žádné proběhlé události</p>
-              </CardContent>
-            </Card>
-          )}
-        </div>
+      <div className="space-y-16">
+        {/* Upcoming Section */}
+        <section className="space-y-8">
+          <div className="flex items-center gap-4">
+            <h2 className="font-bebas text-4xl text-white tracking-widest shrink-0">NADCHÁZEJÍCÍ UDÁLOSTI</h2>
+            <div className="h-px bg-white/10 w-full"></div>
+          </div>
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+            {upcomingEvents.length > 0 ? (
+              upcomingEvents.map((event) => renderEventCard(event, true))
+            ) : (
+              <div className="bg-[#111] border border-white/5 p-12 text-center col-span-2">
+                <Calendar className="h-12 w-12 text-white/10 mx-auto mb-4" />
+                <p className="text-white/40 font-tech uppercase tracking-widest">Momentálně nejsou plánovány žádné akce</p>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Past Section */}
+        <section className="space-y-8 opacity-80 hover:opacity-100 transition-opacity duration-500">
+          <div className="flex items-center gap-4">
+            <h2 className="font-bebas text-4xl text-white/40 tracking-widest shrink-0 uppercase">HISTORIE ZÁVODŮ</h2>
+            <div className="h-px bg-white/5 w-full"></div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {pastEvents.length > 0 ? (
+              pastEvents.map((event) => renderEventCard(event, false))
+            ) : (
+              <p className="text-white/20 font-tech uppercase tracking-widest px-6">První závody na nás teprve čekají</p>
+            )}
+          </div>
+        </section>
       </div>
     </div>
   );

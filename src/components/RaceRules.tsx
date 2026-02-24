@@ -4,8 +4,8 @@ import { Card } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { 
-  Bold, Italic, Underline, Type, Edit3, Save, Eye, 
+import {
+  Bold, Italic, Underline, Type, Edit3, Save, Eye,
   AlignLeft, AlignCenter, AlignRight, AlignJustify,
   List, ListOrdered, Undo, Redo, Palette, FileText
 } from 'lucide-react';
@@ -43,18 +43,60 @@ export function RaceRules() {
           id: '1',
           type: 'h1',
           content: 'Pravidla závodu VrakFest',
-          style: { bold: true, italic: false, underline: false, color: '#FFD700', fontSize: 'large', textAlign: 'center' }
+          style: { bold: true, italic: false, underline: false, color: '#FFD700', fontSize: 'x-large', textAlign: 'center' }
         },
         {
           id: '2',
           type: 'h2',
-          content: 'Obecná pravidla',
-          style: { bold: true, italic: false, underline: false, color: '#FFFFFF', fontSize: 'medium', textAlign: 'left' }
+          content: 'Obecná pravidla a podmínky účasti',
+          style: { bold: true, italic: false, underline: false, color: '#FFFFFF', fontSize: 'large', textAlign: 'left' }
         },
         {
           id: '3',
           type: 'paragraph',
-          content: 'Všichni účastníci musí dodržovat stanovená pravidla během celého průběhu závodu.',
+          content: '• Každý účastník musí být starší 18 let a vlastnit platný řidičský průkaz.',
+          style: { bold: false, italic: false, underline: false, color: '#FFFFFF', fontSize: 'medium', textAlign: 'left' }
+        },
+        {
+          id: '4',
+          type: 'paragraph',
+          content: '• Narážení do dveří řidiče je přísně zakázáno a trestá se okamžitou diskvalifikací. Dveře řidiče musí být označeny výrazným křížem (X).',
+          style: { bold: false, italic: false, underline: false, color: '#FFFFFF', fontSize: 'medium', textAlign: 'left' }
+        },
+        {
+          id: '5',
+          type: 'paragraph',
+          content: '• Závodník musí mít helmu, pevné boty, dlouhé kalhoty a reflexní vestu. Doporučuje se nehořlavé oblečení.',
+          style: { bold: false, italic: false, underline: false, color: '#FFFFFF', fontSize: 'medium', textAlign: 'left' }
+        },
+        {
+          id: '6',
+          type: 'h2',
+          content: 'Technické podmínky vozidel',
+          style: { bold: true, italic: false, underline: false, color: '#FFFFFF', fontSize: 'large', textAlign: 'left' }
+        },
+        {
+          id: '7',
+          type: 'paragraph',
+          content: '• Do závodu jsou připuštěna vozinka do výšky VW Sharan. Větší vozy musí být sníženy úpravou podvozku.',
+          style: { bold: false, italic: false, underline: false, color: '#FFFFFF', fontSize: 'medium', textAlign: 'left' }
+        },
+        {
+          id: '8',
+          type: 'paragraph',
+          content: '• Z chladicího systému musí být vypuštěn fridex a nahrazen čistou vodou z ekologických důvodů.',
+          style: { bold: false, italic: false, underline: false, color: '#FFFFFF', fontSize: 'medium', textAlign: 'left' }
+        },
+        {
+          id: '9',
+          type: 'paragraph',
+          content: '• Je přísně zakázáno vyztužovat karoserii betonem. Výztuhy kolejnicemi nebo ráfky jsou povoleny mimo kategorii Hobby.',
+          style: { bold: false, italic: false, underline: false, color: '#FFFFFF', fontSize: 'medium', textAlign: 'left' }
+        },
+        {
+          id: '10',
+          type: 'paragraph',
+          content: '• Vozidla na plyn (LPG/CNG) se závodu nesmí účastnit.',
           style: { bold: false, italic: false, underline: false, color: '#FFFFFF', fontSize: 'medium', textAlign: 'left' }
         }
       ]);
@@ -85,8 +127,8 @@ export function RaceRules() {
   };
 
   const updateBlockStyle = (id: string, styleUpdates: Partial<RuleBlock['style']>) => {
-    setRules(rules.map(rule => 
-      rule.id === id 
+    setRules(rules.map(rule =>
+      rule.id === id
         ? { ...rule, style: { ...rule.style, ...styleUpdates } }
         : rule
     ));
@@ -100,25 +142,22 @@ export function RaceRules() {
     const baseStyles = "transition-all duration-200 px-2 py-1";
     const sizeStyles = {
       small: "text-sm",
-      medium: "text-base", 
+      medium: "text-base",
       large: "text-lg",
       'x-large': "text-xl"
     };
-    
+
     const alignStyles = {
       left: "text-left",
-      center: "text-center", 
+      center: "text-center",
       right: "text-right",
       justify: "text-justify"
     };
-    
-    return `${baseStyles} ${sizeStyles[block.style.fontSize]} ${alignStyles[block.style.textAlign]} ${
-      block.style.bold ? 'font-bold' : 'font-normal'
-    } ${
-      block.style.italic ? 'italic' : ''
-    } ${
-      block.style.underline ? 'underline' : ''
-    }`;
+
+    return `${baseStyles} ${sizeStyles[block.style.fontSize]} ${alignStyles[block.style.textAlign]} ${block.style.bold ? 'font-bold' : 'font-normal'
+      } ${block.style.italic ? 'italic' : ''
+      } ${block.style.underline ? 'underline' : ''
+      }`;
   };
 
   const getHeadingStyles = (type: string) => {
@@ -176,14 +215,14 @@ export function RaceRules() {
                 <Type className="w-4 h-4" />
                 Nový blok
               </Button>
-              
+
               <Separator orientation="vertical" className="h-6" />
-              
+
               {selectedBlock && (
                 <>
                   <Select
                     value={selectedBlock.type}
-                    onValueChange={(value: RuleBlock['type']) => 
+                    onValueChange={(value: RuleBlock['type']) =>
                       updateBlock(selectedBlockId!, { type: value })
                     }
                   >
@@ -199,7 +238,7 @@ export function RaceRules() {
                       <SelectItem value="ordered-list">Číslovaný seznam</SelectItem>
                     </SelectContent>
                   </Select>
-                  
+
                   <Separator orientation="vertical" className="h-6" />
                 </>
               )}
@@ -213,8 +252,8 @@ export function RaceRules() {
                   <Button
                     size="sm"
                     variant={selectedBlock.style.bold ? "default" : "outline"}
-                    onClick={() => updateBlockStyle(selectedBlockId!, { 
-                      bold: !selectedBlock.style.bold 
+                    onClick={() => updateBlockStyle(selectedBlockId!, {
+                      bold: !selectedBlock.style.bold
                     })}
                   >
                     <Bold className="w-4 h-4" />
@@ -222,8 +261,8 @@ export function RaceRules() {
                   <Button
                     size="sm"
                     variant={selectedBlock.style.italic ? "default" : "outline"}
-                    onClick={() => updateBlockStyle(selectedBlockId!, { 
-                      italic: !selectedBlock.style.italic 
+                    onClick={() => updateBlockStyle(selectedBlockId!, {
+                      italic: !selectedBlock.style.italic
                     })}
                   >
                     <Italic className="w-4 h-4" />
@@ -231,20 +270,20 @@ export function RaceRules() {
                   <Button
                     size="sm"
                     variant={selectedBlock.style.underline ? "default" : "outline"}
-                    onClick={() => updateBlockStyle(selectedBlockId!, { 
-                      underline: !selectedBlock.style.underline 
+                    onClick={() => updateBlockStyle(selectedBlockId!, {
+                      underline: !selectedBlock.style.underline
                     })}
                   >
                     <Underline className="w-4 h-4" />
                   </Button>
                 </div>
-                
+
                 <Separator orientation="vertical" className="h-6" />
-                
+
                 {/* Font size */}
                 <Select
                   value={selectedBlock.style.fontSize}
-                  onValueChange={(value: 'small' | 'medium' | 'large' | 'x-large') => 
+                  onValueChange={(value: 'small' | 'medium' | 'large' | 'x-large') =>
                     updateBlockStyle(selectedBlockId!, { fontSize: value })
                   }
                 >
@@ -258,9 +297,9 @@ export function RaceRules() {
                     <SelectItem value="x-large">16pt</SelectItem>
                   </SelectContent>
                 </Select>
-                
+
                 <Separator orientation="vertical" className="h-6" />
-                
+
                 {/* Text alignment */}
                 <div className="flex gap-1">
                   <Button
@@ -292,9 +331,9 @@ export function RaceRules() {
                     <AlignJustify className="w-4 h-4" />
                   </Button>
                 </div>
-                
+
                 <Separator orientation="vertical" className="h-6" />
-                
+
                 {/* Color picker */}
                 <div className="flex items-center gap-2">
                   <Palette className="w-4 h-4 text-muted-foreground" />
@@ -321,10 +360,9 @@ export function RaceRules() {
               {rules.map((block) => (
                 <div key={block.id} className="group relative">
                   {isEditing ? (
-                    <div 
-                      className={`relative border-2 border-transparent hover:border-primary/20 rounded-lg transition-colors ${
-                        selectedBlockId === block.id ? 'border-primary/40 bg-primary/5' : ''
-                      }`}
+                    <div
+                      className={`relative border-2 border-transparent hover:border-primary/20 rounded-lg transition-colors ${selectedBlockId === block.id ? 'border-primary/40 bg-primary/5' : ''
+                        }`}
                     >
                       {/* Block controls */}
                       <div className="absolute -left-12 top-0 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -339,14 +377,14 @@ export function RaceRules() {
                           </Button>
                         </div>
                       </div>
-                      
+
                       <Textarea
                         value={block.content}
                         onChange={(e) => updateBlock(block.id, { content: e.target.value })}
                         onClick={() => setSelectedBlockId(block.id)}
                         className="min-h-[80px] border-none bg-transparent resize-none focus:ring-0 p-3"
                         placeholder="Začněte psát..."
-                        style={{ 
+                        style={{
                           color: block.style.color,
                           fontWeight: block.style.bold ? 'bold' : 'normal',
                           fontStyle: block.style.italic ? 'italic' : 'normal',
@@ -354,7 +392,7 @@ export function RaceRules() {
                           textAlign: block.style.textAlign,
                           fontSize: {
                             'small': '14px',
-                            'medium': '16px', 
+                            'medium': '16px',
                             'large': '18px',
                             'x-large': '20px'
                           }[block.style.fontSize],
@@ -363,9 +401,9 @@ export function RaceRules() {
                       />
                     </div>
                   ) : (
-                    <div 
+                    <div
                       className={`${getHeadingStyles(block.type)} ${getBlockStyles(block)}`}
-                      style={{ 
+                      style={{
                         color: block.style.color,
                         backgroundColor: block.style.backgroundColor || 'transparent'
                       }}

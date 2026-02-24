@@ -21,6 +21,8 @@ export default {
 			fontFamily: {
 				sans: ['Inter', 'system-ui', 'sans-serif'],
 				mono: ['JetBrains Mono', 'Monaco', 'Consolas', 'monospace'],
+				bebas: ['"Bebas Neue"', 'sans-serif'],
+				tech: ['"Space Mono"', 'monospace'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
@@ -67,13 +69,23 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				racing: {
-					yellow: 'hsl(var(--racing-yellow))',
+					yellow: '#F4CE14',
 					gold: 'hsl(var(--racing-gold))',
-					black: 'hsl(var(--racing-black))',
-					white: 'hsl(var(--racing-white))',
+					black: '#111111',
+					white: '#e0e0e0',
 					green: 'hsl(var(--category-small))',
 					blue: 'hsl(var(--category-large))',
-					purple: 'hsl(var(--category-women))'
+					purple: 'hsl(var(--category-women))',
+					ds: {
+						primary: '#F4CE14',
+						accent: '#ff4d00',
+						dark: '#111111',
+						darker: '#0a0a0a',
+						card: '#1a1a1a',
+						text: '#e0e0e0',
+						muted: '#888888',
+						border: '#333333'
+					}
 				}
 			},
 			borderRadius: {

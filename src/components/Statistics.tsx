@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
@@ -12,23 +12,24 @@ interface StatisticsProps {
   tournament: Tournament;
 }
 
-export const Statistics = ({ racers, tournament }: StatisticsProps) => {
+export const Statistics = React.memo(({ racers, tournament }: StatisticsProps) => {
   const [selectedView, setSelectedView] = React.useState<'current-tournament' | 'overall-overview' | 'overall-top' | 'historical'>('current-tournament');
-  const activeRacers = racers.filter(r => r.isActive);
+
+  const activeRacers = useMemo(() => racers.filter(r => r.isActive), [racers]);
 
   // Calculate tournament points (points gained only from current tournament)
-  const getTournamentPoints = (racerId: string): number => {
+  const getTournamentPoints = useCallback((racerId: string): number => {
     if (!tournament || !tournament.groups) return 0;
-    
+
     return tournament.groups.reduce((totalPoints, group) => {
       if (!group.results || !group.isCompleted) return totalPoints;
-      
+
       const result = group.results.find(r => r.racerId === racerId);
       return totalPoints + (result ? result.points : 0);
     }, 0);
-  };
+  }, [tournament]);
 
-  const getTournamentRacersByCategory = (category: RacerCategory) => {
+  const getTournamentRacersByCategory = useCallback((category: RacerCategory) => {
     return activeRacers
       .filter(r => r.category === category)
       .map(racer => ({
@@ -36,12 +37,14 @@ export const Statistics = ({ racers, tournament }: StatisticsProps) => {
         tournamentPoints: getTournamentPoints(racer.id)
       }))
       .sort((a, b) => b.tournamentPoints - a.tournamentPoints);
-  };
+  }, [activeRacers, getTournamentPoints]);
 
   // For overall views, use ALL racers (not just active ones) to show historical data
-  const overallTop = racers
-    .sort((a, b) => b.points - a.points)
-    .slice(0, 10);
+  const overallTop = useMemo(() => {
+    return [...racers]
+      .sort((a, b) => b.points - a.points)
+      .slice(0, 10);
+  }, [racers]);
 
   const renderCurrentTournament = () => (
     <div className="mt-6">
@@ -74,10 +77,9 @@ export const Statistics = ({ racers, tournament }: StatisticsProps) => {
                         <TableCell>
                           <div className="flex items-center">
                             {index < 3 && (
-                              <Trophy className={`w-4 h-4 mr-1 ${
-                                index === 0 ? 'text-yellow-500' : 
+                              <Trophy className={`w-4 h-4 mr-1 ${index === 0 ? 'text-yellow-500' :
                                 index === 1 ? 'text-gray-400' : 'text-amber-600'
-                              }`} />
+                                }`} />
                             )}
                             <span className="font-mono font-bold">{index + 1}</span>
                           </div>
@@ -145,10 +147,9 @@ export const Statistics = ({ racers, tournament }: StatisticsProps) => {
                         <TableCell>
                           <div className="flex items-center">
                             {index < 3 && (
-                              <Trophy className={`w-4 h-4 mr-1 ${
-                                index === 0 ? 'text-yellow-500' : 
+                              <Trophy className={`w-4 h-4 mr-1 ${index === 0 ? 'text-yellow-500' :
                                 index === 1 ? 'text-gray-400' : 'text-amber-600'
-                              }`} />
+                                }`} />
                             )}
                             <span className="font-mono font-bold">{index + 1}</span>
                           </div>
@@ -202,10 +203,9 @@ export const Statistics = ({ racers, tournament }: StatisticsProps) => {
               <TableCell>
                 <div className="flex items-center">
                   {index < 3 && (
-                    <Trophy className={`w-4 h-4 mr-1 ${
-                      index === 0 ? 'text-yellow-500' : 
+                    <Trophy className={`w-4 h-4 mr-1 ${index === 0 ? 'text-yellow-500' :
                       index === 1 ? 'text-gray-400' : 'text-amber-600'
-                    }`} />
+                      }`} />
                   )}
                   <span className="font-mono font-bold">{index + 1}</span>
                 </div>
@@ -250,10 +250,9 @@ export const Statistics = ({ racers, tournament }: StatisticsProps) => {
       {/* Action Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Current Tournament Card */}
-        <Card 
-          className={`shadow-card cursor-pointer hover:shadow-lg transition-all duration-200 border-primary/20 hover:border-primary/40 ${
-            selectedView === 'current-tournament' ? 'ring-2 ring-primary bg-primary/5' : ''
-          }`}
+        <Card
+          className={`shadow-card cursor-pointer hover:shadow-lg transition-all duration-200 border-primary/20 hover:border-primary/40 ${selectedView === 'current-tournament' ? 'ring-2 ring-primary bg-primary/5' : ''
+            }`}
           onClick={() => setSelectedView('current-tournament')}
         >
           <CardContent className="p-6">
@@ -268,10 +267,9 @@ export const Statistics = ({ racers, tournament }: StatisticsProps) => {
         </Card>
 
         {/* Overall Overview Card */}
-        <Card 
-          className={`shadow-card cursor-pointer hover:shadow-lg transition-all duration-200 border-primary/20 hover:border-primary/40 ${
-            selectedView === 'overall-overview' ? 'ring-2 ring-primary bg-primary/5' : ''
-          }`}
+        <Card
+          className={`shadow-card cursor-pointer hover:shadow-lg transition-all duration-200 border-primary/20 hover:border-primary/40 ${selectedView === 'overall-overview' ? 'ring-2 ring-primary bg-primary/5' : ''
+            }`}
           onClick={() => setSelectedView('overall-overview')}
         >
           <CardContent className="p-6">
@@ -286,10 +284,9 @@ export const Statistics = ({ racers, tournament }: StatisticsProps) => {
         </Card>
 
         {/* Overall Top Card */}
-        <Card 
-          className={`shadow-card cursor-pointer hover:shadow-lg transition-all duration-200 border-primary/20 hover:border-primary/40 ${
-            selectedView === 'overall-top' ? 'ring-2 ring-primary bg-primary/5' : ''
-          }`}
+        <Card
+          className={`shadow-card cursor-pointer hover:shadow-lg transition-all duration-200 border-primary/20 hover:border-primary/40 ${selectedView === 'overall-top' ? 'ring-2 ring-primary bg-primary/5' : ''
+            }`}
           onClick={() => setSelectedView('overall-top')}
         >
           <CardContent className="p-6">
@@ -304,10 +301,9 @@ export const Statistics = ({ racers, tournament }: StatisticsProps) => {
         </Card>
 
         {/* Historical Events Card */}
-        <Card 
-          className={`shadow-card cursor-pointer hover:shadow-lg transition-all duration-200 border-primary/20 hover:border-primary/40 ${
-            selectedView === 'historical' ? 'ring-2 ring-primary bg-primary/5' : ''
-          }`}
+        <Card
+          className={`shadow-card cursor-pointer hover:shadow-lg transition-all duration-200 border-primary/20 hover:border-primary/40 ${selectedView === 'historical' ? 'ring-2 ring-primary bg-primary/5' : ''
+            }`}
           onClick={() => setSelectedView('historical')}
         >
           <CardContent className="p-6">
@@ -329,4 +325,4 @@ export const Statistics = ({ racers, tournament }: StatisticsProps) => {
       {selectedView === 'historical' && renderHistorical()}
     </div>
   );
-};
+});

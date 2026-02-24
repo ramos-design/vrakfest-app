@@ -1,18 +1,40 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Racer, Tournament, RaceGroup, RaceResult, RacerCategory } from '@/types/racing';
 import { createGroups, shouldAdvanceRacer, categories, generateRealRacers } from '@/utils/racingUtils';
 import { TournamentSettings } from '@/types/tournamentSettings';
 
 export const useRacingTournament = () => {
-  const [racers, setRacers] = useState<Racer[]>(() => generateRealRacers());
-  const [demolitionDerbyRacers, setDemolitionDerbyRacers] = useState<string[]>([]);
-  const [tournamentSettings, setTournamentSettings] = useState<TournamentSettings | null>(null);
-  const [tournament, setTournament] = useState<Tournament>({
-    currentRound: 1,
-    currentCategory: 'do 1.6L',
-    groups: [],
-    isActive: false
+  const [racers, setRacers] = useState<Racer[]>(() => {
+    const generated = generateRealRacers();
+    // Activate first 24 racers for demo
+    return generated.map((r, i) => i < 24 ? { ...r, isActive: true } : r);
   });
+  const [demolitionDerbyRacers, setDemolitionDerbyRacers] = useState<string[]>([]);
+  const [tournamentSettings, setTournamentSettings] = useState<TournamentSettings | null>({
+    tournamentName: 'VrakFest Ostrava',
+    selectedTrack: 'ostrava',
+    racersPerGroup: 6,
+    numberOfQualifyingRounds: 3,
+    pointSystem: { minPoints: 0, maxPoints: 3 },
+    enabledCategories: ['do 1.6L', 'nad 1.6L', 'Ženy']
+  });
+
+  const [tournament, setTournament] = useState<Tournament>(() => {
+    const demoRacers = generateRealRacers().slice(0, 18).map(r => ({ ...r, isActive: true }));
+    const demoGroups = createGroups(demoRacers, 'do 1.6L', 1, 6);
+    // Mark first group as started for demo
+    if (demoGroups.length > 0) {
+      demoGroups[0].hasStarted = true;
+    }
+    return {
+      currentRound: 1,
+      currentCategory: 'do 1.6L',
+      groups: demoGroups,
+      isActive: true
+    };
+  });
+
+
 
   const addRacer = useCallback((newRacer: Omit<Racer, 'id'>) => {
     const id = `racer-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -20,7 +42,7 @@ export const useRacingTournament = () => {
   }, []);
 
   const updateRacer = useCallback((id: string, updatedRacer: Omit<Racer, 'id'>) => {
-    setRacers(prev => prev.map(racer => 
+    setRacers(prev => prev.map(racer =>
       racer.id === id ? { ...updatedRacer, id } : racer
     ));
   }, []);
@@ -30,13 +52,13 @@ export const useRacingTournament = () => {
   }, []);
 
   const deactivateRacer = useCallback((id: string) => {
-    setRacers(prev => prev.map(racer => 
+    setRacers(prev => prev.map(racer =>
       racer.id === id ? { ...racer, isActive: false } : racer
     ));
   }, []);
 
   const activateRacer = useCallback((id: string) => {
-    setRacers(prev => prev.map(racer => 
+    setRacers(prev => prev.map(racer =>
       racer.id === id ? { ...racer, isActive: true } : racer
     ));
   }, []);
@@ -53,15 +75,15 @@ export const useRacingTournament = () => {
     // Use settings if provided, otherwise use default behavior
     const racersPerGroup = settings?.racersPerGroup || 6;
     const enabledCategories = settings?.enabledCategories || categories;
-    
+
     // Filter racers by enabled categories
-    const filteredRacers = activeRacers.filter(r => 
+    const filteredRacers = activeRacers.filter(r =>
       enabledCategories.includes(r.category)
     );
-    
+
     if (filteredRacers.length === 0) return;
 
-    const firstCategory = enabledCategories.find(cat => 
+    const firstCategory = enabledCategories.find(cat =>
       filteredRacers.some(r => r.category === cat)
     ) || enabledCategories[0];
 
@@ -86,7 +108,7 @@ export const useRacingTournament = () => {
 
   const completeRace = useCallback((groupId: string, results: RaceResult[]) => {
     console.log('CompleteRace called with:', { groupId, results });
-    
+
     setRacers(prev => {
       const updatedRacers = prev.map(racer => {
         const result = results.find(r => r.racerId === racer.id);
@@ -99,19 +121,19 @@ export const useRacingTournament = () => {
         }
         return racer;
       });
-      
+
       console.log('Updated racers:', updatedRacers);
       return updatedRacers;
     });
 
     setTournament(prev => {
       console.log('Previous tournament state:', prev);
-      
+
       const updatedGroups = prev.groups.map(group => {
         if (group.id === groupId) {
-          return { 
-            ...group, 
-            isCompleted: true, 
+          return {
+            ...group,
+            isCompleted: true,
             results
           };
         }
@@ -119,11 +141,11 @@ export const useRacingTournament = () => {
       });
 
       // Check if all groups in current round and category are completed
-      const currentRoundGroups = updatedGroups.filter(g => 
+      const currentRoundGroups = updatedGroups.filter(g =>
         g.category === prev.currentCategory && g.round === prev.currentRound
       );
       const allCurrentRoundCompleted = currentRoundGroups.every(g => g.isCompleted);
-      
+
       let newRound = prev.currentRound;
       let newCategory = prev.currentCategory;
       let newGroups = updatedGroups;
@@ -132,17 +154,17 @@ export const useRacingTournament = () => {
         // All groups in current round completed, advance to next round
         newRound = prev.currentRound + 1;
         console.log(`All groups in round ${prev.currentRound} completed, advancing to round ${newRound}`);
-        
+
         // Get active racers for the next round
-        const activeRacersForNextRound = racers.filter(r => 
+        const activeRacersForNextRound = racers.filter(r =>
           r.isActive && r.category === prev.currentCategory
         );
-        
+
         if (activeRacersForNextRound.length > 0) {
           // Create new groups for the next round
           const nextRoundGroups = createGroups(
-            activeRacersForNextRound, 
-            prev.currentCategory, 
+            activeRacersForNextRound,
+            prev.currentCategory,
             newRound
           );
           newGroups = [...updatedGroups, ...nextRoundGroups];
@@ -150,13 +172,13 @@ export const useRacingTournament = () => {
         }
       }
 
-      const newTournamentState = { 
-        ...prev, 
+      const newTournamentState = {
+        ...prev,
         currentRound: newRound,
         currentCategory: newCategory,
         groups: newGroups
       };
-      
+
       console.log('New tournament state:', newTournamentState);
       return newTournamentState;
     });
@@ -182,7 +204,7 @@ export const useRacingTournament = () => {
 
   const addRacersToGroup = useCallback((groupId: string, racerIds: string[]) => {
     console.log('Adding racers to group:', { groupId, racerIds });
-    
+
     setTournament(prev => ({
       ...prev,
       groups: prev.groups.map(group => {
@@ -198,9 +220,9 @@ export const useRacingTournament = () => {
         return group;
       })
     }));
-    
+
     // Also mark these racers as active in the tournament
-    setRacers(prev => prev.map(racer => 
+    setRacers(prev => prev.map(racer =>
       racerIds.includes(racer.id) ? { ...racer, isActive: true } : racer
     ));
   }, [racers]);
@@ -217,6 +239,31 @@ export const useRacingTournament = () => {
   const removeFromDemolitionDerby = useCallback((racerId: string) => {
     setDemolitionDerbyRacers(prev => prev.filter(id => id !== racerId));
   }, []);
+
+  // Force demo activation if no racers are active
+  useEffect(() => {
+    const hasActiveRacers = racers.some(r => r.isActive);
+    if (!hasActiveRacers) {
+      setRacers(prev => prev.map((r, i) => i < 24 ? { ...r, isActive: true } : r));
+    }
+  }, [racers]);
+
+  // Force tournament activation if not active
+  useEffect(() => {
+    if (!tournament.isActive) {
+      const activeRacers = racers.filter(r => r.isActive);
+      if (activeRacers.length > 10) { // Only start if we have enough racers
+        startTournament({
+          tournamentName: 'VrakFest Ostrava',
+          selectedTrack: 'ostrava',
+          racersPerGroup: 6,
+          numberOfQualifyingRounds: 3,
+          pointSystem: { minPoints: 0, maxPoints: 3 },
+          enabledCategories: ['do 1.6L', 'nad 1.6L', 'Ženy']
+        });
+      }
+    }
+  }, [tournament.isActive, racers, startTournament]);
 
   return {
     racers,

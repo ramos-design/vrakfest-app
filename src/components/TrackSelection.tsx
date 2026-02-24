@@ -29,8 +29,8 @@ const tracks: TrackInfo[] = [
   },
   {
     id: 'branky',
-    name: 'Závodní okruh',
-    location: 'Branky na Moravě',
+    name: 'Vřesinská strž',
+    location: 'Ostrava',
     description: 'Rychlá trať s dlouhými rovinkami'
   }
 ];
@@ -55,12 +55,12 @@ const TrackMap = ({ track }: { track: TrackInfo }) => {
         {/* Background grass pattern */}
         <defs>
           <pattern id="grass" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
-            <rect width="4" height="4" fill="#86efac"/>
-            <circle cx="2" cy="2" r="0.5" fill="#22c55e" opacity="0.3"/>
+            <rect width="4" height="4" fill="#86efac" />
+            <circle cx="2" cy="2" r="0.5" fill="#22c55e" opacity="0.3" />
           </pattern>
         </defs>
-        <rect width="100%" height="100%" fill="url(#grass)"/>
-        
+        <rect width="100%" height="100%" fill="url(#grass)" />
+
         {/* Track path */}
         <path
           d={getTrackPath()}
@@ -69,7 +69,7 @@ const TrackMap = ({ track }: { track: TrackInfo }) => {
           strokeWidth="4"
           strokeDasharray="2,2"
         />
-        
+
         {/* Start/finish line */}
         <line
           x1="20"
@@ -79,7 +79,7 @@ const TrackMap = ({ track }: { track: TrackInfo }) => {
           stroke="#ef4444"
           strokeWidth="2"
         />
-        
+
         {/* Direction arrow */}
         <polygon
           points="35,35 45,40 35,45"
@@ -94,11 +94,10 @@ export const TrackSelection = ({ selectedTrack, onTrackSelect }: TrackSelectionP
   return (
     <div className="space-y-3">
       {tracks.map(track => (
-        <Card 
+        <Card
           key={track.id}
-          className={`cursor-pointer transition-all hover:shadow-md ${
-            selectedTrack === track.id ? 'ring-2 ring-primary bg-primary/5' : 'hover:bg-muted/30'
-          }`}
+          className={`cursor-pointer transition-all hover:shadow-md ${selectedTrack === track.id ? 'ring-2 ring-primary bg-primary/5' : 'hover:bg-muted/30'
+            }`}
           onClick={() => onTrackSelect(track.id)}
         >
           <CardContent className="p-4">

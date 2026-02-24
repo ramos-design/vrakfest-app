@@ -12,35 +12,29 @@ interface ActionCardProps {
 function ActionCard({ icon: Icon, label, isActive = false, onClick, isStartButton = false }: ActionCardProps) {
   const getCardStyles = () => {
     if (isStartButton) {
-      return isActive 
-        ? 'bg-green-600 text-white shadow-glow hover:bg-green-700' 
-        : 'bg-red-600 text-white shadow-glow hover:bg-red-700';
+      return isActive
+        ? 'bg-racing-yellow text-black shadow-[0_0_20px_theme(colors.racing.yellow)]'
+        : 'bg-transparent border border-racing-yellow text-racing-yellow hover:bg-racing-yellow hover:text-black hover:shadow-[0_0_20px_theme(colors.racing.yellow)]';
     }
-    return isActive 
-      ? 'bg-racing-yellow text-racing-black shadow-glow' 
-      : 'dark-gradient border border-white/20 text-white hover:bg-racing-yellow hover:text-racing-black hover:shadow-glow';
+    return isActive
+      ? 'bg-white text-black'
+      : 'bg-[#111] border border-white/10 text-white/70 hover:text-white hover:border-racing-yellow/50 hover:bg-[#1a1a1a]';
   };
 
   return (
-    <Card 
-      className={`p-3 md:p-6 cursor-pointer border-0 transition-all duration-300 ease-out transform hover:scale-105 ${getCardStyles()}`}
+    <div
+      className={`group relative p-4 cursor-pointer transition-all duration-300 transform hover:-translate-y-1 ${getCardStyles()}`}
       onClick={onClick}
     >
-      <div className="flex flex-col items-center gap-2 md:gap-3">
-        <div className={`w-8 h-8 md:w-12 md:h-12 rounded-lg flex items-center justify-center transition-all duration-300 ${
-          isStartButton 
-            ? 'bg-white/20' 
-            : isActive 
-              ? 'bg-racing-black' 
-              : 'bg-white/20 group-hover:bg-racing-black/10'
-        }`}>
-          <Icon className={`h-4 w-4 md:h-6 md:w-6 transition-colors duration-300 text-white`} />
-        </div>
-        <span className={`font-medium text-xs md:text-sm text-center transition-colors duration-300 ${
-          isStartButton ? 'text-white' : isActive ? 'text-racing-black' : 'text-white'
-        }`}>{label}</span>
+      <div className="flex flex-col items-center gap-2">
+        <Icon className={`h-6 w-6 mb-1 ${isStartButton ? '' : 'text-racing-yellow group-hover:text-white transition-colors'}`} />
+        <span className="font-bebas text-lg tracking-wide uppercase leading-none">{label}</span>
       </div>
-    </Card>
+
+      {/* Corner Accents */}
+      <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-racing-yellow/0 group-hover:border-racing-yellow transition-colors"></div>
+      <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-racing-yellow/0 group-hover:border-racing-yellow transition-colors"></div>
+    </div>
   );
 }
 
@@ -56,16 +50,16 @@ interface DashboardActionsProps {
 
 export function DashboardActions({ onStartTournament, onViewControl, onViewTournament, onViewCommunication, onViewStatistics, onViewMarketplace, isTournamentActive = false }: DashboardActionsProps) {
   const actions = [
-    { icon: isTournamentActive ? Search : Flag, label: isTournamentActive ? 'Průběh závodu' : 'Zahájit závod', isActive: isTournamentActive, onClick: isTournamentActive ? onViewTournament : onStartTournament, isStartButton: true },
-    { icon: Gauge, label: 'Kontrola', isActive: false, onClick: onViewControl },
-    { icon: BarChart3, label: 'Statistiky', isActive: false, onClick: onViewStatistics },
-    { icon: Car, label: 'Demolition derby', isActive: false },
-    { icon: MessageSquare, label: 'Komunikace', isActive: false, onClick: onViewCommunication },
-    { icon: ShoppingCart, label: 'Obchod', isActive: false, onClick: onViewMarketplace },
+    { icon: isTournamentActive ? Search : Flag, label: isTournamentActive ? 'RACE PROGRESS' : 'START RACE', isActive: isTournamentActive, onClick: isTournamentActive ? onViewTournament : onStartTournament, isStartButton: true },
+    { icon: Gauge, label: 'CONTROL', isActive: false, onClick: onViewControl },
+    { icon: BarChart3, label: 'STATS', isActive: false, onClick: onViewStatistics },
+    { icon: Car, label: 'DERBY', isActive: false },
+    { icon: MessageSquare, label: 'COMMS', isActive: false, onClick: onViewCommunication },
+    { icon: ShoppingCart, label: 'MARKET', isActive: false, onClick: onViewMarketplace },
   ];
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 md:gap-4">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
       {actions.map((action, index) => (
         <ActionCard
           key={index}

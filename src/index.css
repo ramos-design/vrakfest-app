@@ -6,35 +6,35 @@
 
 @layer base {
   :root {
-    --background: 0 0% 5%;
-    --foreground: 0 0% 98%;
+    --background: 0 0% 7%; /* #111111 */
+    --foreground: 0 0% 88%; /* #e0e0e0 */
 
-    --card: 0 0% 10%;
-    --card-foreground: 0 0% 98%;
+    --card: 0 0% 10%; /* #1a1a1a */
+    --card-foreground: 0 0% 88%;
 
-    --popover: 0 0% 10%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 0 0% 7%;
+    --popover-foreground: 0 0% 88%;
 
-    --primary: 48 100% 50%;
+    --primary: 48 90% 52%; /* #F4CE14 */
     --primary-foreground: 0 0% 5%;
 
     --secondary: 0 0% 15%;
     --secondary-foreground: 0 0% 98%;
 
     --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 65%;
+    --muted-foreground: 0 0% 53%; /* #888888 */
 
-    --accent: 48 100% 60%;
-    --accent-foreground: 0 0% 5%;
+    --accent: 14 100% 50%; /* #ff4d00 */
+    --accent-foreground: 0 0% 98%;
 
-    --destructive: 0 85% 60%;
+    --destructive: 0 62% 30%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 20%;
-    --input: 0 0% 15%;
-    --ring: 48 100% 50%;
+    --border: 0 0% 20%; /* #333333 */
+    --input: 0 0% 20%;
+    --ring: 48 90% 52%;
 
-    --radius: 0.75rem;
+    --radius: 0rem; /* Angular design */
 
     /* Racing Categories */
     --category-small: 142 76% 36%;
@@ -42,10 +42,10 @@
     --category-women: 316 70% 50%;
     
     /* Racing specific colors */
-    --racing-yellow: 48 100% 50%;
+    --racing-yellow: 48 90% 52%;
     --racing-gold: 45 100% 60%;
     --racing-black: 0 0% 5%;
-    --racing-white: 0 0% 98%;
+    --racing-white: 0 0% 88%;
     
     /* Gradients */
     --gradient-racing: linear-gradient(135deg, hsl(var(--racing-yellow)), hsl(var(--racing-gold)));
@@ -67,11 +67,11 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-foreground font-tech antialiased selection:bg-racing-yellow selection:text-black;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-sans font-semibold;
+    @apply font-bebas font-semibold uppercase tracking-wide;
   }
 }
 

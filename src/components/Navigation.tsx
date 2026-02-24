@@ -29,7 +29,7 @@ export const Navigation = ({ activeTab, onTabChange, racerCount, activeRacerCoun
               </div>
               <div>
                 <h1 className="text-xl font-bold racing-gradient bg-clip-text text-transparent">
-                  VrakFest Závody
+                  VrakFest Ostrava
                 </h1>
                 <p className="text-sm text-muted-foreground">Systém pro správu závodů</p>
               </div>
@@ -44,9 +44,8 @@ export const Navigation = ({ activeTab, onTabChange, racerCount, activeRacerCoun
                   key={tab.id}
                   variant={activeTab === tab.id ? 'default' : 'ghost'}
                   onClick={() => onTabChange(tab.id)}
-                  className={`flex items-center gap-2 ${
-                    activeTab === tab.id ? 'racing-gradient shadow-racing' : 'hover:bg-muted'
-                  } transition-racing`}
+                  className={`flex items-center gap-2 ${activeTab === tab.id ? 'racing-gradient shadow-racing' : 'hover:bg-muted'
+                    } transition-racing`}
                 >
                   <Icon className="w-4 h-4" />
                   {tab.label}
@@ -64,7 +63,7 @@ export const Navigation = ({ activeTab, onTabChange, racerCount, activeRacerCoun
                 {activeRacerCount} aktivních
               </Badge>
             </div>
-            
+
             <Button
               variant="outline"
               onClick={onReset}

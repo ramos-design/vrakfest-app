@@ -7,10 +7,10 @@ interface TimeRemaining {
 }
 
 const DEFAULT_SETTINGS = {
-  eventName: 'VrakFest Branky na Moravě',
+  eventName: 'VrakFest Ostrava',
   eventDate: '2025-09-13',
   eventTime: '09:00',
-  ctaText: 'Register Now',
+  ctaText: 'Registruj se',
   ctaLink: '#'
 };
 
@@ -51,7 +51,7 @@ export function EventCountdown() {
     }, 1000);
     return () => clearInterval(timer);
   }, []);
-  
+
   const formatDateTime = () => {
     const date = new Date(`${DEFAULT_SETTINGS.eventDate}T${DEFAULT_SETTINGS.eventTime}`);
     return date.toLocaleString('cs-CZ', {
@@ -63,36 +63,46 @@ export function EventCountdown() {
       minute: '2-digit'
     });
   };
-  return <div className="racing-gradient rounded-lg p-8 text-center shadow-glow relative py-[33px]">
-      <div className="text-racing-black px-[2px] py-0 my-0 mx-0">
-        <div className="flex flex-col items-center mb-3 px-0 my-0 py-[2px]">
-          <div className="bg-racing-black rounded-full px-3 py-1 text-sm font-medium text-racing-white mb-1">
-            Nadcházející událost
+  return (
+    <div className="bg-[#111] border border-racing-yellow border-t-2 p-4 md:p-5 relative overflow-hidden group">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 pointer-events-none"></div>
+
+      <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-8">
+
+        <div className="flex flex-col items-center md:items-start text-center md:text-left">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="w-2 h-2 bg-red-600 rounded-full animate-pulse shadow-[0_0_5px_red]"></span>
+            <span className="font-tech text-red-500 uppercase text-[10px] tracking-[0.2em] font-bold">Live</span>
           </div>
-          
-          <h2 className="text-2xl font-bold mb-1 px-0">{DEFAULT_SETTINGS.eventName}</h2>
-          
-          <p className="text-sm opacity-75">{formatDateTime()}</p>
+          <h2 className="text-3xl md:text-4xl font-bebas text-white tracking-wide uppercase leading-none mb-1">
+            <span className="text-racing-yellow">{DEFAULT_SETTINGS.eventName.split(' ')[0]}</span> {DEFAULT_SETTINGS.eventName.split(' ').slice(1).join(' ')}
+          </h2>
+          <p className="font-tech text-white/50 text-[10px] md:text-xs uppercase tracking-wider">
+            {formatDateTime()}
+          </p>
         </div>
-        
-        <div className="grid grid-cols-4 gap-4">
-          <div className="bg-racing-black/10 rounded-lg p-3">
-            <div className="text-3xl font-bold">{timeRemaining.days}</div>
-            <div className="text-sm">Dní</div>
-          </div>
-          <div className="bg-racing-black/10 rounded-lg p-3">
-            <div className="text-3xl font-bold">{timeRemaining.hours}</div>
-            <div className="text-sm">Hodin</div>
-          </div>
-          <div className="bg-racing-black/10 rounded-lg p-3">
-            <div className="text-3xl font-bold">{timeRemaining.minutes}</div>
-            <div className="text-sm">Minut</div>
-          </div>
-          <div className="bg-racing-black/10 rounded-lg p-3">
-            <div className="text-3xl font-bold">{timeRemaining.seconds}</div>
-            <div className="text-sm">Sekund</div>
-          </div>
+
+        <div className="flex flex-row justify-center gap-2 md:gap-4">
+          <TimeUnit value={timeRemaining.days} label="Dní" />
+          <TimeUnit value={timeRemaining.hours} label="Hod" />
+          <TimeUnit value={timeRemaining.minutes} label="Min" />
+          <TimeUnit value={timeRemaining.seconds} label="Sec" isLast />
         </div>
       </div>
-    </div>;
+    </div>
+  );
+}
+
+function TimeUnit({ value, label, isLast }: { value: number, label: string, isLast?: boolean }) {
+  return (
+    <div className="flex flex-col items-center">
+      <div className={`bg-[#222] border border-white/10 w-12 h-12 md:w-14 md:h-14 flex items-center justify-center mb-1 transition-colors duration-300 ${isLast ? 'text-racing-yellow border-racing-yellow/50 shadow-[0_0_10px_rgba(244,206,20,0.2)]' : 'text-white'}`}>
+        <div className="text-xl md:text-2xl font-bebas tracking-wider">
+          {String(value).padStart(2, '0')}
+        </div>
+      </div>
+      <span className="font-tech text-[8px] md:text-[9px] text-white/30 uppercase tracking-widest">{label}</span>
+    </div>
+  );
 }

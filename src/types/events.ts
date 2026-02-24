@@ -30,6 +30,8 @@ export interface Event {
   prize?: string;
   participants: EventParticipant[];
   results?: EventResult[];
+  imageUrl?: string;
+  location?: string;
 }
 
 export const EVENT_TYPES: { value: EventType; label: string }[] = [

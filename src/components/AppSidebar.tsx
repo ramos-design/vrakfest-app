@@ -1,5 +1,5 @@
-import { Home, Users, Trophy, BarChart3, Settings, Calendar, Car, BookOpen, Activity, ShoppingCart, MessageSquare } from 'lucide-react';
-import { useState } from 'react';
+import { Home, Users, Trophy, BarChart3, Settings, Calendar, Car, BookOpen, Activity, ShoppingCart, MessageSquare, User } from 'lucide-react';
+import React, { useState, memo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -22,7 +22,19 @@ interface AppSidebarProps {
   onTabChange: (tab: string) => void;
 }
 
-export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
+const menuItems = [
+  { id: 'jezdci', label: 'Nástěnka', icon: Home },
+  { id: 'turnaj', label: 'Program závodu', icon: Users },
+  { id: 'bodove-poradei', label: 'Bodové pořadí', icon: BarChart3 },
+  { id: 'udalosti', label: 'Kalendář akcí', icon: Calendar },
+  { id: 'hlasovani', label: 'Hlasování', icon: Activity },
+  { id: 'komunikace', label: 'Komunikace', icon: MessageSquare },
+  { id: 'pravidla', label: 'Pravidla závodu', icon: BookOpen },
+  { id: 'bazar', label: 'Marketplace', icon: ShoppingCart },
+  { id: 'settings', label: 'Nastavení', icon: Settings },
+];
+
+export const AppSidebar = memo(({ activeTab, onTabChange }: AppSidebarProps) => {
   const { state } = useSidebar();
   const isCollapsed = state === 'collapsed';
   const { toast } = useToast();
@@ -30,10 +42,10 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
   const [eventSettings, setEventSettings] = useState(() => {
     const saved = localStorage.getItem('vrakfest-event-settings');
     return saved ? JSON.parse(saved) : {
-      eventName: 'VrakFest Racing Championship',
-      eventDate: '2024-12-31',
-      eventTime: '18:00',
-      ctaText: 'Register Now',
+      eventName: 'VrakFest Ostrava',
+      eventDate: '2025-09-13',
+      eventTime: '10:00',
+      ctaText: 'Registruj se',
       ctaLink: '#'
     };
   });
@@ -48,135 +60,118 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
     });
   };
 
-  const menuItems = [
-    { id: 'jezdci', label: 'Nástěnka', icon: Home },
-    { id: 'turnaj', label: 'Turnaj', icon: Users },
-    { id: 'kontrola', label: 'Kontrola', icon: Trophy },
-    { id: 'bodove-poradei', label: 'Bodové pořadí', icon: BarChart3 },
-    { id: 'statistiky', label: 'Přehled jezdců', icon: Car },
-    { id: 'udalosti', label: 'Události', icon: Calendar },
-    { id: 'komunikace', label: 'Komunikace', icon: MessageSquare },
-    { id: 'pravidla', label: 'Pravidla závodu', icon: BookOpen },
-    { id: 'log-akci', label: 'Log akcí', icon: Activity },
-    { id: 'bazar', label: 'Obchod', icon: ShoppingCart },
-    { id: 'settings', label: 'Nastavení', icon: Settings },
-  ];
+
 
   return (
-    <Sidebar className={isCollapsed ? "w-14" : "w-60"} collapsible="icon" variant="sidebar">
-      <SidebarContent className="racing-card border-r border-racing-yellow/20">
-        <div className={isCollapsed ? "p-2 flex justify-center" : "p-3 md:p-4"}>
-          <div className={isCollapsed ? "flex flex-col items-center gap-1" : "flex items-center gap-2 mb-4 md:mb-6"}>
-            <div className="w-8 h-8 racing-gradient rounded-lg flex items-center justify-center shadow-racing flex-shrink-0">
-              <span className="text-racing-black font-bold text-sm">V</span>
-            </div>
-            {!isCollapsed && (
-              <div>
-                <h1 className="font-bold text-lg md:text-xl racing-gradient-text">VrakFest</h1>
-                <p className="text-xs text-muted-foreground">Racing System</p>
-              </div>
-            )}
-          </div>
+    <Sidebar className="border-none bg-transparent h-screen" collapsible="none" variant="sidebar">
+      <SidebarContent className="bg-[#0a0a0a] border-r border-white/5 relative flex flex-col h-full">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 pointer-events-none"></div>
+
+        {/* Header - Compact */}
+        <div className="px-4 py-8 border-b border-white/5 flex justify-center">
+          <img src="/LOGO-short-Y.png" alt="Vrakfest Logo" className="w-[160px] h-auto" />
         </div>
 
-        <SidebarGroup>
-          {!isCollapsed && <SidebarGroupLabel className="text-muted-foreground px-3 md:px-4 text-sm">Menu</SidebarGroupLabel>}
-          <SidebarGroupContent>
-            <SidebarMenu className={isCollapsed ? "px-0 space-y-3" : "px-1 md:px-2"}>
-              {menuItems.map((item) => (
-                <SidebarMenuItem key={item.id}>
-                  {item.id === 'settings' ? (
-                    <Dialog open={isEventSettingsOpen} onOpenChange={setIsEventSettingsOpen}>
-                      <DialogTrigger asChild>
-                        <SidebarMenuButton
-                          className={`${isCollapsed ? 'mx-auto h-10 w-10 justify-center p-0' : 'w-full justify-start gap-2 md:gap-3 px-2 md:px-3 py-2'} rounded-lg transition-racing text-sm ${
-                            activeTab === item.id
-                              ? 'racing-gradient shadow-racing text-racing-black font-medium'
-                              : 'text-muted-foreground hover:bg-muted/50 hover:text-racing-white'
-                          }`}
-                        >
-                          <item.icon className="h-4 w-4 flex-shrink-0" />
-                          {!isCollapsed && <span className="truncate">{item.label}</span>}
-                        </SidebarMenuButton>
-                      </DialogTrigger>
-                      <DialogContent className="racing-card">
-                        <DialogHeader>
-                          <DialogTitle className="racing-gradient-text">Nastavení události</DialogTitle>
-                        </DialogHeader>
-                        <form onSubmit={handleSaveEventSettings} className="space-y-4">
-                          <div>
-                            <Label htmlFor="eventName" className="text-racing-white">Název události</Label>
-                            <Input
-                              id="eventName"
-                              value={eventSettings.eventName}
-                              onChange={(e) => setEventSettings(prev => ({ ...prev, eventName: e.target.value }))}
-                              className="racing-input"
-                            />
-                          </div>
-                          <div className="grid grid-cols-2 gap-4">
+        {/* Navigation - Filling available space */}
+        <div className="flex-1 overflow-y-auto py-2">
+          <SidebarGroup className="p-0">
+            {!isCollapsed && <SidebarGroupLabel className="font-tech text-racing-yellow px-4 text-[9px] tracking-[0.15em] uppercase mb-1 opacity-70">Hlavní Menu</SidebarGroupLabel>}
+            <SidebarGroupContent className="px-2">
+              <SidebarMenu className="space-y-0.5">
+                {menuItems.map((item) => (
+                  <SidebarMenuItem key={item.id}>
+                    {item.id === 'settings' ? (
+                      <Dialog open={isEventSettingsOpen} onOpenChange={setIsEventSettingsOpen}>
+                        <DialogTrigger asChild>
+                          <SidebarMenuButton
+                            className={`w-full group relative overflow-hidden transition-all duration-200 border border-transparent hover:border-racing-yellow/30 ${activeTab === item.id
+                              ? 'bg-racing-yellow text-black font-bold'
+                              : 'text-white/60 hover:text-white hover:bg-white/5'
+                              } ${isCollapsed ? 'h-10 justify-center px-0' : 'h-12 px-4 justify-start'}`}
+                          >
+                            <div className={`flex items-center gap-4 z-10 relative w-full ${isCollapsed ? 'justify-center' : ''}`}>
+                              <item.icon className="h-5 w-5 flex-shrink-0" />
+                              {!isCollapsed && <span className="font-bebas text-xl tracking-wide uppercase pt-0.5">{item.label}</span>}
+                              {!isCollapsed && activeTab === item.id && <div className="ml-auto w-1 h-5 bg-black/20"></div>}
+                            </div>
+                          </SidebarMenuButton>
+                        </DialogTrigger>
+                        {/* Dialog Content - kept the same */}
+                        <DialogContent className="racing-card border-racing-yellow/20 bg-[#0a0a0a] sm:max-w-[500px]">
+                          <DialogHeader>
+                            <DialogTitle className="font-bebas text-4xl tracking-wide text-racing-yellow uppercase">Nastavení události</DialogTitle>
+                          </DialogHeader>
+                          <form onSubmit={handleSaveEventSettings} className="space-y-6 mt-4">
                             <div>
-                              <Label htmlFor="eventDate" className="text-racing-white">Datum</Label>
+                              <Label htmlFor="eventName" className="text-white/60 font-tech uppercase text-xs tracking-widest pl-1">Název akce</Label>
                               <Input
-                                id="eventDate"
-                                type="date"
-                                value={eventSettings.eventDate}
-                                onChange={(e) => setEventSettings(prev => ({ ...prev, eventDate: e.target.value }))}
-                                className="racing-input"
+                                id="eventName"
+                                value={eventSettings.eventName}
+                                onChange={(e) => setEventSettings(prev => ({ ...prev, eventName: e.target.value }))}
+                                className="bg-[#111] border-white/20 text-white focus:border-racing-yellow font-bebas text-xl tracking-wide h-12 mt-1 rounded-none"
                               />
                             </div>
-                            <div>
-                              <Label htmlFor="eventTime" className="text-racing-white">Čas</Label>
-                              <Input
-                                id="eventTime"
-                                type="time"
-                                value={eventSettings.eventTime}
-                                onChange={(e) => setEventSettings(prev => ({ ...prev, eventTime: e.target.value }))}
-                                className="racing-input"
-                              />
+                            <div className="grid grid-cols-2 gap-6">
+                              <div>
+                                <Label htmlFor="eventDate" className="text-white/60 font-tech uppercase text-xs tracking-widest pl-1">Datum</Label>
+                                <Input
+                                  id="eventDate"
+                                  type="date"
+                                  value={eventSettings.eventDate}
+                                  onChange={(e) => setEventSettings(prev => ({ ...prev, eventDate: e.target.value }))}
+                                  className="bg-[#111] border-white/20 text-white focus:border-racing-yellow font-tech text-sm mt-1 rounded-none"
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor="eventTime" className="text-white/60 font-tech uppercase text-xs tracking-widest pl-1">Čas</Label>
+                                <Input
+                                  id="eventTime"
+                                  type="time"
+                                  value={eventSettings.eventTime}
+                                  onChange={(e) => setEventSettings(prev => ({ ...prev, eventTime: e.target.value }))}
+                                  className="bg-[#111] border-white/20 text-white focus:border-racing-yellow font-tech text-sm mt-1 rounded-none"
+                                />
+                              </div>
                             </div>
-                          </div>
-                          <Button type="submit" className="w-full racing-btn-primary">
-                            Uložit nastavení
-                          </Button>
-                        </form>
-                      </DialogContent>
-                    </Dialog>
-                  ) : (
-                    <SidebarMenuButton
-                      onClick={() => onTabChange(item.id)}
-                      className={`${isCollapsed ? 'mx-auto h-10 w-10 justify-center p-0' : 'w-full justify-start gap-2 md:gap-3 px-2 md:px-3 py-2'} rounded-lg transition-racing text-sm ${
-                        activeTab === item.id
-                          ? 'racing-gradient shadow-racing text-racing-black font-medium'
-                          : 'text-muted-foreground hover:bg-muted/50 hover:text-racing-white'
-                      }`}
-                    >
-                      <item.icon className="h-4 w-4 flex-shrink-0" />
-                      {!isCollapsed && <span className="truncate">{item.label}</span>}
-                    </SidebarMenuButton>
-                  )}
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+                            <Button type="submit" className="w-full bg-racing-yellow text-black hover:bg-white font-bebas tracking-widest text-xl h-12 uppercase transition-all">
+                              Uložit konfiguraci
+                            </Button>
+                          </form>
+                        </DialogContent>
+                      </Dialog>
+                    ) : (
+                      <SidebarMenuButton
+                        onClick={() => onTabChange(item.id)}
+                        className={`w-full group relative overflow-hidden transition-all duration-200 border border-transparent hover:border-racing-yellow/30 ${activeTab === item.id
+                          ? 'bg-racing-yellow text-black font-bold'
+                          : 'text-white/60 hover:text-white hover:bg-white/5'
+                          } ${isCollapsed ? 'h-10 justify-center px-0' : 'h-12 px-4 justify-start'}`}
+                      >
+                        <div className={`flex items-center gap-4 z-10 relative w-full ${isCollapsed ? 'justify-center' : ''}`}>
+                          <item.icon className="h-5 w-5 flex-shrink-0" />
+                          {!isCollapsed && <span className="font-bebas text-xl tracking-wide uppercase pt-0.5">{item.label}</span>}
+                          {!isCollapsed && activeTab === item.id && <div className="ml-auto w-1 h-5 bg-black/20"></div>}
+                        </div>
+                      </SidebarMenuButton>
+                    )}
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </div>
 
+        {/* Footer Info - Compact */}
         {!isCollapsed && (
-          <div className="mt-auto p-3 md:p-4 hidden lg:block">
-            <div className="bg-racing-black/50 border border-racing-yellow/20 rounded-lg p-3">
-              <h3 className="font-medium text-sm racing-gradient-text mb-1">Scheduled Races</h3>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-racing-yellow rounded-full shadow-glow flex-shrink-0"></div>
-                  <span className="text-xs text-muted-foreground truncate">VrakFest 2024</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-racing-white rounded-full flex-shrink-0"></div>
-                  <span className="text-xs text-muted-foreground truncate">Dynamics 22</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-racing-white/50 rounded-full flex-shrink-0"></div>
-                  <span className="text-xs text-muted-foreground truncate">Olympics</span>
-                </div>
+          <div className="mt-auto p-4 border-t border-white/5">
+
+
+            <div className="flex items-center justify-between mt-3 px-1">
+              <span className="font-tech text-[9px] text-white/20 uppercase">STAV SYSTÉMU: ONLINE</span>
+              <div className="flex gap-1">
+                <div className="w-1 h-1 bg-green-500 rounded-full"></div>
+                <div className="w-1 h-1 bg-green-500 rounded-full animate-ping"></div>
               </div>
             </div>
           </div>
@@ -184,4 +179,4 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
       </SidebarContent>
     </Sidebar>
   );
-}
+});

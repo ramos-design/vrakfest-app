@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, memo, useMemo, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -23,38 +23,38 @@ interface RacerOverviewProps {
   editingRacer: Racer | null;
 }
 
-export function RacerOverview({ 
-  racers, 
+export const RacerOverview = memo(({
+  racers,
   demolitionDerbyRacers,
-  onEdit, 
-  onDelete, 
-  onDeactivate, 
-  onActivate, 
+  onEdit,
+  onDelete,
+  onDeactivate,
+  onActivate,
   onAddToDemolitionDerby,
   onRemoveFromDemolitionDerby,
-  onSave, 
-  onCancel, 
-  editingRacer 
-}: RacerOverviewProps) {
+  onSave,
+  onCancel,
+  editingRacer
+}: RacerOverviewProps) => {
   const categories: RacerCategory[] = ['do 1.6L', 'nad 1.6L', 'Ženy'];
   const [activeCategory, setActiveCategory] = useState<RacerCategory>('do 1.6L');
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'tournament' | 'all' | 'demolition-derby'>('all');
 
-  const getRacersByCategory = (category: RacerCategory) => {
+  const getRacersByCategory = useCallback((category: RacerCategory) => {
     let filteredRacers;
     if (viewMode === 'tournament') {
       filteredRacers = racers.filter(racer => racer.category === category && racer.isActive);
     } else if (viewMode === 'demolition-derby') {
-      filteredRacers = racers.filter(racer => 
+      filteredRacers = racers.filter(racer =>
         racer.category === category && demolitionDerbyRacers?.includes(racer.id)
       );
     } else {
       filteredRacers = racers.filter(racer => racer.category === category);
     }
-    
+
     return filteredRacers.sort((a, b) => b.points - a.points);
-  };
+  }, [racers, viewMode, demolitionDerbyRacers]);
 
   const handleEdit = (racer: Racer) => {
     if (viewMode === 'demolition-derby') return; // No editing in demolition derby
@@ -123,70 +123,70 @@ export function RacerOverview({
                   <span className="font-bold text-foreground">{racer.points}</span>
                 </TableCell>
               )}
-               <TableCell>
-                 <div className="flex gap-1">
-                   {/* Edit button - not available in demolition derby */}
-                   {viewMode !== 'demolition-derby' && (
-                     <Button
-                       variant="ghost"
-                       size="sm"
-                       onClick={() => handleEdit(racer)}
-                       className="w-8 h-8 p-0 hover:bg-primary/10 hover:text-primary"
-                     >
-                       <Edit className="w-4 h-4" />
-                     </Button>
-                   )}
-                   
-                   {/* Add to tournament - only in "all" view for inactive racers */}
-                   {viewMode === 'all' && !racer.isActive && (
-                     <Button
-                       variant="ghost"
-                       size="sm"
-                       onClick={() => onActivate(racer.id)}
-                       className="w-8 h-8 p-0 hover:bg-green-600/10 hover:text-green-600"
-                       title="Přidat do aktuálního turnaje"
-                     >
-                       <UserPlus className="w-4 h-4" />
-                     </Button>
-                   )}
+              <TableCell>
+                <div className="flex gap-1">
+                  {/* Edit button - not available in demolition derby */}
+                  {viewMode !== 'demolition-derby' && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleEdit(racer)}
+                      className="w-8 h-8 p-0 hover:bg-primary/10 hover:text-primary"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                  )}
 
-                    {/* Add to demolition derby - only in "all" view for racers not in demolition derby */}
-                    {viewMode === 'all' && !demolitionDerbyRacers?.includes(racer.id) && (
-                     <Button
-                       variant="ghost"
-                       size="sm"
-                       onClick={() => onAddToDemolitionDerby(racer.id)}
-                       className="w-8 h-8 p-0 hover:bg-orange-600/10 hover:text-orange-600"
-                       title="Přidat do demolition derby tabulky"
-                     >
-                       <Target className="w-4 h-4" />
-                     </Button>
-                   )}
-                   
-                   {/* Delete button - available in all views */}
-                   <Button
-                     variant="ghost"
-                     size="sm"
-                     onClick={() => handleDelete(racer.id)}
-                     className="w-8 h-8 p-0 hover:bg-destructive/10 hover:text-destructive"
-                   >
-                     <Trash2 className="w-4 h-4" />
-                   </Button>
-                 </div>
-               </TableCell>
+                  {/* Add to tournament - only in "all" view for inactive racers */}
+                  {viewMode === 'all' && !racer.isActive && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onActivate(racer.id)}
+                      className="w-8 h-8 p-0 hover:bg-green-600/10 hover:text-green-600"
+                      title="Přidat do aktuálního turnaje"
+                    >
+                      <UserPlus className="w-4 h-4" />
+                    </Button>
+                  )}
+
+                  {/* Add to demolition derby - only in "all" view for racers not in demolition derby */}
+                  {viewMode === 'all' && !demolitionDerbyRacers?.includes(racer.id) && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onAddToDemolitionDerby(racer.id)}
+                      className="w-8 h-8 p-0 hover:bg-orange-600/10 hover:text-orange-600"
+                      title="Přidat do demolition derby tabulky"
+                    >
+                      <Target className="w-4 h-4" />
+                    </Button>
+                  )}
+
+                  {/* Delete button - available in all views */}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleDelete(racer.id)}
+                    className="w-8 h-8 p-0 hover:bg-destructive/10 hover:text-destructive"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </div>
+              </TableCell>
             </TableRow>
           ))}
-            {categoryRacers.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={viewMode === 'demolition-derby' ? 4 : 5} className="text-center text-muted-foreground py-8">
-                  {viewMode === 'tournament' 
-                    ? 'V této kategorii nejsou žádní aktivní jezdci'
-                    : viewMode === 'demolition-derby'
+          {categoryRacers.length === 0 && (
+            <TableRow>
+              <TableCell colSpan={viewMode === 'demolition-derby' ? 4 : 5} className="text-center text-muted-foreground py-8">
+                {viewMode === 'tournament'
+                  ? 'V této kategorii nejsou žádní aktivní jezdci'
+                  : viewMode === 'demolition-derby'
                     ? 'V této kategorii nejsou žádní jezdci v demolition derby'
                     : 'V této kategorii nejsou žádní jezdci'}
-                </TableCell>
-              </TableRow>
-            )}
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
     </div>
@@ -201,7 +201,7 @@ export function RacerOverview({
               <CardTitle className="racing-gradient-text text-xl">
                 Přehled jezdců podle kategorií
               </CardTitle>
-              <Button 
+              <Button
                 onClick={isPanelOpen ? handleHidePanel : handleAddRacer}
                 className={isPanelOpen ? "bg-red-600 hover:bg-red-700 text-white" : "bg-primary hover:bg-primary/90"}
               >
@@ -218,31 +218,31 @@ export function RacerOverview({
                 )}
               </Button>
             </div>
-            
+
             <div className="flex items-center gap-4 pt-4">
               <span className="text-sm text-muted-foreground">Zobrazit:</span>
-              <ToggleGroup 
-                type="single" 
-                value={viewMode} 
+              <ToggleGroup
+                type="single"
+                value={viewMode}
                 onValueChange={(value) => value && setViewMode(value as 'tournament' | 'all' | 'demolition-derby')}
                 className="bg-card border border-border rounded-lg p-1"
               >
-                <ToggleGroupItem 
-                  value="all" 
+                <ToggleGroupItem
+                  value="all"
                   className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground text-sm px-3 py-2"
                 >
                   <Users className="w-4 h-4 mr-2" />
                   Všichni jezdci
                 </ToggleGroupItem>
-                <ToggleGroupItem 
-                  value="tournament" 
+                <ToggleGroupItem
+                  value="tournament"
                   className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground text-sm px-3 py-2"
                 >
                   <Trophy className="w-4 h-4 mr-2" />
                   Aktuální turnaj
                 </ToggleGroupItem>
-                <ToggleGroupItem 
-                  value="demolition-derby" 
+                <ToggleGroupItem
+                  value="demolition-derby"
                   className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground text-sm px-3 py-2"
                 >
                   <Target className="w-4 h-4 mr-2" />
@@ -257,8 +257,8 @@ export function RacerOverview({
                 {categories.map((category) => {
                   const categoryRacers = getRacersByCategory(category);
                   return (
-                    <TabsTrigger 
-                      key={category} 
+                    <TabsTrigger
+                      key={category}
                       value={category}
                       className="data-[state=active]:racing-gradient data-[state=active]:text-racing-black text-racing-white"
                     >
@@ -267,7 +267,7 @@ export function RacerOverview({
                   );
                 })}
               </TabsList>
-              
+
               {categories.map((category) => (
                 <TabsContent key={category} value={category} className="mt-6">
                   <div className="space-y-4">
@@ -275,11 +275,11 @@ export function RacerOverview({
                       <h3 className="text-lg font-semibold text-racing-white">
                         Kategorie: <span className="racing-gradient-text">{category}</span>
                         <span className="text-sm text-muted-foreground ml-2">
-                          ({viewMode === 'tournament' 
-                            ? 'Aktuální turnaj' 
+                          ({viewMode === 'tournament'
+                            ? 'Aktuální turnaj'
                             : viewMode === 'demolition-derby'
-                            ? 'Demolition derby'
-                            : 'Všichni jezdci'})
+                              ? 'Demolition derby'
+                              : 'Všichni jezdci'})
                         </span>
                       </h3>
                       <Badge variant="outline" className="border-racing-yellow text-racing-yellow">
@@ -294,7 +294,7 @@ export function RacerOverview({
           </CardContent>
         </Card>
       </div>
-      
+
       <div className="space-y-6">
         {isPanelOpen && (
           <RacerForm
@@ -307,4 +307,4 @@ export function RacerOverview({
       </div>
     </div>
   );
-}
+});

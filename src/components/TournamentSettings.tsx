@@ -22,13 +22,13 @@ interface TournamentSettingsProps {
   inline?: boolean;
 }
 
-export const TournamentSettings = ({ 
-  settings, 
-  onSettingsChange, 
-  disabled = false, 
-  availableRacers = [], 
+export const TournamentSettings = ({
+  settings,
+  onSettingsChange,
+  disabled = false,
+  availableRacers = [],
   onAddRacer,
-  inline = false 
+  inline = false
 }: TournamentSettingsProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [localSettings, setLocalSettings] = useState<ITournamentSettings>(settings);
@@ -131,7 +131,7 @@ export const TournamentSettings = ({
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <TrackSelection 
+              <TrackSelection
                 selectedTrack={localSettings.selectedTrack}
                 onTrackSelect={handleTrackSelect}
               />
@@ -151,7 +151,7 @@ export const TournamentSettings = ({
                 <p className="text-sm text-muted-foreground">
                   Přidejte jezdce do turnaje z celkového seznamu registrovaných jezdců.
                 </p>
-                <Button 
+                <Button
                   onClick={() => setShowAddRacers(true)}
                   variant="outline"
                   className="w-full"
@@ -327,8 +327,8 @@ export const TournamentSettings = ({
                           onSettingsChange(newSettings);
                         }}
                       />
-                      <Label 
-                        htmlFor={`category-${category}`} 
+                      <Label
+                        htmlFor={`category-${category}`}
                         className="flex items-center gap-2 cursor-pointer flex-1"
                       >
                         <Badge className={`${getCategoryBadgeColor(category)} text-white`}>
@@ -366,8 +366,8 @@ export const TournamentSettings = ({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           size="lg"
           className="bg-white text-black border-border hover:bg-blue-600 hover:text-white transition-colors"
           disabled={disabled}
@@ -376,7 +376,7 @@ export const TournamentSettings = ({
           Nastavení turnaje
         </Button>
       </DialogTrigger>
-      
+
       <DialogContent className="max-w-6xl max-h-[90vh] overflow-hidden">
         <DialogHeader>
           <DialogTitle className="racing-gradient bg-clip-text text-transparent text-xl">
@@ -396,7 +396,7 @@ export const TournamentSettings = ({
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <TrackSelection 
+                <TrackSelection
                   selectedTrack={localSettings.selectedTrack}
                   onTrackSelect={handleTrackSelect}
                 />
@@ -416,7 +416,7 @@ export const TournamentSettings = ({
                   <p className="text-sm text-muted-foreground">
                     Přidejte jezdce do turnaje z celkového seznamu registrovaných jezdců.
                   </p>
-                  <Button 
+                  <Button
                     onClick={() => setShowAddRacers(true)}
                     variant="outline"
                     className="w-full"
@@ -562,8 +562,8 @@ export const TournamentSettings = ({
                           checked={localSettings.enabledCategories.includes(category)}
                           onCheckedChange={() => toggleCategory(category)}
                         />
-                        <Label 
-                          htmlFor={`category-${category}`} 
+                        <Label
+                          htmlFor={`category-${category}`}
                           className="flex items-center gap-2 cursor-pointer flex-1"
                         >
                           <Badge className={`${getCategoryBadgeColor(category)} text-white`}>
@@ -589,7 +589,7 @@ export const TournamentSettings = ({
           <Button variant="outline" onClick={handleCancel}>
             Zrušit
           </Button>
-          <Button 
+          <Button
             onClick={handleSave}
             className="racing-gradient shadow-racing"
             disabled={localSettings.enabledCategories.length === 0}

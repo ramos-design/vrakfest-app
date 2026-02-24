@@ -26,6 +26,86 @@ interface MarketplaceItem {
   contact: string;
 }
 
+interface MarketplaceItemCardProps {
+  item: MarketplaceItem;
+  onEdit: (item: MarketplaceItem) => void;
+  onDelete: (id: string) => void;
+}
+
+function MarketplaceCard({ item, onEdit, onDelete }: MarketplaceItemCardProps) {
+  return (
+    <Card className="racing-card overflow-hidden group hover:border-racing-yellow/30 transition-all duration-300">
+      {/* Hero Image Area */}
+      <div className="relative h-56 overflow-hidden">
+        {item.images.length > 0 ? (
+          <img
+            src={item.images[0]}
+            alt={item.title}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          />
+        ) : (
+          <div className="w-full h-full bg-[#151515] flex items-center justify-center">
+            <Image className="w-12 h-12 text-white/10" />
+          </div>
+        )}
+
+        {/* Overlay Badges */}
+        <div className="absolute top-4 left-4 flex flex-col gap-2">
+          <Badge className={`${item.type === 'offer' ? 'bg-green-600/90' : 'bg-blue-600/90'} backdrop-blur-md border-none font-tech text-[10px] tracking-widest px-3 py-1`}>
+            {item.type === 'offer' ? 'NABÍDKA' : 'POPTÁVKA'}
+          </Badge>
+          <Badge variant="outline" className="bg-black/60 backdrop-blur-md border-white/10 font-tech text-[10px] text-white/70 uppercase">
+            {item.category}
+          </Badge>
+        </div>
+
+        {/* Action Buttons Overlay */}
+        <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <Button size="icon" variant="secondary" className="w-8 h-8 rounded-none bg-black/80 hover:bg-racing-yellow hover:text-black border border-white/10" onClick={() => onEdit(item)}>
+            <Edit className="w-4 h-4" />
+          </Button>
+          <Button size="icon" variant="destructive" className="w-8 h-8 rounded-none bg-red-600/80 hover:bg-red-600 border border-white/10" onClick={() => onDelete(item.id)}>
+            <Trash2 className="w-4 h-4" />
+          </Button>
+        </div>
+
+        {/* Price Tag Overlay */}
+        {item.price > 0 && (
+          <div className="absolute bottom-0 right-0 bg-racing-yellow px-4 py-2 skew-x-[-12deg] translate-x-2">
+            <span className="font-bebas text-2xl text-black inline-block skew-x-[12deg]">
+              {item.price.toLocaleString()} Kč
+            </span>
+          </div>
+        )}
+      </div>
+
+      <div className="p-6 space-y-4">
+        <div>
+          <h3 className="font-bebas text-2xl text-white group-hover:text-racing-yellow transition-colors truncate">{item.title}</h3>
+          <div className="flex items-center gap-2 mt-1">
+            <div className="w-1 h-3 bg-racing-yellow"></div>
+            <p className="font-tech text-[10px] text-white/40 uppercase tracking-widest">{item.seller}</p>
+          </div>
+        </div>
+
+        <p className="text-white/60 text-sm line-clamp-2 min-h-[40px] leading-relaxed">
+          {item.description}
+        </p>
+
+        <div className="pt-4 border-t border-white/5 flex items-center justify-between">
+          <div className="flex items-center gap-2 text-racing-yellow/80">
+            <Wrench className="w-4 h-4" />
+            <span className="font-bebas text-lg tracking-wider">{item.contact}</span>
+          </div>
+          <span className="text-[10px] font-tech text-white/20 uppercase tracking-tighter">
+            {item.createdAt.toLocaleDateString('cs-CZ')}
+          </span>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
 interface Category {
   id: string;
   name: string;
@@ -67,6 +147,51 @@ export function Marketplace() {
         updatedAt: new Date(item.updatedAt)
       }));
       setItems(parsedItems);
+    } else {
+      // Mock Demo Data
+      const demoItems: MarketplaceItem[] = [
+        {
+          id: 'demo-1',
+          title: 'Škoda Felicia 1.3 - Kompletní vrak',
+          description: 'Auto připravené na derby. Vyndaná skla, vyvařený rám v ceně. Motor šlape. Nutno odvézt na podvalu.',
+          price: 4500,
+          category: 'Auta',
+          type: 'offer',
+          images: ['/m-felicia.png'],
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          seller: 'Patrik K.',
+          contact: '722 123 456'
+        },
+        {
+          id: 'demo-2',
+          title: 'Sada drapáků (bahňáky) - 4ks',
+          description: 'Pneu s vysokým vzorkem na Felicii/Favorit. Skvělá trakce v blátě. Málo jeté jednu sezónu.',
+          price: 1200,
+          category: 'Náhradní díly',
+          type: 'offer',
+          images: ['/m-pneu.png'],
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          seller: 'Martin Č.',
+          contact: '603 888 999'
+        },
+        {
+          id: 'demo-3',
+          title: 'Motor 1.6 MPi 55kW',
+          description: 'Motor po výměně oleje, připraven do akce. Stačí nahodit a jet. Ideální na nad 1.6 kategorii.',
+          price: 3500,
+          category: 'Náhradní díly',
+          type: 'offer',
+          images: ['/m-motor.png'],
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          seller: 'Jiří F.',
+          contact: '777 555 333'
+        }
+      ];
+      setItems(demoItems);
+      localStorage.setItem('marketplace-items', JSON.stringify(demoItems));
     }
 
     const savedCategories = localStorage.getItem('marketplace-categories');
@@ -91,7 +216,7 @@ export function Marketplace() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.title || !formData.description || !formData.category || !formData.seller || !formData.contact) {
       toast({
         title: "Chyba",
@@ -240,11 +365,11 @@ export function Marketplace() {
 
   const filteredItems = items.filter(item => {
     const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         item.seller.toLowerCase().includes(searchTerm.toLowerCase());
+      item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.seller.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = categoryFilter === 'all' || item.category === categoryFilter;
     const matchesType = typeFilter === 'all' || item.type === typeFilter;
-    
+
     return matchesSearch && matchesCategory && matchesType;
   });
 
@@ -302,7 +427,7 @@ export function Marketplace() {
                     <Input
                       id="title"
                       value={formData.title}
-                      onChange={(e) => setFormData({...formData, title: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                       className="racing-input"
                       placeholder="Zadejte název..."
                     />
@@ -313,7 +438,7 @@ export function Marketplace() {
                       id="price"
                       type="number"
                       value={formData.price}
-                      onChange={(e) => setFormData({...formData, price: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                       className="racing-input"
                       placeholder="0"
                     />
@@ -323,7 +448,7 @@ export function Marketplace() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="category">Kategorie *</Label>
-                    <Select value={formData.category} onValueChange={(value) => setFormData({...formData, category: value})}>
+                    <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
                       <SelectTrigger>
                         <SelectValue placeholder="Vyberte kategorii" />
                       </SelectTrigger>
@@ -336,7 +461,7 @@ export function Marketplace() {
                   </div>
                   <div>
                     <Label htmlFor="type">Typ *</Label>
-                    <Select value={formData.type} onValueChange={(value: 'offer' | 'demand') => setFormData({...formData, type: value})}>
+                    <Select value={formData.type} onValueChange={(value: 'offer' | 'demand') => setFormData({ ...formData, type: value })}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
@@ -353,7 +478,7 @@ export function Marketplace() {
                   <Textarea
                     id="description"
                     value={formData.description}
-                    onChange={(e) => setFormData({...formData, description: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     className="racing-input"
                     placeholder="Podrobně popište položku..."
                     rows={4}
@@ -366,7 +491,7 @@ export function Marketplace() {
                     <Input
                       id="seller"
                       value={formData.seller}
-                      onChange={(e) => setFormData({...formData, seller: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, seller: e.target.value })}
                       className="racing-input"
                       placeholder="Vaše jméno..."
                     />
@@ -376,7 +501,7 @@ export function Marketplace() {
                     <Input
                       id="contact"
                       value={formData.contact}
-                      onChange={(e) => setFormData({...formData, contact: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
                       className="racing-input"
                       placeholder="Email nebo telefon..."
                     />
@@ -390,13 +515,13 @@ export function Marketplace() {
                     type="file"
                     multiple
                     accept="image/*"
-                    onChange={(e) => setFormData({...formData, images: Array.from(e.target.files || [])})}
+                    onChange={(e) => setFormData({ ...formData, images: Array.from(e.target.files || []) })}
                     className="racing-input"
                   />
                 </div>
 
                 <div className="flex justify-end gap-2">
-                  <Button type="button" variant="outline" onClick={() => {setIsAddDialogOpen(false); resetForm(); setEditingItem(null);}}>
+                  <Button type="button" variant="outline" onClick={() => { setIsAddDialogOpen(false); resetForm(); setEditingItem(null); }}>
                     Zrušit
                   </Button>
                   <Button type="submit" className="racing-btn-primary">
@@ -422,7 +547,7 @@ export function Marketplace() {
               />
             </div>
           </div>
-          
+
           <Select value={categoryFilter} onValueChange={setCategoryFilter}>
             <SelectTrigger className="w-48">
               <SelectValue placeholder="Kategorie" />
@@ -456,84 +581,48 @@ export function Marketplace() {
         </TabsList>
 
         <TabsContent value="all">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredItems.length === 0 ? (
-              <div className="col-span-full text-center py-12 text-muted-foreground">
-                <Car className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                <p className="text-lg mb-2">Žádné inzeráty nenalezeny</p>
-                <p>Přidejte první inzerát nebo změňte filtry</p>
+              <div className="col-span-full text-center py-24 bg-white/5 border border-dashed border-white/10">
+                <Car className="w-16 h-16 mx-auto mb-4 opacity-20" />
+                <p className="text-xl font-bebas tracking-widest text-white/40">ŽÁDNÉ INZERÁTY NENALEZENY</p>
+                <p className="text-white/20 text-sm mt-2 font-tech uppercase">Zkuste upravit filtry vyhledávání</p>
               </div>
             ) : (
               filteredItems.map((item) => (
-                <Card key={item.id} className="racing-card">
-                  <div className="p-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <Badge className={item.type === 'offer' ? 'bg-green-600' : 'bg-blue-600'}>
-                        {item.type === 'offer' ? 'Nabídka' : 'Poptávka'}
-                      </Badge>
-                      <div className="flex gap-1">
-                        <Button size="sm" variant="ghost" onClick={() => handleEdit(item)}>
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button size="sm" variant="ghost" onClick={() => handleDelete(item.id)} className="text-red-500 hover:text-red-700">
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
-                    
-                    <h3 className="font-bold text-lg mb-2 racing-gradient-text">{item.title}</h3>
-                    <p className="text-muted-foreground text-sm mb-3 line-clamp-3">{item.description}</p>
-                    
-                    {item.images.length > 0 && (
-                      <div className="mb-3">
-                        <div className="flex gap-2 overflow-x-auto">
-                          {item.images.slice(0, 3).map((img, idx) => (
-                            <img key={idx} src={img} alt="" className="w-16 h-16 object-cover rounded border border-racing-yellow/20" />
-                          ))}
-                          {item.images.length > 3 && (
-                            <div className="w-16 h-16 bg-racing-black/50 rounded border border-racing-yellow/20 flex items-center justify-center">
-                              <span className="text-xs">+{item.images.length - 3}</span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    )}
-                    
-                    <div className="flex justify-between items-center mb-3">
-                      <Badge variant="outline">{item.category}</Badge>
-                      {item.price > 0 && (
-                        <span className="font-bold text-racing-yellow">{item.price.toLocaleString()} Kč</span>
-                      )}
-                    </div>
-                    
-                    <div className="text-sm text-muted-foreground">
-                      <p><strong>Kontakt:</strong> {item.seller}</p>
-                      <p>{item.contact}</p>
-                      <p className="mt-2">{item.createdAt.toLocaleDateString('cs-CZ')}</p>
-                    </div>
-                  </div>
-                </Card>
+                <MarketplaceCard
+                  key={item.id}
+                  item={item}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                />
               ))
             )}
           </div>
         </TabsContent>
 
         <TabsContent value="offer">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredItems.filter(item => item.type === 'offer').map((item) => (
-              <Card key={item.id} className="racing-card">
-                {/* Same card content as above */}
-              </Card>
+              <MarketplaceCard
+                key={item.id}
+                item={item}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+              />
             ))}
           </div>
         </TabsContent>
 
         <TabsContent value="demand">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredItems.filter(item => item.type === 'demand').map((item) => (
-              <Card key={item.id} className="racing-card">
-                {/* Same card content as above */}
-              </Card>
+              <MarketplaceCard
+                key={item.id}
+                item={item}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+              />
             ))}
           </div>
         </TabsContent>
